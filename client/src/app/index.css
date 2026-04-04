@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+@font-face {
+    font-family: "Geist-Regular";
+    src: "/fonts/Geist-Regular.woff2" format("woff2");
+}
+
+@font-face {
+    font-family: "Geist-Semibold";
+    src: "/fonts/Geist-Semibold.woff2" format("woff2");
+}
+
+@font-face {
+    font-family: "Geist-Bold";
+    src: "/fonts/Geist-Bold.woff2" format("woff2");
+}
+
+@font-face {
+    font-family: "Geist-ExtraBold";
+    src: "/fonts/Geist-ExtraBold.woff2" format("woff2");
+}
+
+@theme {
+    --font-Geist-Regular: Geist-Regular, sans-serif;
+    --font-Geist-Semibold: Geist-Semibold, sans-serif;
+    --font-Geist-Bold: Geist-Bold, sans-serif;
+    --font-Geist-ExtraBold: Geist-ExtraBold, sans-serif;
+}
+
+@custom-variant dark (&:is(.dark * ));
