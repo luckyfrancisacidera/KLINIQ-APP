@@ -1,0 +1,56 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "Kliniq.Persistence/1.0.0": {
+        "dependencies": {
+          "Kliniq.Application": "1.0.0",
+          "Kliniq.Domain": "1.0.0"
+        },
+        "runtime": {
+          "Kliniq.Persistence.dll": {}
+        }
+      },
+      "Kliniq.Application/1.0.0": {
+        "dependencies": {
+          "Kliniq.Domain": "1.0.0"
+        },
+        "runtime": {
+          "Kliniq.Application.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Kliniq.Domain/1.0.0": {
+        "runtime": {
+          "Kliniq.Domain.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Kliniq.Persistence/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Kliniq.Application/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Kliniq.Domain/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

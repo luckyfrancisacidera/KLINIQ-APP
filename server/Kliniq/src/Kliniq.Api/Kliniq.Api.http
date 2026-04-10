@@ -1,0 +1,6 @@
+@Kliniq.Api_HostAddress = http://localhost:5178
+
+GET {{Kliniq.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

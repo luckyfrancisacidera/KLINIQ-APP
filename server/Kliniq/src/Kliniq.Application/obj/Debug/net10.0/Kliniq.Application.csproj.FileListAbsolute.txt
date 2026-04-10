@@ -1,0 +1,16 @@
+C:\Kliniq\server\Kliniq\src\Kliniq.Application\bin\Debug\net10.0\Kliniq.Application.deps.json
+C:\Kliniq\server\Kliniq\src\Kliniq.Application\bin\Debug\net10.0\Kliniq.Application.dll
+C:\Kliniq\server\Kliniq\src\Kliniq.Application\bin\Debug\net10.0\Kliniq.Application.pdb
+C:\Kliniq\server\Kliniq\src\Kliniq.Application\bin\Debug\net10.0\Kliniq.Domain.dll
+C:\Kliniq\server\Kliniq\src\Kliniq.Application\bin\Debug\net10.0\Kliniq.Domain.pdb
+C:\Kliniq\server\Kliniq\src\Kliniq.Application\obj\Debug\net10.0\Kliniq.Application.csproj.AssemblyReference.cache
+C:\Kliniq\server\Kliniq\src\Kliniq.Application\obj\Debug\net10.0\Kliniq.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Kliniq\server\Kliniq\src\Kliniq.Application\obj\Debug\net10.0\Kliniq.Application.AssemblyInfoInputs.cache
+C:\Kliniq\server\Kliniq\src\Kliniq.Application\obj\Debug\net10.0\Kliniq.Application.AssemblyInfo.cs
+C:\Kliniq\server\Kliniq\src\Kliniq.Application\obj\Debug\net10.0\Kliniq.Application.csproj.CoreCompileInputs.cache
+C:\Kliniq\server\Kliniq\src\Kliniq.Application\obj\Debug\net10.0\Kliniq.Application.sourcelink.json
+C:\Kliniq\server\Kliniq\src\Kliniq.Application\obj\Debug\net10.0\Kliniq.A.F29DBDBF.Up2Date
+C:\Kliniq\server\Kliniq\src\Kliniq.Application\obj\Debug\net10.0\Kliniq.Application.dll
+C:\Kliniq\server\Kliniq\src\Kliniq.Application\obj\Debug\net10.0\refint\Kliniq.Application.dll
+C:\Kliniq\server\Kliniq\src\Kliniq.Application\obj\Debug\net10.0\Kliniq.Application.pdb
+C:\Kliniq\server\Kliniq\src\Kliniq.Application\obj\Debug\net10.0\ref\Kliniq.Application.dll

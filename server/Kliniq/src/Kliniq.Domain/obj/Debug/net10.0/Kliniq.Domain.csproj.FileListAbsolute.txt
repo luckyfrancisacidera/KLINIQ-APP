@@ -1,0 +1,12 @@
+C:\Kliniq\server\Kliniq\src\Kliniq.Domain\bin\Debug\net10.0\Kliniq.Domain.deps.json
+C:\Kliniq\server\Kliniq\src\Kliniq.Domain\bin\Debug\net10.0\Kliniq.Domain.dll
+C:\Kliniq\server\Kliniq\src\Kliniq.Domain\bin\Debug\net10.0\Kliniq.Domain.pdb
+C:\Kliniq\server\Kliniq\src\Kliniq.Domain\obj\Debug\net10.0\Kliniq.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Kliniq\server\Kliniq\src\Kliniq.Domain\obj\Debug\net10.0\Kliniq.Domain.AssemblyInfoInputs.cache
+C:\Kliniq\server\Kliniq\src\Kliniq.Domain\obj\Debug\net10.0\Kliniq.Domain.AssemblyInfo.cs
+C:\Kliniq\server\Kliniq\src\Kliniq.Domain\obj\Debug\net10.0\Kliniq.Domain.csproj.CoreCompileInputs.cache
+C:\Kliniq\server\Kliniq\src\Kliniq.Domain\obj\Debug\net10.0\Kliniq.Domain.sourcelink.json
+C:\Kliniq\server\Kliniq\src\Kliniq.Domain\obj\Debug\net10.0\Kliniq.Domain.dll
+C:\Kliniq\server\Kliniq\src\Kliniq.Domain\obj\Debug\net10.0\refint\Kliniq.Domain.dll
+C:\Kliniq\server\Kliniq\src\Kliniq.Domain\obj\Debug\net10.0\Kliniq.Domain.pdb
+C:\Kliniq\server\Kliniq\src\Kliniq.Domain\obj\Debug\net10.0\ref\Kliniq.Domain.dll
