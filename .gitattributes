@@ -1,0 +1,58 @@
+########################################
+# AUTO NORMALIZE
+########################################
+* text=auto
+
+########################################
+# DOTNET
+########################################
+*.cs diff=csharp
+*.csproj text
+*.sln text
+*.props text
+*.targets text
+
+########################################
+# REACT / TYPESCRIPT
+########################################
+*.ts text
+*.tsx text
+*.js text
+*.jsx text
+*.json text
+*.css text
+*.scss text
+*.html text
+
+########################################
+# SHELL
+########################################
+*.sh text eol=lf
+*.ps1 text eol=crlf
+
+########################################
+# CONFIG
+########################################
+*.yml text
+*.yaml text
+*.xml text
+
+########################################
+# BINARY FILES
+########################################
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.exe binary
+*.dll binary
+
+########################################
+# GIT LINGUIST
+########################################
+*.cs linguist-language=C#
+*.ts linguist-language=TypeScript
+*.tsx linguist-language=TypeScript

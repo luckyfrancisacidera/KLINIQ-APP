@@ -15,8 +15,6 @@
         public void ClearDomainEvents()
         {
             _domainEvents.Clear();
-        }   
-
-
+        }
     }
 }

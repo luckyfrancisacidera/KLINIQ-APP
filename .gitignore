@@ -1,0 +1,33 @@
+# Visual Studio
+.vs/
+.vscode/
+.idea/
+
+# Dotnet
+bin/
+obj/
+out/
+publish/
+
+# Nuget
+packages/
+*.nupkg
+
+# Appsettings
+appsettings.Development.json
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# React
+node_modules/
+dist/
+build/
+
+# Env
+.env
+.env.*
