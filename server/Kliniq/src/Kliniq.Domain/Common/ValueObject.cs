@@ -2,7 +2,7 @@
 {
     public abstract class ValueObject
     {
-        protected abstract IEnumerable<(string Name, object Value)> GetEqualityComponents();
+        protected abstract IEnumerable<object> GetEqualityComponents();
 
         public override bool Equals(object? obj)
         {
@@ -14,13 +14,7 @@
 
         public override int GetHashCode()
         {
-            return GetEqualityComponents().Aggregate(1, (current, obj) =>
-            {
-                unchecked
-                {
-                    return current * 23 + HashCode.Combine(obj.Name, obj.Value);
-                }
-            });
+            return GetEqualityComponents().Aggregate(1, (current, obj) => HashCode.Combine(current, obj));
         }
 
         public static bool operator ==(ValueObject? left, ValueObject? right)
@@ -31,8 +25,7 @@
 
         public override string ToString()
         {
-            return string.Join(", ",
-                GetEqualityComponents().Select(x => $"{x.Name}: {x.Value}"));
+            return string.Join(", ", GetEqualityComponents());
         }
     }
 }
