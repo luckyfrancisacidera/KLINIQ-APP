@@ -8,7 +8,6 @@ namespace Kliniq.Domain.ValueObjects
         public string City { get; } = null!;
         public string Country { get; } = null!;
 
-
         private Address() { }
 
         public Address(string street, string city, string country)
