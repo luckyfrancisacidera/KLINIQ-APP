@@ -4,7 +4,6 @@
     <Project Path="src/Kliniq.Application/Kliniq.Application.csproj" />
     <Project Path="src/Kliniq.Domain/Kliniq.Domain.csproj" />
     <Project Path="src/Kliniq.Infrastructure/Kliniq.Infrastructure.csproj" />
-    <Project Path="src/Kliniq.Persistence/Kliniq.Persistence.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Kliniq.Api.Tests/Kliniq.Api.Tests.csproj" />
