@@ -16,14 +16,14 @@ namespace Kliniq.Domain.Entities
 
         private Practioner() { }
 
-        public Practioner(Guid userId, FullName name, Clinic clinicId, string licenseNumber, string specialty)
+        public Practioner(Guid userId, FullName name, Clinic clinicId, string licenseNumber, string specialization)
         {
             Id = Guid.NewGuid();
             UserId = userId;
             Name = name;
             Clinic = clinicId;
             LicenseNumber = licenseNumber;
-            Specialty = specialty;
+            Specialization = specialization;
         }
 
 
