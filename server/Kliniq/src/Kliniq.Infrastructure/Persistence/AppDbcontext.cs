@@ -11,7 +11,7 @@ namespace Kliniq.Infrastructure.Persistence
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<Patient> Patients => Set<Patient>();
-        public DbSet<Practioner> Practioners => Set<Practioner>();
+        public DbSet<Practitioner> Practioners => Set<Practitioner>();
         public DbSet<Clinic> Clinics => Set<Clinic>();
         public DbSet<Appointment> Appointments => Set<Appointment>();
         public DbSet<AccountRequest> AccountRequests => Set<AccountRequest>();

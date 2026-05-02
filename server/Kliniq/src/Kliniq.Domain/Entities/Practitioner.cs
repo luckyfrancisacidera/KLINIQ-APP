@@ -3,7 +3,7 @@ using Kliniq.Domain.ValueObjects;
 
 namespace Kliniq.Domain.Entities
 {
-    public class Practioner : AuditableEntity
+    public class Practitioner : AuditableEntity
     {
         public Guid UserId { get; private set; }
         public FullName Name { get; private set; } = null!;
@@ -19,9 +19,9 @@ namespace Kliniq.Domain.Entities
         private readonly List<Appointment> _appointments = new();
         public IReadOnlyCollection<Appointment> Appointments => _appointments.AsReadOnly();
 
-        private Practioner() { }
+        private Practitioner() { }
 
-        public Practioner(Guid userId, FullName name, Clinic clinic, string licenseNumber, string specialization)
+        public Practitioner(Guid userId, FullName name, Clinic clinic, string licenseNumber, string specialization)
         {
             Id = Guid.NewGuid();
             UserId = userId;

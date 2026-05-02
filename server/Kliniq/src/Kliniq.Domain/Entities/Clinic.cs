@@ -8,9 +8,9 @@ namespace Kliniq.Domain.Entities
         public string Name { get; private set; } = string.Empty;
         public GeoLocation Location { get; set; } = null!;
 
-        private readonly List<Practioner> _practioners = new();
+        private readonly List<Practitioner> _practioners = new();
 
-        public IReadOnlyCollection<Practioner> Practioners => _practioners.AsReadOnly();
+        public IReadOnlyCollection<Practitioner> Practioners => _practioners.AsReadOnly();
 
         private Clinic() { }
 

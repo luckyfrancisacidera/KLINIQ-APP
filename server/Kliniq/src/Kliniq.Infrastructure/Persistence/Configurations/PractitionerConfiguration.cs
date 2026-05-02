@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Kliniq.Infrastructure.Persistence.Configurations
 {
-    public class PractitionerConfiguration : IEntityTypeConfiguration<Practioner>
+    public class PractitionerConfiguration : IEntityTypeConfiguration<Practitioner>
     {
-        public void Configure(EntityTypeBuilder<Practioner> builder)
+        public void Configure(EntityTypeBuilder<Practitioner> builder)
         {
-            builder.ToTable("Practioners");
+            builder.ToTable("Practitioners");
 
             builder.HasKey(p => p.Id);
             builder.Property(p => p.Id).ValueGeneratedNever();
