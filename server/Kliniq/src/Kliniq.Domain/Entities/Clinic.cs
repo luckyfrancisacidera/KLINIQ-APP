@@ -5,7 +5,7 @@ namespace Kliniq.Domain.Entities
 {
     public class Clinic : AuditableEntity
     {
-        public FullName Name { get; private set; } = null!;
+        public string Name { get; private set; } = string.Empty;
         public GeoLocation Location { get; set; } = null!;
 
         private readonly List<Practioner> _practioners = new();
@@ -14,8 +14,11 @@ namespace Kliniq.Domain.Entities
 
         private Clinic() { }
 
-        public Clinic(FullName name, GeoLocation location)
+        public Clinic(string name, GeoLocation location)
         {
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Clinic name is required", nameof(name));
+
             Id = Guid.NewGuid();
             Name = name;
             Location = location;

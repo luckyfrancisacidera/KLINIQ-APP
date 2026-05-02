@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
+using Kliniq.Application.Common.Behaviors;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
 
 namespace Kliniq.Application
 {
@@ -9,18 +9,18 @@ namespace Kliniq.Application
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
+            var assembly = typeof(DependencyInjection).Assembly;
+
             services.AddMediatR(cfg =>
             {
-                cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly());
-                cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+                cfg.RegisterServicesFromAssemblies(assembly);
                 cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+                cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             });
 
-            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            services.AddValidatorsFromAssembly(assembly);
 
             return services;
-
         }
     }
 }
