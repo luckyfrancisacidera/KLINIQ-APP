@@ -16,6 +16,9 @@ namespace Kliniq.Domain.Entities
         public string? PhoneNumber { get; private set; }
         public string? EmergencyContact { get; private set; }
 
+        private readonly List<Appointment> _appointments = new();
+        public IReadOnlyCollection<Appointment> Appointments => _appointments.AsReadOnly();
+
         private Patient() { }
 
         public Patient(
