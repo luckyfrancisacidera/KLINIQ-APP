@@ -1,5 +1,9 @@
-﻿using Kliniq.Infrastructure.Identity;
+﻿using Kliniq.Application.Common.Interfaces;
+using Kliniq.Application.Common.Interfaces.Repositories;
+using Kliniq.Infrastructure.Identity;
 using Kliniq.Infrastructure.Persistence;
+using Kliniq.Infrastructure.Persistence.Repositories;
+using Kliniq.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -34,6 +38,13 @@ namespace Kliniq.Infrastructure
                 .AddDefaultTokenProviders();
 
             //Services
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IPatientRepository, PatientRepository>();
+            services.AddScoped<IPractitionerRepository, PractitionerRepository>();
+            services.AddScoped<IClinicRepository, ClinicRepository>();
+            services.AddScoped<IAccountRequestRepository, AccountRequestRepository>();
+            //services.AddScoped<IAppointmentRepository, AppointmentRepository>();
             //services.AddScoped<IJwtTokeService, JwtTokenService>();
             return services;
         }

@@ -6,7 +6,7 @@ namespace Kliniq.Domain.Entities
     public class Schedule : AuditableEntity
     {
         public Guid PractitionerId { get; private set; }
-        public Practioner? Practioner { get; private set; }
+        public Practitioner? Practioner { get; private set; }
         public ClinicDayOfWeek Day { get; private set; }
         public TimeOnly StartTime { get; private set; }
         public TimeOnly EndTime { get; private set; }
