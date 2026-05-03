@@ -36,7 +36,6 @@ namespace Kliniq.Infrastructure.Persistence.Configurations
             builder.Property(a => a.Reason)
                 .HasMaxLength(500);
 
-
             builder.HasIndex(a => a.PatientId);
             builder.HasIndex(a => a.DoctorId);
             builder.HasIndex(a => a.ClinicId);

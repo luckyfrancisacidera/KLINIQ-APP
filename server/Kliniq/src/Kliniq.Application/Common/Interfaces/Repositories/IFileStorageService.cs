@@ -2,7 +2,7 @@
 {
     public interface IFileStorageService
     {
-        Task<string> UplaodAsync(
+        Task<string> UploadAsync(
             Stream fileStream,
             string fileName,
             string folder,
