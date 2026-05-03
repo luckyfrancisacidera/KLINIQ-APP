@@ -50,7 +50,7 @@ namespace Kliniq.Infrastructure
             services.AddScoped<IAccountRequestRepository, AccountRequestRepository>();
 
             //services.AddScoped<IAppointmentRepository, AppointmentRepository>();
-            //services.AddScoped<IJwtTokeService, JwtTokenService>();
+            services.AddScoped<IJwtTokenService, JwtTokenService>();
             return services;
         }
     }

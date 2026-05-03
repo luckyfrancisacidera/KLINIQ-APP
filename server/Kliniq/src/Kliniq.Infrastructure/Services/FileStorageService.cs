@@ -9,10 +9,10 @@ namespace Kliniq.Infrastructure.Services
         
         public FileStorageService(IConfiguration configuration)
         {
-            var relativePath = configuration["FileStorage:BasePath"] ?? throw new InvalidOperationException("FileStorage:BasePath is not configured");
+            _basePath = configuration["FileStorage:BasePath"] ?? "uploads" ?? throw new InvalidOperationException("FileStorage:BasePath is not configured");
         }
 
-        public async Task<string> UplaodAsync(Stream fileStream, string fileName, string folder, CancellationToken cancellationToken)
+        public async Task<string> UploadAsync(Stream fileStream, string fileName, string folder, CancellationToken cancellationToken)
         {
             var directory = Path.Combine(_basePath, fileName);
             Directory.CreateDirectory(directory);
