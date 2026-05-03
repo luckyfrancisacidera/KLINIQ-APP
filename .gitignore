@@ -18,10 +18,12 @@ appsettings.Development.json
 
 # Logs
 *.log
+logs/
 
 # OS
 .DS_Store
 Thumbs.db
+desktop.ini
 
 # React
 node_modules/
@@ -31,3 +33,15 @@ build/
 # Env
 .env
 .env.*
+!.env.example 
+
+# Uploads
+src/Kliniq.Api/uploads/
+
+# User secrets
+secrets.json
+*.pfx
+*.key
+
+# EF Core migrations backup 
+src/Kliniq.Infrastructure/Migrations/

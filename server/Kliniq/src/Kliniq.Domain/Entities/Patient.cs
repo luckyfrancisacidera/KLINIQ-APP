@@ -36,10 +36,10 @@ namespace Kliniq.Domain.Entities
             
             Id = Guid.NewGuid();
             UserId = userId;
-            Name = name;
+            Name = name ?? throw new ArgumentNullException(nameof(name));
             DateOfBirth = dateOfBirth;
             Gender = gender;
-            Address = address;
+            Address = address ?? throw new ArgumentNullException(nameof(address));
             PhoneNumber = phoneNumber;
             EmergencyContact = emergencyContact;
         }

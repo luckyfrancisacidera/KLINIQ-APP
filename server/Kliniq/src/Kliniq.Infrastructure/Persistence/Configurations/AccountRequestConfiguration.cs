@@ -14,24 +14,59 @@ namespace Kliniq.Infrastructure.Persistence.Configurations
 
             builder.Property(a => a.Id).ValueGeneratedNever();
 
-            builder.Property(a => a.FirstName)
-                .HasMaxLength(50)
-                .IsRequired();
+            builder.OwnsOne(a => a.Name, name =>
+            {
+                name.Property(n => n.FirstName)
+                    .HasColumnName("FirstName")
+                    .HasMaxLength(50)
+                    .IsRequired();
 
-            builder.Property(a => a.LastName)
-                .HasMaxLength(50)
-                .IsRequired();
+                name.Property(n => n.LastName)
+                    .HasColumnName("LastName")
+                    .HasMaxLength(50)
+                    .IsRequired();
+            });
 
+            builder.OwnsOne(a => a.Address, address =>
+            {
+                address.Property(a => a.Street)
+                    .HasColumnName("Street")
+                    .HasMaxLength(200)
+                    .IsRequired();
+
+                address.Property(a => a.City)
+                    .HasColumnName("City")
+                    .HasMaxLength(100)
+                    .IsRequired();
+
+                address.Property(a => a.Country)
+                    .HasColumnName("Country")
+                    .HasMaxLength(100)
+                    .IsRequired();
+            });
+            
             builder.Property(a => a.Email)
                 .HasMaxLength(150)
                 .IsRequired();
 
-            builder.Property(a => a.LicenseNumber)
-                .HasMaxLength(100)
-                .IsRequired();
-
             builder.Property(a => a.Specialization)
                 .HasMaxLength(150)
+                .IsRequired();
+
+            builder.Property(a => a.PrcIdPath)
+                .HasMaxLength(500)
+                .IsRequired();
+
+            builder.Property(a => a.BoardCertificatePath)
+                .HasMaxLength(500)
+                .IsRequired();
+
+            builder.Property(a => a.MedicalDiplomaPath)
+                .HasMaxLength(500)
+                .IsRequired();
+
+            builder.Property(a => a.CertificateOfGoodStandingPath)
+                .HasMaxLength(500)
                 .IsRequired();
 
             builder.Property(a => a.Status)
@@ -42,6 +77,14 @@ namespace Kliniq.Infrastructure.Persistence.Configurations
             builder.Property(a => a.AdminNote)
                 .HasMaxLength(500);
 
+            builder.Property(a => a.InvitationToken)
+                .HasMaxLength(100);
+
+            builder.Property(a => a.InvitationExpiresAt);
+
+            builder.Property(a => a.Status);
+
+            builder.HasIndex(a => a.InvitationToken).IsUnique();
             builder.HasIndex(a => a.Email);
             builder.HasIndex(a => a.Status);
 
