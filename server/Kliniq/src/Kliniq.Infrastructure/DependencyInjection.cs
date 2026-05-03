@@ -39,11 +39,16 @@ namespace Kliniq.Infrastructure
 
             //Services
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IAuthService, AuthService>();    
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IFileStorageService, FileStorageService>();
+
+            //Repository Services
             services.AddScoped<IPatientRepository, PatientRepository>();
             services.AddScoped<IPractitionerRepository, PractitionerRepository>();
             services.AddScoped<IClinicRepository, ClinicRepository>();
             services.AddScoped<IAccountRequestRepository, AccountRequestRepository>();
+
             //services.AddScoped<IAppointmentRepository, AppointmentRepository>();
             //services.AddScoped<IJwtTokeService, JwtTokenService>();
             return services;
