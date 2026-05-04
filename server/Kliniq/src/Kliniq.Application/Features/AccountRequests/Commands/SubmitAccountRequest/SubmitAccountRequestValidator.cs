@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using Kliniq.Application.Common.Models;
 
-namespace Kliniq.Application.Features.AccountRequests.Commands
+namespace Kliniq.Application.Features.AccountRequests.Commands.SubmitAccountRequest
 {
     public class SubmitAccountRequestValidator : AbstractValidator<SubmitAccountRequestCommand>
     {

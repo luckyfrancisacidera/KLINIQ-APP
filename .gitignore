@@ -36,7 +36,7 @@ build/
 !.env.example 
 
 # Uploads
-src/Kliniq.Api/uploads/
+uploads
 
 # User secrets
 secrets.json

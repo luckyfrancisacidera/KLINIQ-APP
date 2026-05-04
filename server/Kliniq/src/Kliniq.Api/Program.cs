@@ -1,8 +1,9 @@
-using Scalar.AspNetCore;
 using Kliniq.Application;
+using Kliniq.Application.Common.Settings;
 using Kliniq.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Scalar.AspNetCore;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,7 +36,10 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen();
+
+builder.Services.Configure<AppSettings>(
+    builder.Configuration.GetSection("App"));
 
 var app = builder.Build();
 

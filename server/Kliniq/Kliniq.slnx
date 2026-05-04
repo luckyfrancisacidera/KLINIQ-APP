@@ -6,8 +6,7 @@
     <Project Path="src/Kliniq.Infrastructure/Kliniq.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/tests/">
-    <Project Path="tests/Kliniq.Api.Tests/Kliniq.Api.Tests.csproj" />
     <Project Path="tests/Kliniq.Application.Tests/Kliniq.Application.Tests.csproj" />
-    <Project Path="tests/Kliniq.Persistence.Tests/Kliniq.Persistence.Tests.csproj" />
+    <Project Path="tests/Kliniq.Domain.Tests/Kliniq.Domain.Tests.csproj" />
   </Folder>
 </Solution>

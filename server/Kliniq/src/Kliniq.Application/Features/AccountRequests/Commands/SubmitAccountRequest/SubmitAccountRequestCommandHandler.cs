@@ -6,7 +6,7 @@ using Kliniq.Domain.Entities;
 using Kliniq.Domain.ValueObjects;
 using MediatR;
 
-namespace Kliniq.Application.Features.AccountRequests.Commands
+namespace Kliniq.Application.Features.AccountRequests.Commands.SubmitAccountRequest
 {
     public class SubmitAccountRequestCommandHandler : IRequestHandler<SubmitAccountRequestCommand, AccountRequestDto>
     {
