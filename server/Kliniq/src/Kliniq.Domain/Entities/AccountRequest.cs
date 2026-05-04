@@ -44,6 +44,7 @@ namespace Kliniq.Domain.Entities
                 throw new DomainException("Specialization is required for doctor account requests");
 
             Id = Guid.NewGuid();
+            Email = email;
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Specialization = specialization;
             Address = address ?? throw new ArgumentException(nameof(address));

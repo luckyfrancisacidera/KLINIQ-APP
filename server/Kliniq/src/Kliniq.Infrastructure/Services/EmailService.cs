@@ -15,7 +15,7 @@ namespace Kliniq.Infrastructure.Services
             _configuration = configuration;
         }
 
-        public async Task SendEmailAsync(string toEmail, string subject, string body)
+        public async Task SendEmailAsync(string toEmail, string subject, string body, CancellationToken cancellationToken)
         {
             var message = new MimeMessage();
 
@@ -33,14 +33,16 @@ namespace Kliniq.Infrastructure.Services
             await client.ConnectAsync(
                 _configuration["SmtpSettings:Host"]!,
                 int.Parse(_configuration["SmtpSettings:Port"]!),
-                SecureSocketOptions.StartTls);
+                SecureSocketOptions.StartTls,
+                cancellationToken);
 
             await client.AuthenticateAsync(
                 _configuration["SmtpSettings:Username"]!,
-                _configuration["SmtpSettings:Password"]!);
+                _configuration["SmtpSettings:Password"]!,
+                cancellationToken);
 
-            await client.SendAsync(message);
-            await client.DisconnectAsync(true);
+            await client.SendAsync(message, cancellationToken);
+            await client.DisconnectAsync(true, cancellationToken);
         }
     }
 }

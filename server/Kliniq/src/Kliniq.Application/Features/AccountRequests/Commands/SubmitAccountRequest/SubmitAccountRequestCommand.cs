@@ -2,7 +2,7 @@
 using Kliniq.Application.Features.AccountRequests.DTOs;
 using MediatR;
 
-namespace Kliniq.Application.Features.AccountRequests.Commands
+namespace Kliniq.Application.Features.AccountRequests.Commands.SubmitAccountRequest
 {
     public class SubmitAccountRequestCommand : IRequest<AccountRequestDto>
     {
