@@ -2,6 +2,7 @@
 using Kliniq.Domain.Entities;
 using Kliniq.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.InteropServices;
 
 namespace Kliniq.Infrastructure.Persistence.Repositories
 {
@@ -25,5 +26,10 @@ namespace Kliniq.Infrastructure.Persistence.Repositories
 
         public async Task<AccountRequest?> GetApprovedByEmailAsync(string email, CancellationToken cancellationToken)
             => await _context.AccountRequests.FirstOrDefaultAsync(a => a.Email == email && a.Status == AccountRequestStatus.Approved, cancellationToken);
+
+        public async Task<AccountRequest?> GetByInvitationTokenAsync(string invitationToken, CancellationToken cancellationToken)
+            => await _context.AccountRequests.FirstOrDefaultAsync(a => a.InvitationToken == invitationToken 
+                                                                  && a.Status == AccountRequestStatus.Approved 
+                                                                  && !a.IsInvitationUsed && a.InvitationExpiresAt > DateTime.UtcNow, cancellationToken);
     }
 }
