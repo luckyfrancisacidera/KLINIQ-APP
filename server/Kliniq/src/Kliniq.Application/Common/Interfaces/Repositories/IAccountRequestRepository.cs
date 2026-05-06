@@ -8,5 +8,6 @@ namespace Kliniq.Application.Common.Interfaces.Repositories
         Task<AccountRequest?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<bool> ExistsPendingEmailAsync(string email, CancellationToken cancellationToken);
         Task<AccountRequest?> GetApprovedByEmailAsync(string email, CancellationToken cancellationToken);
+        Task<AccountRequest?> GetByInvitationTokenAsync(string invitationToken, CancellationToken cancellationToken);
     }
 }
