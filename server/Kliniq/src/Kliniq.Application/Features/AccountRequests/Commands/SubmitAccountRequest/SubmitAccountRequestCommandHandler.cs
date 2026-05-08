@@ -58,6 +58,7 @@ namespace Kliniq.Application.Features.AccountRequests.Commands.SubmitAccountRequ
             var accountRequest = new AccountRequest(
                 name,
                 request.Email,
+                request.LicenseNumber,
                 request.Specialization,
                 address,
                 prcIdPath,

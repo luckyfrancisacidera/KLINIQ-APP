@@ -27,6 +27,10 @@ namespace Kliniq.Application.Features.AccountRequests.Commands.SubmitAccountRequ
                 .NotEmpty().WithMessage("Email is required.")
                 .EmailAddress().WithMessage("Invalid email format.");
 
+            RuleFor(x => x.LicenseNumber)
+                .NotEmpty().WithMessage("License number is required.")
+                .MaximumLength(150).WithMessage("License number cannot exceed 150 characters.");
+
             RuleFor(x => x.Specialization)
                 .NotEmpty().WithMessage("Specialization is required.")
                 .MaximumLength(150).WithMessage("Specialization cannot exceed 150 characters.");

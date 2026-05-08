@@ -2,7 +2,6 @@
 using Kliniq.Domain.Entities;
 using Kliniq.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.InteropServices;
 
 namespace Kliniq.Infrastructure.Persistence.Repositories
 {
