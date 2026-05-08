@@ -1,9 +1,10 @@
-﻿using Kliniq.Application.Features.AccountRequests.DTOs;
+﻿
+using Kliniq.Application.Features.Auth.DTOs;
 using MediatR;
 
-namespace Kliniq.Application.Features.AccountRequests.Commands.RegisterPractitioner
+namespace Kliniq.Application.Features.Auth.Commands.SetPractitionerPassword
 {
-    public class RegisterPractitionerCommand : IRequest<RegisterPractitionerAccountDto>
+    public class SetPractitionerPasswordCommand : IRequest<RegisterPractitionerResponseDto>
     {
         public string InvitationToken { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;

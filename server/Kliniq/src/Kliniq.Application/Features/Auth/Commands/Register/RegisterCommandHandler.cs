@@ -28,7 +28,7 @@ namespace Kliniq.Application.Features.Auth.Commands.Register
 
         public async Task<AuthResponseDto> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
-            var (userId, email) = await _authService.RegisterAsync(
+            var result = await _authService.RegisterAsync(
                 request.Email,
                 request.Password,
                 "Patient",
@@ -36,7 +36,7 @@ namespace Kliniq.Application.Features.Auth.Commands.Register
 
             var patient = new Patient
             (
-                Guid.Parse(userId),
+                Guid.Parse(result.UserId),
                 new FullName(request.FirstName, request.LastName),
                 request.DateOfBirth,
                 request.Gender,
@@ -48,13 +48,13 @@ namespace Kliniq.Application.Features.Auth.Commands.Register
             await _patientRepository.AddAsync(patient, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            var token = _jwtTokenService.GenerateToken(userId, email, "Patient");
+            var token = _jwtTokenService.GenerateToken(result.Email, result.UserId, "Patient");
 
             return new AuthResponseDto
             {
                 Token = token,
-                UserId = userId,
-                Email = email,
+                UserId = result.UserId,
+                Email = result.Email    ,
                 Role = "Patient"
             };
         }

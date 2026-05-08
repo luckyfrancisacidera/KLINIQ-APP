@@ -49,6 +49,10 @@ namespace Kliniq.Infrastructure.Persistence.Configurations
                 .HasMaxLength(150)
                 .IsRequired();
 
+            builder.Property(a => a.LicenseNumber)
+                .HasMaxLength(150)
+                .IsRequired();
+
             builder.Property(a => a.Specialization)
                 .HasMaxLength(150)
                 .IsRequired();

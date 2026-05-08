@@ -1,13 +1,13 @@
 ﻿using FluentValidation;
 
-namespace Kliniq.Application.Features.AccountRequests.Commands.RegisterPractitioner
+namespace Kliniq.Application.Features.Auth.Commands.SetPractitionerPassword
 {
-    public class RegisterPractitionerValidator : AbstractValidator<RegisterPractitionerCommand>
+    public class SetPractitionerPasswordValidator : AbstractValidator<SetPractitionerPasswordCommand>
     {
-        public RegisterPractitionerValidator()
+        public SetPractitionerPasswordValidator()
         {
             RuleFor(x => x.InvitationToken)
-                .NotEmpty().WithMessage("Invitation token is required.");
+              .NotEmpty().WithMessage("Invitation token is required.");
 
             RuleFor(x => x.Password)
                 .NotEmpty().WithMessage("Password is required.")

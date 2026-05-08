@@ -8,6 +8,7 @@ namespace Kliniq.Domain.Entities
     {
         public FullName Name { get; private set; } = null!;
         public string Email { get; private set; } = string.Empty;
+        public string LicenseNumber { get; private set; } = string.Empty;
         public string Specialization { get; private set; } = string.Empty;
 
         public Address Address { get; private set; } = null!;
@@ -29,6 +30,7 @@ namespace Kliniq.Domain.Entities
         public AccountRequest(
             FullName name,
             string email,
+            string licenseNumber,
             string specialization,
             Address address,
             string prcIdPath,
@@ -46,6 +48,7 @@ namespace Kliniq.Domain.Entities
             Id = Guid.NewGuid();
             Email = email;
             Name = name ?? throw new ArgumentNullException(nameof(name));
+            LicenseNumber = licenseNumber;
             Specialization = specialization;
             Address = address ?? throw new ArgumentException(nameof(address));
             PrcIdPath = prcIdPath;
