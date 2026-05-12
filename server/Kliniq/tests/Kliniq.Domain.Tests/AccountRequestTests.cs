@@ -67,6 +67,7 @@ public class AccountRequestTests
     private static AccountRequest CreateValidAccountRequest() => new(
         new FullName("Juan", "Dela Cruz"),
         "juan@email.com",
+        "011-123456",
         "Cardiology",
         new Address("123 Main St", "Manila", "Philippines"),
         "prc-path",
