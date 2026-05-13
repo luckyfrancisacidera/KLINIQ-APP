@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Kliniq.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     [ApiController]
     public class AuthController : ControllerBase
     {
