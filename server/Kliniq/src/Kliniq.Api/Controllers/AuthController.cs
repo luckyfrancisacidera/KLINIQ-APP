@@ -18,8 +18,11 @@ namespace Kliniq.Api.Controllers
             _mediator = mediator;
         }
 
-
         [HttpPost("set-password")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> SetPassword([FromBody] SetPasswordRequest request, CancellationToken cancellationToken)
         {
             var command = new SetPractitionerPasswordCommand
@@ -27,7 +30,6 @@ namespace Kliniq.Api.Controllers
                 InvitationToken = request.InvitationToken,
                 Password = request.Password,
                 ConfirmPassword = request.ConfirmPassword,
-                ClinicId = request.ClinicId,
             };
 
             var result = await _mediator.Send(command, cancellationToken);

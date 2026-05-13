@@ -8,5 +8,6 @@
   <Folder Name="/tests/">
     <Project Path="tests/Kliniq.Application.Tests/Kliniq.Application.Tests.csproj" />
     <Project Path="tests/Kliniq.Domain.Tests/Kliniq.Domain.Tests.csproj" />
+    <Project Path="tests/Kliniq.Tests.Integration/Kliniq.Tests.Integration.csproj" />
   </Folder>
 </Solution>

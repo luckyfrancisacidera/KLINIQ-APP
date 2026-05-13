@@ -12,20 +12,17 @@ namespace Kliniq.Application.Features.Auth.Commands.SetPractitionerPassword
         private readonly IAuthService _authService;
         private readonly IAccountRequestRepository _accountRequestRepository;
         private readonly IPractitionerRepository _practitionerRepository;
-        private readonly IClinicRepository _clinicRepository;
         private readonly IUnitOfWork _unitOfWork;
 
         public SetPractitionerPasswordCommandHandler(
             IAuthService authService,
             IAccountRequestRepository accountRequestRepository,
             IPractitionerRepository practitionerRepository,
-            IClinicRepository clinicRepository,
             IUnitOfWork unitOfWork)
         {
             _authService = authService;
             _accountRequestRepository = accountRequestRepository;
             _practitionerRepository = practitionerRepository;
-            _clinicRepository = clinicRepository;
             _unitOfWork = unitOfWork;
         }
 
@@ -39,12 +36,6 @@ namespace Kliniq.Application.Features.Auth.Commands.SetPractitionerPassword
             if (accountRequest is null)
                 throw new InvalidOperationException("Invalid or expired invitation token");
 
-            var clinic = await _clinicRepository
-                .GetByIdAsync(request.ClinicId, cancellationToken);
-
-            if (clinic is null)
-                throw new InvalidOperationException("Clinic not found");
-
             var result = await _authService.RegisterAsync(
                 accountRequest.Email,
                 request.Password,
@@ -56,7 +47,6 @@ namespace Kliniq.Application.Features.Auth.Commands.SetPractitionerPassword
                 new FullName(
                     accountRequest.Name.FirstName,
                     accountRequest.Name.LastName),
-                clinic,
                 accountRequest.LicenseNumber ?? string.Empty, 
                 accountRequest.Specialization ?? string.Empty);
 
