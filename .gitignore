@@ -45,3 +45,7 @@ secrets.json
 
 # EF Core migrations backup 
 src/Kliniq.Infrastructure/Migrations/
+
+#logs
+logs/
+*.log
