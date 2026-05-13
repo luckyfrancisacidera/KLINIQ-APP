@@ -1,3 +1,4 @@
+using Kliniq.Api.Extensions;
 using Kliniq.Application;
 using Kliniq.Application.Common.Settings;
 using Kliniq.Infrastructure;
@@ -38,6 +39,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//Exception
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
+
 builder.Services.Configure<AppSettings>(
     builder.Configuration.GetSection("App"));
 
@@ -57,6 +62,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
 }
 
+app.UseExceptionHandler();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

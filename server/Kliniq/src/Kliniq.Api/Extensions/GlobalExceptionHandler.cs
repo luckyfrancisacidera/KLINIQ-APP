@@ -3,26 +3,19 @@ using Kliniq.Domain.Common;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Kliniq.Api.Middleware
+namespace Kliniq.Api.Extensions
 {
     public sealed class GlobalExceptionHandler(
         ILogger<GlobalExceptionHandler> logger,
         IProblemDetailsService problemDetailsService,
         IHostEnvironment env) : IExceptionHandler
     {
-
-
-
         public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
         {
             var (statusCode, title) = MapException(exception);
 
             if(statusCode == StatusCodes.Status500InternalServerError)
-            {
                 logger.LogError(exception, "Unhandled exception. TraceId: {TraceId}", httpContext.TraceIdentifier);
-
-                return false;
-            }
 
             httpContext.Response.StatusCode = statusCode;
 
@@ -59,13 +52,15 @@ namespace Kliniq.Api.Middleware
 
             DomainException => (StatusCodes.Status422UnprocessableEntity, "Business Rule Violation"),
 
-            InvalidOperationException => (StatusCodes.Status400BadRequest, "Invalid Operation"),
+            InvalidOperationException => (StatusCodes.Status409Conflict, "Operation Not Allowed"),
 
             UnauthorizedAccessException => (StatusCodes.Status401Unauthorized, "Unauthorized"),
 
+            KeyNotFoundException => (StatusCodes.Status404NotFound, "Not Found"),
+
             ArgumentNullException or ArgumentException => (StatusCodes.Status400BadRequest, "Bad Request"),
 
-            _ => (StatusCodes.Status500InternalServerError, "An unexpected error occurred")
+            _ => (StatusCodes.Status500InternalServerError, "An unexpected error occurred.")
 
         };
 
@@ -84,6 +79,7 @@ namespace Kliniq.Api.Middleware
         {
             if(env.IsDevelopment())
                 return exception.ToString();
+
             return exception is DomainException or InvalidOperationException or ValidationException ? exception.Message
                 : "An unexpected error occurred. Use the traceId to investigate";  
         }

@@ -19,9 +19,6 @@ namespace Kliniq.Application.Features.Auth.Commands.SetPractitionerPassword
             RuleFor(x => x.ConfirmPassword)
                 .NotEmpty().WithMessage("Confirm password is required.")
                 .Equal(x => x.Password).WithMessage("Confirm password must match the password.");
-
-            RuleFor(x => x.ClinicId)
-                .NotEmpty().WithMessage("Clinic ID is required.");
         }
     }
 }

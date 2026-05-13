@@ -611,7 +611,7 @@ namespace Kliniq.Infrastructure.Migrations
 
                             b1.HasKey("AccountRequestId");
 
-                            b1.ToTable("AccountRequests");
+                            b1.ToTable("AccountRequests", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("AccountRequestId");
@@ -636,7 +636,7 @@ namespace Kliniq.Infrastructure.Migrations
 
                             b1.HasKey("AccountRequestId");
 
-                            b1.ToTable("AccountRequests");
+                            b1.ToTable("AccountRequests", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("AccountRequestId");
@@ -666,7 +666,7 @@ namespace Kliniq.Infrastructure.Migrations
 
                             b1.HasKey("ClinicId");
 
-                            b1.ToTable("Clinics");
+                            b1.ToTable("Clinics", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("ClinicId");
@@ -714,7 +714,7 @@ namespace Kliniq.Infrastructure.Migrations
 
                             b1.HasKey("PatientId");
 
-                            b1.ToTable("Patients");
+                            b1.ToTable("Patients", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("PatientId");
@@ -739,7 +739,7 @@ namespace Kliniq.Infrastructure.Migrations
 
                             b1.HasKey("PatientId");
 
-                            b1.ToTable("Patients");
+                            b1.ToTable("Patients", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("PatientId");
@@ -779,7 +779,7 @@ namespace Kliniq.Infrastructure.Migrations
 
                             b1.HasKey("PractitionerId");
 
-                            b1.ToTable("Practitioners");
+                            b1.ToTable("Practitioners", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("PractitionerId");

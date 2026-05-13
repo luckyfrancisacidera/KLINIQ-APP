@@ -21,6 +21,10 @@ namespace Kliniq.Api.Controllers
 
         [HttpPost("submit")]
         [Consumes("multipart/form-data")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]    
         public async Task<IActionResult> Submit([FromForm] SubmitAccountRequestRequest request, CancellationToken cancellationToken)
         {
             var command = new SubmitAccountRequestCommand
@@ -39,11 +43,16 @@ namespace Kliniq.Api.Controllers
             };
 
             var result = await _mediator.Send(command, cancellationToken);
-            return Ok(result);
+            return CreatedAtAction(null, result);   
         }
 
         [HttpPost("{id}/approve")]
         //[Authorize(Roles ="Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Approve(Guid id, [FromBody]ApproveAccountRequestRequest request, CancellationToken cancellationToken)
         {
             var command = new ApproveAccountRequestCommand
@@ -58,6 +67,11 @@ namespace Kliniq.Api.Controllers
 
         [HttpPost("{id}/reject")]
         //[Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Rejec(Guid id, [FromBody] RejectAccountRequestRequest request, CancellationToken cancellationToken)
         {
             var command = new RejectAccountRequestCommand
