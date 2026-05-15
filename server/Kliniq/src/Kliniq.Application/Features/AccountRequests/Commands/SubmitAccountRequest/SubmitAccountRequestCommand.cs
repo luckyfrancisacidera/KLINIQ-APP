@@ -1,10 +1,11 @@
 ﻿using Kliniq.Application.Common.Models;
 using Kliniq.Application.Features.AccountRequests.DTOs;
+using Kliniq.Domain.Common;
 using MediatR;
 
 namespace Kliniq.Application.Features.AccountRequests.Commands.SubmitAccountRequest
 {
-    public class SubmitAccountRequestCommand : IRequest<AccountRequestDto>
+    public class SubmitAccountRequestCommand : IRequest<Result<AccountRequestDto>>
     {
         //personal-info
         public string FirstName { get; set; } = string.Empty;

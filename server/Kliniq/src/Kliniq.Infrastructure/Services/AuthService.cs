@@ -1,16 +1,21 @@
 ﻿using Kliniq.Application.Common.Interfaces;
 using Kliniq.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
+using System.Runtime.InteropServices;
 
 namespace Kliniq.Infrastructure.Services
 {
     public class AuthService : IAuthService
     {
         private readonly UserManager<AppUser> _userManager;
+        private readonly IJwtTokenService _jwtTokenService;
 
-        public AuthService(UserManager<AppUser> userManager)
+        private static readonly TimeSpan RefreshTokenLifetime = TimeSpan.FromDays(7);
+
+        public AuthService(UserManager<AppUser> userManager, IJwtTokenService jwtTokenService)
         {
             _userManager = userManager;
+            _jwtTokenService = jwtTokenService;
         }
 
         public async Task<AuthServiceResult> RegisterAsync(
@@ -57,13 +62,60 @@ namespace Kliniq.Infrastructure.Services
                 throw new UnauthorizedAccessException("Invalid email or password");
 
             var roles = await _userManager.GetRolesAsync(user);
+            var role = roles.FirstOrDefault() ?? string.Empty;
 
             return new AuthServiceResult
             {
                 UserId = user.Id,       
                 Email = user.Email!,
-                Role = roles.FirstOrDefault() ?? string.Empty
+                Role = role
             };
+        }
+
+        public async Task<AuthServiceResult> RefreshTokenAsync(string refreshToken, CancellationToken cancellationToken)
+        {
+            var tokenHash =  _jwtTokenService.HashRefreshToken(refreshToken);
+
+            var user = _userManager.Users.FirstOrDefault(u => u.RefreshTokenHash == tokenHash);
+
+            if (user is null)
+                throw new UnauthorizedAccessException("Invalid refresh token");
+
+            if(user.RefreshTokenExpiresAtUtc is null || user.RefreshTokenExpiresAtUtc < DateTime.UtcNow)
+                throw new UnauthorizedAccessException("Refresh token has expired. Please log in again");
+
+            var roles = await _userManager.GetRolesAsync(user);
+            var role = roles.FirstOrDefault() ?? string.Empty;
+
+            return new AuthServiceResult
+            {
+                UserId = user.Id,
+                Email = user.Email!,
+                Role = role
+            };
+        }
+
+        public async Task RevokeRefreshTokenAsync(string userId, CancellationToken cancellationToken)
+        {
+            var user = await _userManager.FindByIdAsync(userId)
+                ?? throw new InvalidOperationException("User not found");
+
+            user.RefreshTokenHash = null;
+            user.RefreshTokenExpiresAtUtc = null;
+
+            await _userManager.UpdateAsync(user);
+        }
+
+
+        public async Task SaveRefreshTokenAsync(string userId, string refreshTokenHash, CancellationToken cancellationToken)
+        {
+            var user = await _userManager.FindByIdAsync(userId)
+                ?? throw new InvalidOperationException("User not found");
+
+            user.RefreshTokenHash = refreshTokenHash;
+            user.RefreshTokenExpiresAtUtc = DateTime.UtcNow.Add(RefreshTokenLifetime);
+
+            await _userManager.UpdateAsync(user);
         }
     }
 }

@@ -2,13 +2,14 @@
 using Kliniq.Application.Common.Interfaces.Repositories;
 using Kliniq.Application.Features.AccountRequests.DTOs;
 using Kliniq.Application.Features.AccountRequests.Mappings;
+using Kliniq.Domain.Common;
 using Kliniq.Domain.Entities;
 using Kliniq.Domain.ValueObjects;
 using MediatR;
 
 namespace Kliniq.Application.Features.AccountRequests.Commands.SubmitAccountRequest
 {
-    public class SubmitAccountRequestCommandHandler : IRequestHandler<SubmitAccountRequestCommand, AccountRequestDto>
+    public class SubmitAccountRequestCommandHandler : IRequestHandler<SubmitAccountRequestCommand, Result<AccountRequestDto>>
     {
         private readonly IAccountRequestRepository _repository;
         private readonly IFileStorageService _fileStorage;
@@ -21,11 +22,13 @@ namespace Kliniq.Application.Features.AccountRequests.Commands.SubmitAccountRequ
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<AccountRequestDto> Handle(SubmitAccountRequestCommand request, CancellationToken cancellationToken)
+        public async Task<Result<AccountRequestDto>> Handle(SubmitAccountRequestCommand request, CancellationToken cancellationToken)
         {
             var exists = await _repository.ExistsPendingEmailAsync(request.Email, cancellationToken);
 
-            if(exists) throw new InvalidOperationException("A pending account request with the same email already exists.");
+            if(exists)
+                return Result.Failure<AccountRequestDto>             
+                    (Error.Conflict("AccountRequest.EmailExists", "An account request with this email already exists and is pending review"));
 
             //upload documents 
             var prcIdPath = await _fileStorage.UploadAsync(
@@ -69,7 +72,7 @@ namespace Kliniq.Application.Features.AccountRequests.Commands.SubmitAccountRequ
             await _repository.AddAsync(accountRequest, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return accountRequest.ToDto();
+            return Result.Success(accountRequest.ToDto());
         }
     }
 }
