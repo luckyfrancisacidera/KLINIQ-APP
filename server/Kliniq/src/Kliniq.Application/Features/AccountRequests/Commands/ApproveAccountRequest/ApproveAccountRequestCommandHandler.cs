@@ -1,12 +1,13 @@
 ﻿using Kliniq.Application.Common.Interfaces;
 using Kliniq.Application.Common.Interfaces.Repositories;
 using Kliniq.Application.Common.Settings;
+using Kliniq.Domain.Common;
 using MediatR;
 using Microsoft.Extensions.Options;
 
 namespace Kliniq.Application.Features.AccountRequests.Commands.ApproveAccountRequest
 {
-    public class ApproveAccountRequestCommandHandler : IRequestHandler<ApproveAccountRequestCommand, bool>
+    public class ApproveAccountRequestCommandHandler : IRequestHandler<ApproveAccountRequestCommand, Result>
     {
         private readonly IAccountRequestRepository _repository;
         private readonly IEmailService _emailService;
@@ -21,12 +22,12 @@ namespace Kliniq.Application.Features.AccountRequests.Commands.ApproveAccountReq
             _appSettings = appSettings.Value;
         }
 
-        public async Task<bool> Handle(ApproveAccountRequestCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(ApproveAccountRequestCommand request, CancellationToken cancellationToken)
         {
             var accountRequest = await _repository.GetByIdAsync(request.AccountRequestId, cancellationToken);
 
             if (accountRequest is null)
-                throw new InvalidOperationException("Account request not found.");
+                return Result.Failure(Error.NotFound("AccountRequest.NotFound", "Account request not found"));
 
             accountRequest.Approve(request.AdminNote);
 
@@ -60,7 +61,7 @@ namespace Kliniq.Application.Features.AccountRequests.Commands.ApproveAccountReq
 
             await _emailService.SendEmailAsync(accountRequest.Email, subject, body, cancellationToken);
 
-            return true;
+            return Result.Success();
 
         }
 

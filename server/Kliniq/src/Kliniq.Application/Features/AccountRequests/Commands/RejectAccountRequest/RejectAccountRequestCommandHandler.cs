@@ -1,10 +1,11 @@
 ﻿using Kliniq.Application.Common.Interfaces;
 using Kliniq.Application.Common.Interfaces.Repositories;
+using Kliniq.Domain.Common;
 using MediatR;
 
 namespace Kliniq.Application.Features.AccountRequests.Commands.RejectAccountRequest
 {
-    public class RejectAccountRequestCommandHandler : IRequestHandler<RejectAccountRequestCommand, bool>
+    public class RejectAccountRequestCommandHandler : IRequestHandler<RejectAccountRequestCommand, Result>
     {
         private readonly IAccountRequestRepository _repository;
         private readonly IEmailService _emailService;
@@ -17,12 +18,12 @@ namespace Kliniq.Application.Features.AccountRequests.Commands.RejectAccountRequ
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<bool> Handle(RejectAccountRequestCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(RejectAccountRequestCommand request, CancellationToken cancellationToken)
         {
             var accountRequest = await _repository.GetByIdAsync(request.AccountRequestId, cancellationToken);
 
             if(accountRequest is null )
-                throw new InvalidOperationException("Account request nof found.");
+                return Result.Failure(Error.NotFound("AccountRequest.NotFound", "Account request not found"));
 
             accountRequest.Reject(request.AdminNote);
 
@@ -36,7 +37,7 @@ namespace Kliniq.Application.Features.AccountRequests.Commands.RejectAccountRequ
 
             await _emailService.SendEmailAsync(accountRequest.Email, subject, body, cancellationToken);
 
-            return true;
+            return Result.Success();
         }
     }
 }
