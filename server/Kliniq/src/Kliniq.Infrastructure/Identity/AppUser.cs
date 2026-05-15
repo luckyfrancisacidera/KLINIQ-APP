@@ -8,5 +8,8 @@ namespace Kliniq.Infrastructure.Identity
         public UserRole Role { get; set; }
         public Guid? PatientId { get; set; }
         public Guid? PractitionerId { get; set; }
+
+        public string? RefreshTokenHash { get; set; }
+        public DateTime? RefreshTokenExpiresAtUtc { get; set; }
     }
 }

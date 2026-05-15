@@ -1,13 +1,14 @@
 ﻿using Kliniq.Application.Common.Interfaces;
 using Kliniq.Application.Common.Interfaces.Repositories;
 using Kliniq.Application.Features.Auth.Dto;
+using Kliniq.Domain.Common;
 using Kliniq.Domain.Entities;
 using Kliniq.Domain.ValueObjects;
 using MediatR;
 
 namespace Kliniq.Application.Features.Auth.Commands.Register
 {
-    public class RegisterCommandHandler : IRequestHandler<RegisterCommand, AuthResponseDto>
+    public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<AuthResponseDto>>
     {
         private readonly IAuthService _authService;
         private readonly IJwtTokenService _jwtTokenService;
@@ -26,9 +27,9 @@ namespace Kliniq.Application.Features.Auth.Commands.Register
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<AuthResponseDto> Handle(RegisterCommand request, CancellationToken cancellationToken)
+        public async Task<Result<AuthResponseDto>> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
-            var result = await _authService.RegisterAsync(
+            var authResult = await _authService.RegisterAsync(
                 request.Email,
                 request.Password,
                 "Patient",
@@ -36,7 +37,7 @@ namespace Kliniq.Application.Features.Auth.Commands.Register
 
             var patient = new Patient
             (
-                Guid.Parse(result.UserId),
+                Guid.Parse(authResult.UserId),
                 new FullName(request.FirstName, request.LastName),
                 request.DateOfBirth,
                 request.Gender,
@@ -48,15 +49,23 @@ namespace Kliniq.Application.Features.Auth.Commands.Register
             await _patientRepository.AddAsync(patient, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            var token = _jwtTokenService.GenerateToken(result.Email, result.UserId, "Patient");
+            var accessToken = _jwtTokenService.GenerateAccessToken(authResult.Email, authResult.UserId, "Patient");
 
-            return new AuthResponseDto
+            var refreshToken = _jwtTokenService.GenerateRefreshToken();
+
+            var refreshTokenHash = _jwtTokenService.HashRefreshToken(refreshToken);
+
+            await _authService.SaveRefreshTokenAsync(authResult.UserId, refreshTokenHash, cancellationToken);
+
+            return Result.Success( new AuthResponseDto
             {
-                Token = token,
-                UserId = result.UserId,
-                Email = result.Email    ,
+                AccessToken = accessToken,
+                RefreshToken = refreshToken,
+                AccessTokenExpiresAtUtc = _jwtTokenService.GetAccessTokenExpiry(),
+                UserId = authResult.UserId,
+                Email = authResult.Email    ,
                 Role = "Patient"
-            };
+            });
         }
     }
 }

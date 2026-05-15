@@ -2,6 +2,11 @@
 {
     public interface IJwtTokenService
     {
-        string GenerateToken(string userId, string email, string role);
+        string GenerateAccessToken(string userId, string email, string role);
+        DateTime GetAccessTokenExpiry();
+        
+        string GenerateRefreshToken();
+
+        string HashRefreshToken(string refreshToken);
     }
 }

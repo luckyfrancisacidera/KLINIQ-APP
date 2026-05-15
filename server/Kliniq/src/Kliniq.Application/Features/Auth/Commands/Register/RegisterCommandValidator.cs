@@ -50,6 +50,7 @@ namespace Kliniq.Application.Features.Auth.Commands.Register
                 .MaximumLength(100).WithMessage("Country cannot exceed 100 characters.");
 
             RuleFor(x => x.PhoneNumber)
+                .NotEmpty().WithMessage("Phone number is required.")
                 .MaximumLength(20).WithMessage("Phone number cannot exceed 20 characters.")
                 .Matches(@"^\+?[1-9]\d{1,14}$").WithMessage("Invalid phone number format.")
                 .When(x => !string.IsNullOrEmpty(x.PhoneNumber));

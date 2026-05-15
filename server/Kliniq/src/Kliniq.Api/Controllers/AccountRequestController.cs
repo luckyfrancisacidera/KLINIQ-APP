@@ -25,24 +25,13 @@ namespace Kliniq.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]    
-        public async Task<IActionResult> Submit([FromForm] SubmitAccountRequestRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Submit([FromForm] SubmitAccountRequestCommand command, CancellationToken cancellationToken)
         {
-            var command = new SubmitAccountRequestCommand
-            {
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                Email = request.Email,
-                Specialization = request.Specialization,
-                Street = request.Street,
-                City = request.City,
-                Country = request.Country,
-                PrcId = ToFileUpload(request.PrcId),
-                BoardCertificate = ToFileUpload(request.BoardCertificate),
-                MedicalDiploma = ToFileUpload(request.MedicalDiploma),
-                CertificateOfGoodStanding = ToFileUpload(request.CertificateOfGoodStanding)
-            };
-
             var result = await _mediator.Send(command, cancellationToken);
+
+            if (result.IsFailure)
+                return result.ToActionResult();
+
             return CreatedAtAction(null, result);   
         }
 

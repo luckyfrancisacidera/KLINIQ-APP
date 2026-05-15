@@ -1,10 +1,11 @@
 ﻿using Kliniq.Application.Features.Auth.Dto;
+using Kliniq.Domain.Common;
 using Kliniq.Domain.Enums;
 using MediatR;
 
 namespace Kliniq.Application.Features.Auth.Commands.Register
 {
-    public class RegisterCommand : IRequest<AuthResponseDto>
+    public class RegisterCommand : IRequest<Result<AuthResponseDto>>
     {
         //account
         public string Email { get; set; } = string.Empty;
@@ -19,7 +20,7 @@ namespace Kliniq.Application.Features.Auth.Commands.Register
         public string Street { get; set; } = string.Empty;
         public string City { get; set; } = string.Empty;
         public string Country { get; set; } = string.Empty;
-        public string? PhoneNumber { get; set; } = string.Empty;
-        public string EmergencyContact { get; set; } = string.Empty;
+        public string PhoneNumber { get; set; } = string.Empty;
+        public string? EmergencyContact { get; set; } = string.Empty;
     }
 }
