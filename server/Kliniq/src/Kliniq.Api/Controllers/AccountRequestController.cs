@@ -28,10 +28,6 @@ namespace Kliniq.Api.Controllers
         public async Task<IActionResult> Submit([FromForm] SubmitAccountRequestCommand command, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(command, cancellationToken);
-
-            if (result.IsFailure)
-                return result.ToActionResult();
-
             return CreatedAtAction(null, result);   
         }
 
