@@ -4,7 +4,6 @@ using Kliniq.Application.Features.AccountRequests.Commands.ApproveAccountRequest
 using Kliniq.Application.Features.AccountRequests.Commands.RejectAccountRequest;
 using Kliniq.Application.Features.AccountRequests.Commands.SubmitAccountRequest;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kliniq.Api.Controllers
@@ -68,15 +67,6 @@ namespace Kliniq.Api.Controllers
             await _mediator.Send(command,cancellationToken);
             return Ok(new { message = "Account request rejected and notification email sent" });
         }
-
-
-        private static FileUpload ToFileUpload(IFormFile file) => new()
-        {
-            Content = file.OpenReadStream(),
-            FileName = file.FileName,
-            ContentType = file.ContentType,
-            Size = file.Length
-        };
     }
 
 }
