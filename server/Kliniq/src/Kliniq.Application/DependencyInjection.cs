@@ -19,9 +19,6 @@ namespace Kliniq.Application
             });
 
             services.AddValidatorsFromAssembly(assembly);
-
-
-
             return services;
         }
     }

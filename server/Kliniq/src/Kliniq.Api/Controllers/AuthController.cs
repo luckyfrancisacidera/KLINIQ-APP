@@ -7,7 +7,7 @@ using Kliniq.Application.Features.Auth.Commands.SetPractitionerPassword;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace Kliniq.Api.Controllers
 {
@@ -48,7 +48,7 @@ namespace Kliniq.Api.Controllers
         [Authorize]
         public async Task<IActionResult> Logout(CancellationToken cancellationToken)
         {
-            var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (userId is null)
                 return Unauthorized();
