@@ -4,7 +4,7 @@
     {
         Task<string> UploadAsync(
             Stream fileStream,
-            string fileName,
+            string originalFileName,
             string folder,
             CancellationToken cancellationToken
             );

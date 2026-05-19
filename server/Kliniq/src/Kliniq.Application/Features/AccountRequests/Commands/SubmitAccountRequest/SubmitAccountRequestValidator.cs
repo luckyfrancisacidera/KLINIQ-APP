@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Kliniq.Application.Common.Models;
+using Kliniq.Application.Common.Validation;
 
 namespace Kliniq.Application.Features.AccountRequests.Commands.SubmitAccountRequest
 {
@@ -48,28 +49,16 @@ namespace Kliniq.Application.Features.AccountRequests.Commands.SubmitAccountRequ
                 .MaximumLength(100).WithMessage("Country must not exceed 100 characters");
 
             RuleFor(x => x.PrcId)
-                .NotNull().WithMessage("PRC ID is required")
-                .Must(BeValidFile).WithMessage("PRC ID file must be in PDF/JPG/PNG and max 5MB size only");
+                .ApplyFileUploadRules("PRC ID");
 
             RuleFor(x => x.BoardCertificate)
-                .NotNull().WithMessage("Board Certificate is required")
-                .Must(BeValidFile).WithMessage("Board Certificate file must be in PDF/JPG/PNG and max 5MB size only");
+                .ApplyFileUploadRules("Board Certificate");
 
             RuleFor(x => x.MedicalDiploma)
-                .NotNull().WithMessage("Medical Diploma is required")
-                .Must(BeValidFile).WithMessage("Medical Diploma file must be in PDF/JPG/PNG and max 5MB size only");
+                .ApplyFileUploadRules("Medical Diploma");
 
             RuleFor(x => x.CertificateOfGoodStanding)
-                .NotNull().WithMessage("Certificate of Good Standing is required")
-                .Must(BeValidFile).WithMessage("Certificate of Good Standing file must be in PDF/JPG/PNG and max 5MB size only");
-        }
-
-        private bool BeValidFile(FileUpload? file)
-        {
-            if(file is null) return false;
-            if(file.Size > MaxFileSizedBytes) return false;
-            return _allowedContentTypes.Contains(file.ContentType);
-
+                .ApplyFileUploadRules("Certificate of Good Standing");
         }
     }
 }

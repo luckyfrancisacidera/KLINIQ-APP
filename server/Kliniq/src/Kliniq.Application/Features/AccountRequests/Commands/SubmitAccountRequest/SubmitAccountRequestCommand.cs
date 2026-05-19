@@ -20,9 +20,9 @@ namespace Kliniq.Application.Features.AccountRequests.Commands.SubmitAccountRequ
         public string Country { get; set; } = string.Empty;
 
         //document uploads
-        public FileUpload PrcId { get; set; } = null!;
-        public FileUpload BoardCertificate { get; set; } = null!;
-        public FileUpload MedicalDiploma { get; set; } = null!;
-        public FileUpload CertificateOfGoodStanding { get; set; } = null!;
+        public FileUpload? PrcId { get; set; } = null!;
+        public FileUpload? BoardCertificate { get; set; } = null!;
+        public FileUpload? MedicalDiploma { get; set; } = null!;
+        public FileUpload? CertificateOfGoodStanding { get; set; } = null!;
     }
 }

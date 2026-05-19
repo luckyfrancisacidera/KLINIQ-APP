@@ -1,12 +1,13 @@
 ﻿using Kliniq.Api.Extensions;
-using Kliniq.Api.Models.Requests;
 using Kliniq.Application.Features.Auth.Commands.Login;
+using Kliniq.Application.Features.Auth.Commands.RefreshToken;
 using Kliniq.Application.Features.Auth.Commands.Register;
+using Kliniq.Application.Features.Auth.Commands.RevokeToken;
 using Kliniq.Application.Features.Auth.Commands.SetPractitionerPassword;
-using Kliniq.Application.Features.Auth.DTOs;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Kliniq.Api.Controllers
 {
@@ -37,9 +38,9 @@ namespace Kliniq.Api.Controllers
         }
 
         [HttpPost("refresh-token")]
-        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenCommand, CancellationToken cancellationToken)
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenCommand command, CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(RefreshTokenCommand, cancellationToken);
+            var result = await _mediator.Send(command, cancellationToken);
             return result.ToActionResult();
         }
 
@@ -47,12 +48,12 @@ namespace Kliniq.Api.Controllers
         [Authorize]
         public async Task<IActionResult> Logout(CancellationToken cancellationToken)
         {
-            var userId = User.FindFirst("sub")?.Value;
+            var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
 
-            if(userId is null)
+            if (userId is null)
                 return Unauthorized();
 
-            var result  = await _mediator.Send(new RevokeRefreshTokenCommand { UserId = userId }, cancellationToken);
+            var result  = await _mediator.Send(new RevokeTokenCommand { UserId = userId }, cancellationToken);
             return result.ToActionResult();
         }
 
