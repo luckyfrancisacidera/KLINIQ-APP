@@ -64,6 +64,15 @@ try
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"]!))
         };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                Console.WriteLine(context.Exception);
+                return Task.CompletedTask;
+            }
+        };
     });
 
     builder.Services.AddAuthorization();
