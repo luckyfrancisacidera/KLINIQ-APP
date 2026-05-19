@@ -37,7 +37,7 @@ namespace Kliniq.Infrastructure.Persistence.Configurations
                 .IsRequired();
 
             builder.Property(p => p.ClinicID)
-                .IsRequired();
+                .IsRequired(false);
 
             builder.HasOne(p => p.Clinic)
                 .WithMany(c => c.Practioners)
@@ -51,7 +51,6 @@ namespace Kliniq.Infrastructure.Persistence.Configurations
             builder.Property(p => p.UpdatedAtUtc);
             builder.Property(p => p.CreatedBy).HasMaxLength(100);
             builder.Property(p => p.UpdatedBy).HasMaxLength(100);
-
 
             builder.Ignore(p => p.Schedules);
             builder.Ignore(p => p.Appointments);

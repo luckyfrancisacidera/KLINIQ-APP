@@ -95,7 +95,7 @@ namespace Kliniq.Infrastructure.Services
             };
         }
 
-        public async Task RevokeRefreshTokenAsync(string userId, CancellationToken cancellationToken)
+        public async Task RevokeTokenAsync(string userId, CancellationToken cancellationToken)
         {
             var user = await _userManager.FindByIdAsync(userId)
                 ?? throw new InvalidOperationException("User not found");

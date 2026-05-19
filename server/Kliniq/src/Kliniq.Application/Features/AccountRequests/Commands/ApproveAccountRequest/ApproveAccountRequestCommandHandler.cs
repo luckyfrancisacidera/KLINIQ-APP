@@ -38,15 +38,15 @@ namespace Kliniq.Application.Features.AccountRequests.Commands.ApproveAccountReq
             var subject = "You're invited to join Kliniq";
             var body = $"""
                 <h2>Welcome to Kliniq Dr.{accountRequest.Name.FirstName} {accountRequest.Name.LastName}"</h2>
-                <p>Your account request has been appproved</p>
+                <p>Your account request has been approved</p>
                 <p>Click the link below to complete your registration
                    You only need to set your password.</p>
                 
                 <br/>
 
                 <a href="{inviteLink}"
-                   style="background:##0066cc;color:white;padding:12px 24px;    
-                          border-radius:6px;text-decoration-none;">
+                   style="background:#0066cc;color:white;padding:12px 24px;    
+                          border-radius:6px;text-decoration:none;">
                 Complete your registration
                 </a>
 

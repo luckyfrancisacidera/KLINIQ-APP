@@ -30,30 +30,25 @@ namespace Kliniq.Application.Features.AccountRequests.Commands.SubmitAccountRequ
                 return Result.Failure<AccountRequestDto>             
                     (Error.Conflict("AccountRequest.EmailExists", "An account request with this email already exists and is pending review"));
 
+            string prcIdPath, boardCertPath, diplomaPath, cogsCertPath;
+
             //upload documents 
-            var prcIdPath = await _fileStorage.UploadAsync(
-                request.PrcId.Content,
-                request.PrcId.FileName,
-                "account-requests/prc-ids",
-                cancellationToken);
+            try
+            {
+                var results = await Task.WhenAll(
+                    _fileStorage.UploadAsync(request.PrcId!.Content, request.PrcId.FileName, "account-requests/prc-ids", cancellationToken),
+                    _fileStorage.UploadAsync(request.BoardCertificate!.Content, request.BoardCertificate.FileName, "account-requests/board-certificates", cancellationToken),
+                    _fileStorage.UploadAsync(request.MedicalDiploma!.Content, request.MedicalDiploma.FileName, "account-requests/medical-diplomas", cancellationToken),
+                    _fileStorage.UploadAsync(request.CertificateOfGoodStanding!.Content, request.CertificateOfGoodStanding.FileName, "account-requests/good-standing-certs", cancellationToken)
+                );
 
-            var boardCertPath = await _fileStorage.UploadAsync(
-                request.BoardCertificate.Content,
-                request.BoardCertificate.FileName,
-                "account-requests/board-certificates",
-                cancellationToken);
-
-            var diplomaPath = await _fileStorage.UploadAsync(
-                request.MedicalDiploma.Content,
-                request.MedicalDiploma.FileName,
-                "account-requests/medical-diplomas",
-                cancellationToken);
-
-            var cogsCertPath = await _fileStorage.UploadAsync(
-                request.CertificateOfGoodStanding.Content,
-                request.CertificateOfGoodStanding.FileName,
-                "account-requests/good-standing-certs",
-                cancellationToken);
+                (prcIdPath, boardCertPath, diplomaPath, cogsCertPath) = (results[0], results[1], results[2], results[3]);
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure<AccountRequestDto>(
+                    Error.Failure("AccountRequest.UploadFailed", $"Document upload failed: {ex.Message}"));
+            }
 
             var name = new FullName(request.FirstName, request.LastName);
             var address = new Address(request.Street, request.City, request.Country);

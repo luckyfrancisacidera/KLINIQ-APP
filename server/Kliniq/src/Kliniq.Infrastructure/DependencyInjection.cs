@@ -3,6 +3,7 @@ using Kliniq.Application.Common.Interfaces.Repositories;
 using Kliniq.Infrastructure.Identity;
 using Kliniq.Infrastructure.Persistence;
 using Kliniq.Infrastructure.Persistence.Repositories;
+using Kliniq.Infrastructure.Persistence.Seeders;
 using Kliniq.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -51,6 +52,11 @@ namespace Kliniq.Infrastructure
 
             //services.AddScoped<IAppointmentRepository, AppointmentRepository>();
             services.AddScoped<IJwtTokenService, JwtTokenService>();
+
+            //Seeder
+            services.Configure<SeedSettings>(configuration.GetSection("SeedSettings"));
+            services.AddScoped<IdentitySeeder>();
+
             return services;
         }
     }

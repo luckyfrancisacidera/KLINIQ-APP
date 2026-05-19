@@ -17,7 +17,7 @@
             string refreshToken,
             CancellationToken cancellationToken);
 
-        Task RevokeRefreshTokenAsync(
+        Task RevokeTokenAsync(
             string userId,
             CancellationToken cancellationToken);
 

@@ -1,4 +1,6 @@
+using Kliniq.Api.Binders;
 using Kliniq.Api.Extensions;
+using Kliniq.Api.OpenApi;
 using Kliniq.Application;
 using Kliniq.Application.Common.Settings;
 using Kliniq.Infrastructure;
@@ -6,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using Serilog;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
 Log.Logger = new LoggerConfiguration()
@@ -18,19 +21,32 @@ try
 
     var builder = WebApplication.CreateBuilder(args);
 
-    //Serilog
+    // Prevents JWT middleware from remapping "sub" → ClaimTypes.NameIdentifier
+    JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+    // OpenAPI
+    builder.Services.AddOpenApi(options =>
+    {
+        options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
+    });
+
+    // Controllers + model binder — ONE call only
+    builder.Services.AddControllers(options =>
+    {
+        options.ModelBinderProviders.Insert(0, new FormWithFilesModelBinderProvider());
+    });
+
+    // Serilog
     builder.Host.UseSerilog((context, services, config) =>
         config.ReadFrom.Configuration(context.Configuration)
-            .ReadFrom.Services(services)
-            .Enrich.FromLogContext());
+              .ReadFrom.Services(services)
+              .Enrich.FromLogContext());
 
     // Layers
     builder.Services.AddApplication();
     builder.Services.AddInfrastructure(builder.Configuration);
-    builder.Services.AddControllers();
-    builder.Services.AddOpenApi();
 
-    //JWT
+    // JWT
     builder.Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -45,14 +61,15 @@ try
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
             ValidAudience = builder.Configuration["JwtSettings:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"]!))
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"]!))
         };
     });
 
     builder.Services.AddAuthorization();
     builder.Services.AddEndpointsApiExplorer();
 
-    //Exception
+    // Exception handling
     builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
     builder.Services.AddProblemDetails();
 
@@ -61,21 +78,39 @@ try
 
     var app = builder.Build();
 
-    // Configure the HTTP request pipeline.
+    using (var scope = app.Services.CreateScope())
+    {
+        var seeder = scope.ServiceProvider.GetRequiredService<IdentitySeeder>();
+        await seeder.SeedAsync();
+    }
+
     if (app.Environment.IsDevelopment())
     {
         app.MapOpenApi();
-        app.MapScalarApiReference();
+        app.MapScalarApiReference(options =>
+        {
+            options.Title = "Kliniq API";
+            options.DarkMode = true;
+            options.DefaultHttpClient = new(ScalarTarget.CSharp, ScalarClient.HttpClient);
+            options.HideModels = false;
+            options.Layout = ScalarLayout.Modern;
+            options.ShowSidebar = true;
+
+            options.AddPreferredSecuritySchemes("Bearer")
+                   .AddHttpAuthentication("Bearer", auth =>
+                   {
+                       auth.Token = "";
+                   });
+        });
     }
 
     if (!app.Environment.IsDevelopment())
-    {
         app.UseHttpsRedirection();
-    }
 
     app.UseSerilogRequestLogging(options =>
     {
-        options.MessageTemplate = "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms";
+        options.MessageTemplate =
+            "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms";
 
         options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
         {
@@ -100,9 +135,8 @@ try
     app.MapControllers();
 
     app.Run();
-
 }
-catch(Exception ex) when (ex is not HostAbortedException)
+catch (Exception ex) when (ex is not HostAbortedException)
 {
     Log.Fatal(ex, "Kliniq API failed to start.");
 }
@@ -110,4 +144,3 @@ finally
 {
     Log.CloseAndFlush();
 }
-
