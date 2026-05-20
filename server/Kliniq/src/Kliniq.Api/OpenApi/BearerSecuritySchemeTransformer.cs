@@ -12,6 +12,8 @@ namespace Kliniq.Api.OpenApi
 
             if (authenticationSchemes.Any(authScheme => authScheme.Name == "Bearer"))
             {
+                document.Components ??= new OpenApiComponents();
+
                 var bearerScheme = new OpenApiSecurityScheme
                 {
                     Type = SecuritySchemeType.Http,
@@ -21,19 +23,33 @@ namespace Kliniq.Api.OpenApi
                     Description = "JWT Authorization header using the Bearer scheme."
                 };
 
-                document.Components ??= new OpenApiComponents();
-
                 document.AddComponent("Bearer", bearerScheme);
 
-                var securityRequirement = new OpenApiSecurityRequirement
+                var cookieScheme = new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.ApiKey,
+                    In = ParameterLocation.Header,
+                    Name = "accessToke",
+                    Description = "HTTPOnly JWT cookie — set automatically after login/register."
+                };
+
+                document.AddComponent("CookieAuth", cookieScheme);
+
+                var bearerRequirement = new OpenApiSecurityRequirement
                 {
                     [new OpenApiSecuritySchemeReference("Bearer", document)] = []
+                };
+                
+                var cookieRequirement = new OpenApiSecurityRequirement
+                {
+                    [new OpenApiSecuritySchemeReference("CookieAuth", document)] = []
                 };
 
                 foreach (var operation in document.Paths.Values.SelectMany(p => p.Operations!))
                 {
                     operation.Value.Security ??= new List<OpenApiSecurityRequirement>();
-                    operation.Value.Security.Add(securityRequirement); 
+                    operation.Value.Security.Add(bearerRequirement); 
+                    operation.Value.Security.Add(cookieRequirement);
                 }
             }
         }

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using Serilog;
+using System.Buffers.Text;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
@@ -47,6 +48,7 @@ try
     builder.Services.AddInfrastructure(builder.Configuration);
 
     // JWT
+    builder.Services.AddAntiforgery();
     builder.Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -67,6 +69,14 @@ try
 
         options.Events = new JwtBearerEvents
         {
+            OnMessageReceived = context =>
+            {
+                var token = context.Request.Cookies["accessToken"];
+                if (!string.IsNullOrEmpty(token))
+                    context.Token = token;
+                return Task.CompletedTask;
+            },
+
             OnAuthenticationFailed = context =>
             {
                 Console.WriteLine(context.Exception);
@@ -82,10 +92,23 @@ try
     builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
     builder.Services.AddProblemDetails();
 
+    //Settings
     builder.Services.Configure<AppSettings>(
         builder.Configuration.GetSection("App"));
 
     var app = builder.Build();
+
+    app.Lifetime.ApplicationStarted.Register(() =>
+    {
+        foreach (var url in app.Urls)
+        {
+            Log.Information("Kliniq API running on {Url}", url);
+        }
+
+        Log.Information(
+            "Kliniq API Scalar Docs running on {Url}",
+            $"{app.Urls.First()}/scalar/v1");
+    });
 
     using (var scope = app.Services.CreateScope())
     {

@@ -1,11 +1,12 @@
 ﻿using Kliniq.Application.Features.Auth.Dto;
+using Kliniq.Application.Features.Auth.DTOs;
 using Kliniq.Domain.Common;
 using Kliniq.Domain.Enums;
 using MediatR;
 
 namespace Kliniq.Application.Features.Auth.Commands.Register
 {
-    public class RegisterCommand : IRequest<Result<AuthResponseDto>>
+    public class RegisterCommand : IRequest<Result<AuthTokensInternal>>
     {
         //account
         public string Email { get; set; } = string.Empty;

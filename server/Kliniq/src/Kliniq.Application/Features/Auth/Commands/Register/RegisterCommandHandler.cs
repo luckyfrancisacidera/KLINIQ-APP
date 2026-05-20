@@ -1,6 +1,7 @@
 ﻿using Kliniq.Application.Common.Interfaces;
 using Kliniq.Application.Common.Interfaces.Repositories;
 using Kliniq.Application.Features.Auth.Dto;
+using Kliniq.Application.Features.Auth.DTOs;
 using Kliniq.Domain.Common;
 using Kliniq.Domain.Entities;
 using Kliniq.Domain.ValueObjects;
@@ -8,7 +9,7 @@ using MediatR;
 
 namespace Kliniq.Application.Features.Auth.Commands.Register
 {
-    public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<AuthResponseDto>>
+    public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<AuthTokensInternal>>
     {
         private readonly IAuthService _authService;
         private readonly IJwtTokenService _jwtTokenService;
@@ -27,7 +28,7 @@ namespace Kliniq.Application.Features.Auth.Commands.Register
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Result<AuthResponseDto>> Handle(RegisterCommand request, CancellationToken cancellationToken)
+        public async Task<Result<AuthTokensInternal>> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
             var authResult = await _authService.RegisterAsync(
                 request.Email,
@@ -49,7 +50,7 @@ namespace Kliniq.Application.Features.Auth.Commands.Register
             await _patientRepository.AddAsync(patient, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            var accessToken = _jwtTokenService.GenerateAccessToken(authResult.Email, authResult.UserId, "Patient");
+            var accessToken = _jwtTokenService.GenerateAccessToken(authResult.UserId, authResult.Email, "Patient");
 
             var refreshToken = _jwtTokenService.GenerateRefreshToken();
 
@@ -57,14 +58,17 @@ namespace Kliniq.Application.Features.Auth.Commands.Register
 
             await _authService.SaveRefreshTokenAsync(authResult.UserId, refreshTokenHash, cancellationToken);
 
-            return Result.Success( new AuthResponseDto
+            return Result.Success( new AuthTokensInternal
             {
                 AccessToken = accessToken,
                 RefreshToken = refreshToken,
-                AccessTokenExpiresAtUtc = _jwtTokenService.GetAccessTokenExpiry(),
-                UserId = authResult.UserId,
-                Email = authResult.Email    ,
-                Role = "Patient"
+                Response = new AuthResponseDto
+                {
+                    AccessTokenExpiresAtUtc = _jwtTokenService.GetAccessTokenExpiry(),
+                    UserId = authResult.UserId,
+                    Email = authResult.Email,
+                    Role = "Patient"
+                }
             });
         }
     }
