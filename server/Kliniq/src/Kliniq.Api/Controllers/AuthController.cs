@@ -4,9 +4,12 @@ using Kliniq.Application.Features.Auth.Commands.RefreshToken;
 using Kliniq.Application.Features.Auth.Commands.Register;
 using Kliniq.Application.Features.Auth.Commands.RevokeToken;
 using Kliniq.Application.Features.Auth.Commands.SetPractitionerPassword;
+using Kliniq.Application.Features.Auth.Dto;
+using Kliniq.Application.Features.Auth.DTOs;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.JsonWebTokens;
 using System.Security.Claims;
 
 namespace Kliniq.Api.Controllers
@@ -15,6 +18,8 @@ namespace Kliniq.Api.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        private const string AccessTokenCookie = "accessToken";
+        private const string RefreshTokenCookie = "refreshToken";
 
         private readonly IMediator _mediator;
 
@@ -23,25 +28,94 @@ namespace Kliniq.Api.Controllers
             _mediator = mediator;
         }
 
+        private static CookieOptions BaseCookieOptions() => new()
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.Lax,
+        };
+
+        private static CookieOptions AccessTokenCookieOptions(DateTime expiresAat)
+        {
+            var options = BaseCookieOptions();
+            options.Expires = expiresAat;
+            options.Path ="/";
+            return options;
+        }
+
+        private static CookieOptions RefreshTokenCookieOptions()
+        {
+            var options = BaseCookieOptions();
+            options.Expires = DateTime.UtcNow.AddDays(7);
+            options.Path = "/api/auth/";
+            return options;
+        }
+
+        private void SetAuthCookies(AuthTokensInternal tokens)
+        {
+            Response.Cookies.Append(AccessTokenCookie, tokens.AccessToken, AccessTokenCookieOptions(tokens.Response.AccessTokenExpiresAtUtc));  
+            Response.Cookies.Append(RefreshTokenCookie, tokens.RefreshToken, RefreshTokenCookieOptions());
+        }
+
+        private void ClearAuthCookies()
+        {
+            Response.Cookies.Delete(AccessTokenCookie, new CookieOptions { Path = "/" });
+            Response.Cookies.Delete(RefreshTokenCookie, new CookieOptions { Path = "/api/auth/" });
+        }
+
+        //ENDPOINTS
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterCommand command, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(command, cancellationToken);
-            return result.ToActionResult();
+            if (!result.IsSuccess) return result.ToActionResult();
+
+            var tokens = result.Value!;
+
+            SetAuthCookies(tokens);
+
+            #if DEBUG
+            tokens.Response.DevAccessToken = tokens.AccessToken;
+            #endif
+
+            return Ok(tokens.Response);
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginCommand command, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(command, cancellationToken);
-            return result.ToActionResult();
+            if(!result.IsSuccess) return result.ToActionResult();
+
+            var tokens = result.Value!;
+
+            SetAuthCookies(tokens);
+
+            #if DEBUG
+            tokens.Response.DevAccessToken = tokens.AccessToken;
+            #endif
+
+            return Ok(tokens.Response);
         }
 
         [HttpPost("refresh-token")]
-        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenCommand command, CancellationToken cancellationToken)
+        public async Task<IActionResult> RefreshToken(CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(command, cancellationToken);
-            return result.ToActionResult();
+            var refreshToken = Request.Cookies[RefreshTokenCookie];
+
+            if(string.IsNullOrEmpty(refreshToken)) return Unauthorized();
+
+            var result = await _mediator.Send(new RefreshTokenCommand { RefreshToken = refreshToken }, cancellationToken);
+
+            var tokens = result.Value!;
+
+            SetAuthCookies(tokens);
+
+            #if DEBUG
+            tokens.Response.DevAccessToken = tokens.AccessToken;
+            #endif
+
+            return Ok(tokens.Response);
         }
 
         [HttpPost("logout")]
@@ -50,11 +124,32 @@ namespace Kliniq.Api.Controllers
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (userId is null)
-                return Unauthorized();
+            if (userId is null) return Unauthorized();
 
             var result  = await _mediator.Send(new RevokeTokenCommand { UserId = userId }, cancellationToken);
+
+            ClearAuthCookies();
             return result.ToActionResult();
+        }
+
+        [HttpGet("me")]
+        [Authorize]
+        public IActionResult Me()
+        {
+            var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value 
+                        ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            var role = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if(userId is null) return Unauthorized();
+
+            return Ok(new AuthResponseDto
+            {
+                UserId = userId,
+                Email = email ?? string.Empty,
+                Role = role ?? string.Empty
+            });
         }
 
         [HttpPost("set-password")]

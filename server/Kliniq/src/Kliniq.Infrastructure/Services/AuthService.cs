@@ -49,10 +49,7 @@ namespace Kliniq.Infrastructure.Services
             };
         }
 
-        public async Task<AuthServiceResult> LoginAsync(
-            string email,
-            string password,
-            CancellationToken cancellationToken)
+        public async Task<AuthServiceResult> LoginAsync(string email, string password, CancellationToken cancellationToken)
         {
             var user = await _userManager.FindByEmailAsync(email)
                 ?? throw new UnauthorizedAccessException("Invalid email or password");
