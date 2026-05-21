@@ -1,8 +1,8 @@
 ﻿namespace Kliniq.Application.Features.Auth.DTOs
 {
-    public class RegisterPractitionerResponseDto
+    public record RegisterPractitionerResponseDto
     {
-        public string Email { get; set; } = string.Empty;
-        public string Message { get; set; } = string.Empty;
+        public string Email { get; init; } = string.Empty;
+        public string Message { get; init; } = string.Empty;
     }
 }

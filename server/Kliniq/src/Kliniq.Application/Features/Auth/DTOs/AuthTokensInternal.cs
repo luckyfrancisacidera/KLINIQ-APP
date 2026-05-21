@@ -2,10 +2,10 @@
 
 namespace Kliniq.Application.Features.Auth.DTOs
 {
-    public class AuthTokensInternal
+    public record AuthTokensInternal
     {
-        public string AccessToken { get; set; } = string.Empty;
-        public string RefreshToken { get; set; } = string.Empty;
-        public AuthResponseDto Response { get; set; } = default!;
+        public string AccessToken { get; init; } = string.Empty;
+        public string RefreshToken { get; init; } = string.Empty;
+        public AuthResponseDto Response { get; init; } = default!;
     }
 }
