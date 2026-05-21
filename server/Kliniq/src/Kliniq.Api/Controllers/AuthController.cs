@@ -74,11 +74,12 @@ namespace Kliniq.Api.Controllers
 
             SetAuthCookies(tokens);
 
-            #if DEBUG
-            tokens.Response.DevAccessToken = tokens.AccessToken;
-            #endif
-
+        #if DEBUG
+            var responseWithToken = tokens.Response with { DevAccessToken = tokens.AccessToken };
+            return Ok(responseWithToken);
+        #else
             return Ok(tokens.Response);
+        #endif
         }
 
         [HttpPost("login")]
@@ -91,11 +92,12 @@ namespace Kliniq.Api.Controllers
 
             SetAuthCookies(tokens);
 
-            #if DEBUG
-            tokens.Response.DevAccessToken = tokens.AccessToken;
-            #endif
-
+        #if DEBUG
+            var responseWithToken = tokens.Response with { DevAccessToken = tokens.AccessToken };
+            return Ok(responseWithToken);
+        #else
             return Ok(tokens.Response);
+        #endif
         }
 
         [HttpPost("refresh-token")]
@@ -111,11 +113,13 @@ namespace Kliniq.Api.Controllers
 
             SetAuthCookies(tokens);
 
-            #if DEBUG
-            tokens.Response.DevAccessToken = tokens.AccessToken;
-            #endif
-
+        #if DEBUG
+            var responseWithToken = tokens.Response with { DevAccessToken = tokens.AccessToken };
+            return Ok(responseWithToken);
+        #else
             return Ok(tokens.Response);
+        #endif
+
         }
 
         [HttpPost("logout")]
