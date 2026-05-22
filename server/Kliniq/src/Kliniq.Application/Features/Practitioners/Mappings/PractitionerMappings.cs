@@ -5,7 +5,7 @@ namespace Kliniq.Application.Features.Practitioners.Mappings
 {
     public static class PractitionerMappings
     {
-        public static PractitonerDto ToDto(this Practitioner p) => new(
+        public static PractitionerDto ToDto(this Practitioner p) => new(
             p.Id, p.UserId,
             p.Name.FirstName, p.Name.LastName,
             p.LicenseNumber, p.Specialization,

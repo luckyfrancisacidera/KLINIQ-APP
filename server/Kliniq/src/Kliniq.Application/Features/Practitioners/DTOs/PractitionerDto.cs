@@ -1,6 +1,6 @@
 ﻿namespace Kliniq.Application.Features.Practitioners.DTOs
 {
-    public sealed record PractitonerDto(
+    public sealed record PractitionerDto(
         Guid Id,
         Guid UserId,
         string FirstName,

@@ -9,25 +9,25 @@ namespace Kliniq.Application.Features.Practitioners.Commands.RemoveScheduleBreak
 {
     public sealed class RemoveSchedulelCommandHandler : IRequestHandler<RemoveScheduleCommand, Result<ScheduleSummaryDto>>
     {
-        private readonly IScheduleRepository _scheduleRepository;
+        private readonly IScheduleRepository _repository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public RemoveSchedulelCommandHandler(IScheduleRepository scheduleRepository, IUnitOfWork unitOfWork)
+        public RemoveSchedulelCommandHandler(IScheduleRepository repository, IUnitOfWork unitOfWork)
         {
-            _scheduleRepository = scheduleRepository;
+            _repository = repository;
             _unitOfWork = unitOfWork;
         }
 
         public async Task<Result<ScheduleSummaryDto>> Handle(RemoveScheduleCommand request, CancellationToken cancellationToken)
         {
-            var schedule = await _scheduleRepository.GetByIdAsync(request.ScheduleId, cancellationToken);
+            var schedule = await _repository.GetByIdAsync(request.ScheduleId, cancellationToken);
 
             if(schedule is null)
                 return Result.Failure<ScheduleSummaryDto>(Error.NotFound("Schedule.NotFound", $"Schedule with id {request.ScheduleId} was not found."));
 
             schedule.RemoveBreak(request.BreakId);
 
-            _scheduleRepository.Update(schedule);
+            _repository.Update(schedule);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             
             return Result.Success(schedule.ToSummaryDto());
