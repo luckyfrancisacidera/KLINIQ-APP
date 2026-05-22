@@ -2,9 +2,9 @@
 
 namespace Kliniq.Application.Features.AccountRequests.Commands.RejectAccountRequest
 {
-    public class RejectAccountRequestValidator : AbstractValidator<RejectAccountRequestCommand>
+    public class RejectAccountRequestCommandValidator : AbstractValidator<RejectAccountRequestCommand>
     {
-        public RejectAccountRequestValidator()
+        public RejectAccountRequestCommandValidator()
         {
             RuleFor(x => x.AccountRequestId)
                 .NotEmpty().WithMessage("Account request ID is required.");

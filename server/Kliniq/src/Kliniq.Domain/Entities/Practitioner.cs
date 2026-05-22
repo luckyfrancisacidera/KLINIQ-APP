@@ -25,9 +25,24 @@ namespace Kliniq.Domain.Entities
         {
             Id = Guid.NewGuid();
             UserId = userId;
-            Name = name;
+            Name = name ?? throw new ArgumentNullException(nameof(name));
             LicenseNumber = licenseNumber;
             Specialization = specialization;
+        }
+
+        public void UpdateProfile(FullName name, string licenseNumber, string specialization)
+        {
+            Name = name ?? throw new ArgumentNullException(nameof(name));
+
+            if(string.IsNullOrWhiteSpace(licenseNumber))
+                throw new DomainException("License number is required.");
+
+            if(string.IsNullOrWhiteSpace(specialization))
+                throw new DomainException("Specialization is required.");
+
+            LicenseNumber = licenseNumber;
+            Specialization = specialization;
+            UpdatedAtUtc = DateTime.UtcNow;
         }
 
         public void AssignClinic(Clinic clinic)

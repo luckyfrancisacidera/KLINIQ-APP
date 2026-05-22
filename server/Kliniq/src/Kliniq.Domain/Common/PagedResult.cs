@@ -1,14 +1,22 @@
 ﻿namespace Kliniq.Domain.Common
 {
-    public class PagedResult<T>(List<T> items, int totalCount, int page, int pageSize)
+    public class PagedResult<T>
     {
-        public List<T> Items { get; } = items;
-        public int TotalCount { get; } = totalCount;
-        public int Page { get; } = page;
-        public int PageSize { get; } = pageSize;
-        public int TotalPages => (int)Math.Ceiling(TotalCount/(double)PageSize);
+        public IReadOnlyList<T> Items { get; } = null!;
+        public int TotalCount { get; }
+        public int Page { get; }
+        public int PageSize { get; }
+        public int TotalPages => (int)Math.Ceiling((double)TotalCount / PageSize);
         public bool HasNextPage => Page < TotalPages;
         public bool HasPreviousPage => Page > 1;
+
+        public PagedResult(IReadOnlyList<T> items, int totalCount, int page, int pageSize)
+        {
+            Items = items;
+            TotalCount = totalCount;
+            Page = page;
+            PageSize = pageSize;
+        }
 
     }
 }

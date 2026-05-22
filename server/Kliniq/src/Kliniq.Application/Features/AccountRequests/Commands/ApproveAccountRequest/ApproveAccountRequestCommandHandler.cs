@@ -31,8 +31,6 @@ namespace Kliniq.Application.Features.AccountRequests.Commands.ApproveAccountReq
 
             accountRequest.Approve(request.AdminNote);
 
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-
             var inviteLink = $"{_appSettings.BaseUrl}/register/practitioner?token={accountRequest.InvitationToken}";
 
             var subject = "You're invited to join Kliniq";
@@ -60,6 +58,7 @@ namespace Kliniq.Application.Features.AccountRequests.Commands.ApproveAccountReq
                 """;
 
             await _emailService.SendEmailAsync(accountRequest.Email, subject, body, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();
 

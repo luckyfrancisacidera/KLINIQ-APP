@@ -54,7 +54,7 @@ namespace Kliniq.Application.Features.AccountRequests.Mappings
             Specialization = request.Specialization,
             PrcIdPath = request.PrcIdPath,
             BoardCertificatePath = request.BoardCertificatePath,
-            MedicalDiplomaPat = request.MedicalDiplomaPath,
+            MedicalDiplomaPath = request.MedicalDiplomaPath,
             CertificateOfGoodStandingPath = request.CertificateOfGoodStandingPath,
             Status = request.Status.ToString(),
             CreatedAtUtc = request.CreatedAtUtc

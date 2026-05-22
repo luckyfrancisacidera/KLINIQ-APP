@@ -25,7 +25,7 @@ namespace Kliniq.Application.Features.Practitioners.Mappings
             s.Day.ToString(),
             s.StartTime.ToString("HH:mm"),
             s.EndTime.ToString("HH:mm"),
-            s.AppointmentLengthInMinutes,
+            s.AppointmentLengthMinutes,
             s.IsAvailable,
             s.Breaks.Select(b => new BreakDto(b.Id, b.StartTime.ToString("HH:mm"), b.EndTime.ToString("HH:mm"))).ToList()
         );

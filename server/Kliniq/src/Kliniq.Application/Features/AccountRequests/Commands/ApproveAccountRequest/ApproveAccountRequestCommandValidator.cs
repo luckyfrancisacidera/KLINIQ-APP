@@ -2,9 +2,9 @@
 
 namespace Kliniq.Application.Features.AccountRequests.Commands.ApproveAccountRequest
 {
-    public class ApproveAccountRequestValidator : AbstractValidator<ApproveAccountRequestCommand>
+    public class ApproveAccountRequestCommandValidator : AbstractValidator<ApproveAccountRequestCommand>
     {
-        public ApproveAccountRequestValidator()
+        public ApproveAccountRequestCommandValidator()
         {
             RuleFor(x => x.AccountRequestId)
                 .NotEmpty().WithMessage("Account request ID is required.");

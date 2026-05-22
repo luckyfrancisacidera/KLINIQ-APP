@@ -4,7 +4,7 @@ using Kliniq.Application.Common.Validation;
 
 namespace Kliniq.Application.Features.AccountRequests.Commands.SubmitAccountRequest
 {
-    public class SubmitAccountRequestValidator : AbstractValidator<SubmitAccountRequestCommand>
+    public class SubmitAccountRequestCommandValidator : AbstractValidator<SubmitAccountRequestCommand>
     {
         private readonly string[] _allowedContentTypes =
         {
@@ -14,7 +14,7 @@ namespace Kliniq.Application.Features.AccountRequests.Commands.SubmitAccountRequ
         };
 
         private const long MaxFileSizedBytes = 5 * 1024 * 1024; // 5 MB
-        public SubmitAccountRequestValidator()
+        public SubmitAccountRequestCommandValidator()
         {
             RuleFor(x => x.FirstName)
                 .NotEmpty().WithMessage("First name is required.")
