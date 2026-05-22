@@ -1,11 +1,17 @@
-﻿using Kliniq.Domain.Entities;
+﻿using Kliniq.Domain.Common;
+using Kliniq.Domain.Entities;
 
 namespace Kliniq.Application.Common.Interfaces.Repositories
 {
     public interface IPractitionerRepository
     {
         Task AddAsync(Practitioner practitioner, CancellationToken cancellationToken);
-        Task<Practitioner?> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken);
         Task<Practitioner?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+        Task<Practitioner?> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken);
+        Task<Practitioner?> GetByIdWithSchedulesAsync(Guid id, CancellationToken cancellationToken);
+        Task<PagedResult<Practitioner>> GetAllAsync(int page, int pageSize, CancellationToken cancellationToken);
+        Task<bool> ExistsByUserIdAsync(Guid userId, CancellationToken cancellationToken);
+        void Update(Practitioner practitioner);
+        void Delete(Practitioner practitioner);
     }
 }

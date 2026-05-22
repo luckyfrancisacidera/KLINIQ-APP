@@ -2,9 +2,9 @@
 
 namespace Kliniq.Application.Features.Auth.Commands.RevokeToken
 {
-    public class RevokeTokenValidator :AbstractValidator<RevokeTokenCommand>    
+    public class RevokeTokenCommandValidator :AbstractValidator<RevokeTokenCommand>    
     {
-        public RevokeTokenValidator()
+        public RevokeTokenCommandValidator()
         {
             RuleFor(x => x.UserId)
                 .NotEmpty().WithMessage("User ID is required.")

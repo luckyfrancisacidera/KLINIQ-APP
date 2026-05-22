@@ -2,9 +2,9 @@
 
 namespace Kliniq.Application.Features.Auth.Commands.SetPractitionerPassword
 {
-    public class SetPractitionerPasswordValidator : AbstractValidator<SetPractitionerPasswordCommand>
+    public class SetPractitionerPasswordCommandValidator : AbstractValidator<SetPractitionerPasswordCommand>
     {
-        public SetPractitionerPasswordValidator()
+        public SetPractitionerPasswordCommandValidator()
         {
             RuleFor(x => x.InvitationToken)
                 .NotEmpty().WithMessage("Invitation token is required.");
