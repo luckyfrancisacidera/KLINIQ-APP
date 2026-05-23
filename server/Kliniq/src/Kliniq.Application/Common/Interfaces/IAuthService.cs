@@ -1,30 +1,34 @@
-﻿namespace Kliniq.Application.Common.Interfaces
+﻿using Kliniq.Domain.Common;
+
+namespace Kliniq.Application.Common.Interfaces
 {
     public interface IAuthService
     {
-        Task<AuthServiceResult> RegisterAsync(
+        Task<Result<AuthServiceResult>> RegisterAsync(
             string email,
             string password,
             string role,
             CancellationToken cancellationToken);
 
-        Task<AuthServiceResult> LoginAsync(
+        Task<Result<AuthServiceResult>> LoginAsync(
             string email,
             string password,
             CancellationToken cancellationToken);
 
-        Task<AuthServiceResult> RefreshTokenAsync(
+        Task<Result<AuthServiceResult>> RefreshTokenAsync(
             string refreshToken,
             CancellationToken cancellationToken);
 
-        Task RevokeTokenAsync(
+        Task<Result> RevokeTokenAsync(
             string userId,
             CancellationToken cancellationToken);
 
-        Task SaveRefreshTokenAsync(
+        Task<Result> SaveRefreshTokenAsync(
             string userId,
             string refreshTokenHash,
             CancellationToken cancellationToken);
+
+        Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken);
     }
 
     public class AuthServiceResult

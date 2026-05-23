@@ -12,37 +12,45 @@ namespace Kliniq.Application.Features.AccountRequests.Commands.SubmitAccountRequ
     public class SubmitAccountRequestCommandHandler : IRequestHandler<SubmitAccountRequestCommand, Result<AccountRequestDto>>
     {
         private readonly IAccountRequestRepository _repository;
+        private readonly IAuthService _authService;
         private readonly IFileStorageService _fileStorage;
         private readonly IUnitOfWork _unitOfWork;
 
-        public SubmitAccountRequestCommandHandler(IAccountRequestRepository repository, IFileStorageService fileStorage, IUnitOfWork unitOfWork)
+        public SubmitAccountRequestCommandHandler(IAccountRequestRepository repository, IAuthService authService, IFileStorageService fileStorage, IUnitOfWork unitOfWork)
         {
             _repository = repository;
+            _authService = authService;
             _fileStorage = fileStorage;
             _unitOfWork = unitOfWork;
         }
 
         public async Task<Result<AccountRequestDto>> Handle(SubmitAccountRequestCommand request, CancellationToken cancellationToken)
         {
+            var emailTaken = await _authService.EmailExistsAsync(request.Email, cancellationToken);
+
+            if(emailTaken)
+                return Result.Failure<AccountRequestDto>             
+                    (Error.Conflict("AccountRequest.EmailTaken", "An account with this email already exists"));
+
             var exists = await _repository.ExistsPendingEmailAsync(request.Email, cancellationToken);
 
             if(exists)
                 return Result.Failure<AccountRequestDto>             
                     (Error.Conflict("AccountRequest.EmailExists", "An account request with this email already exists and is pending review"));
 
-            string prcIdPath, boardCertPath, diplomaPath, cogsCertPath;
+            string prcLicensePath, governmentIdPath, professionalPhotoPath, cvPath;
 
             //upload documents 
             try
             {
                 var results = await Task.WhenAll(
-                    _fileStorage.UploadAsync(request.PrcId!.Content, request.PrcId.FileName, "account-requests/prc-ids", cancellationToken),
-                    _fileStorage.UploadAsync(request.BoardCertificate!.Content, request.BoardCertificate.FileName, "account-requests/board-certificates", cancellationToken),
-                    _fileStorage.UploadAsync(request.MedicalDiploma!.Content, request.MedicalDiploma.FileName, "account-requests/medical-diplomas", cancellationToken),
-                    _fileStorage.UploadAsync(request.CertificateOfGoodStanding!.Content, request.CertificateOfGoodStanding.FileName, "account-requests/good-standing-certs", cancellationToken)
+                    _fileStorage.UploadAsync(request.PrcLicense!.Content, request.PrcLicense.FileName, "account-requests/prc-licenses", cancellationToken),
+                    _fileStorage.UploadAsync(request.GovernmentId!.Content, request.GovernmentId.FileName, "account-requests/government-ids", cancellationToken),
+                    _fileStorage.UploadAsync(request.ProfessionalPhoto!.Content, request.ProfessionalPhoto.FileName, "account-requests/professional-photos", cancellationToken),
+                    _fileStorage.UploadAsync(request.Cv!.Content, request.Cv.FileName, "account-requests/cvs", cancellationToken)
                 );
 
-                (prcIdPath, boardCertPath, diplomaPath, cogsCertPath) = (results[0], results[1], results[2], results[3]);
+                (prcLicensePath, governmentIdPath, professionalPhotoPath, cvPath) = (results[0], results[1], results[2], results[3]);
             }
             catch (Exception ex)
             {
@@ -52,17 +60,19 @@ namespace Kliniq.Application.Features.AccountRequests.Commands.SubmitAccountRequ
 
             var name = new FullName(request.FirstName, request.LastName);
             var address = new Address(request.Street, request.City, request.Country);
+            var clinicLocation = new GeoLocation(request.ClinicLatitude, request.ClinicLongitude);
 
             var accountRequest = new AccountRequest(
                 name,
                 request.Email,
                 request.LicenseNumber,
-                request.Specialization,
+                request.Specializations.AsReadOnly(),
                 address,
-                prcIdPath,
-                boardCertPath,
-                diplomaPath,
-                cogsCertPath);
+                prcLicensePath,
+                governmentIdPath,
+                professionalPhotoPath,
+                cvPath,
+                clinicLocation);
             
             await _repository.AddAsync(accountRequest, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);

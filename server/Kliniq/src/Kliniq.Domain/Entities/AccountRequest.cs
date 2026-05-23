@@ -9,14 +9,23 @@ namespace Kliniq.Domain.Entities
         public FullName Name { get; private set; } = null!;
         public string Email { get; private set; } = string.Empty;
         public string LicenseNumber { get; private set; } = string.Empty;
-        public string Specialization { get; private set; } = string.Empty;
 
+        private string _specializations = string.Empty;
+        public string SpecializationsRaw
+        {
+            get => _specializations;
+            private set => _specializations = value;
+        }
+
+        public IReadOnlyList<string> Specializations =>
+            _specializations.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList().AsReadOnly();
+        
         public Address Address { get; private set; } = null!;
-
-        public string PrcIdPath { get; private set; } = string.Empty;
-        public string BoardCertificatePath { get; private set; } = string.Empty;
-        public string MedicalDiplomaPath { get; private set; } = string.Empty;
-        public string CertificateOfGoodStandingPath { get; private set; } = string.Empty;
+        public GeoLocation ClinicLocation { get; private set; } = null!;
+        public string PrcLicensePath { get; private set; } = string.Empty;
+        public string GovernmentIdPath { get; private set; } = string.Empty;
+        public string ProfessionalPhotoPath { get; private set; } = string.Empty;
+        public string CvPath { get; private set; } = string.Empty;
 
         public AccountRequestStatus Status { get; private set; }
         public string? AdminNote { get; private set; }
@@ -31,30 +40,35 @@ namespace Kliniq.Domain.Entities
             FullName name,
             string email,
             string licenseNumber,
-            string specialization,
+            IReadOnlyList<string> specialization,
             Address address,
-            string prcIdPath,
-            string boardCertificatePath,
-            string medicalDiplomaPath,
-            string certificateOfGoodStandingPath
+            string prcLicensePath,
+            string governmentIdPath,
+            string professionalPhotoPath,
+            string cvPath,
+            GeoLocation clinicLocation
             )
         {
             if (string.IsNullOrWhiteSpace(email))
                 throw new DomainException("Email is Required");
 
-            if(string.IsNullOrWhiteSpace(specialization))
-                throw new DomainException("Specialization is required for doctor account requests");
+            if(specialization is null || specialization.Count == 0 )
+                throw new DomainException("At least one specialization is required for doctor account requests");
+
+            if(specialization.Any(s => string.IsNullOrWhiteSpace(s)))
+                throw new DomainException("Specialization cannot contain empty values");
 
             Id = Guid.NewGuid();
             Email = email;
             Name = name ?? throw new ArgumentNullException(nameof(name));
             LicenseNumber = licenseNumber;
-            Specialization = specialization;
-            Address = address ?? throw new ArgumentException(nameof(address));
-            PrcIdPath = prcIdPath;
-            BoardCertificatePath = boardCertificatePath;
-            MedicalDiplomaPath = medicalDiplomaPath;
-            CertificateOfGoodStandingPath = certificateOfGoodStandingPath;
+            _specializations = string.Join(",", specialization.Select(s => s.Trim()));
+            Address = address ?? throw new ArgumentNullException(nameof(address));
+            ClinicLocation = clinicLocation ?? throw new ArgumentNullException(nameof(clinicLocation));
+            PrcLicensePath = prcLicensePath;
+            GovernmentIdPath = governmentIdPath;
+            ProfessionalPhotoPath = professionalPhotoPath;
+            CvPath = cvPath;
             Status = AccountRequestStatus.Pending;
         }
 
@@ -73,6 +87,7 @@ namespace Kliniq.Domain.Entities
 
             InvitationExpiresAt = DateTime.UtcNow.AddDays(7);
             IsInvitationUsed = false;
+            UpdatedAtUtc = DateTime.UtcNow;
         }
 
         public void Reject(string? adminNote = null)
@@ -85,6 +100,7 @@ namespace Kliniq.Domain.Entities
 
             Status = AccountRequestStatus.Rejected;
             AdminNote = adminNote;
+            UpdatedAtUtc = DateTime.UtcNow;
         }
 
         public void MarkInvitationUsed()
@@ -94,8 +110,9 @@ namespace Kliniq.Domain.Entities
 
             if (InvitationExpiresAt < DateTime.UtcNow)
                 throw new DomainException("Invitation has expired");
-            IsInvitationUsed = true;
 
+            IsInvitationUsed = true;
+            UpdatedAtUtc = DateTime.UtcNow;
         }
     }
 }

@@ -6,11 +6,11 @@
         public string FirstName { get; init; } = string.Empty;
         public string LastName { get; init; } = string.Empty;
         public string Email { get; init; } = string.Empty;
-        public string Specialization { get; init; } = string.Empty;
-        public string PrcIdPath { get; init; } = string.Empty;
-        public string BoardCertificatePath { get; init; } = string.Empty;
-        public string MedicalDiplomaPath { get; init; } = string.Empty;
-        public string CertificateOfGoodStandingPath { get; init; } = string.Empty;
+        public IReadOnlyList<string> Specializations { get; init; } = [];
+        public string PrcLicensePath { get; init; } = string.Empty;
+        public string GovernmentIdPath { get; init; } = string.Empty;
+        public string ProfessionalPhotoPath { get; init; } = string.Empty;
+        public string CvPath { get; init; } = string.Empty;
         public string Status { get; init; } = string.Empty;
         public DateTime CreatedAtUtc { get; init; } 
     }

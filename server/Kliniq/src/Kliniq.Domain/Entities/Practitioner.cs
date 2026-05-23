@@ -8,7 +8,17 @@ namespace Kliniq.Domain.Entities
         public Guid UserId { get; private set; }
         public FullName Name { get; private set; } = null!;
         public string LicenseNumber { get; private set; } = string.Empty;
-        public string Specialization { get; private set; } = string.Empty;
+        
+
+
+        private string _specialization = string.Empty;
+        public string SpecializationsRaw
+        {
+            get => _specialization;
+            private set => _specialization = value;
+        }
+
+        public IReadOnlyList<string> Specializations => _specialization.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList().AsReadOnly();
 
         public Guid? ClinicID { get; private set; }
         public Clinic? Clinic { get; set; }
@@ -21,23 +31,31 @@ namespace Kliniq.Domain.Entities
 
         private Practitioner() { }
 
-        public Practitioner(Guid userId, FullName name, string licenseNumber, string specialization)
+        public Practitioner(Guid userId, FullName name, string licenseNumber, IReadOnlyList<string> specializations)
         {
             Id = Guid.NewGuid();
             UserId = userId;
             Name = name ?? throw new ArgumentNullException(nameof(name));
             LicenseNumber = licenseNumber;
-            Specialization = specialization;
+            _specialization = string.Join(',', specializations.Select(s => s.Trim()));
         }
 
-        public void UpdateProfile(FullName name, string specialization)
+        public void UpdateProfile(FullName name, string licenseNumber, IReadOnlyList<string> specializations)
         {
-            Name = name ?? throw new ArgumentNullException(nameof(name));
+            if (name is null) throw new ArgumentNullException(nameof(name));
 
-            if(string.IsNullOrWhiteSpace(specialization))
-                throw new DomainException("Specialization is required.");
+            if(string.IsNullOrWhiteSpace(licenseNumber))
+                throw new DomainException("License number cannot be empty.");
 
-            Specialization = specialization;
+            if (specializations is null || specializations.Count == 0)
+                throw new DomainException("At least one specialization is required.");
+
+            if(specializations.Any(s => string.IsNullOrWhiteSpace(s)))
+                throw new DomainException("Specialization cannot contain empty values.");
+
+            Name = name;
+            LicenseNumber = licenseNumber;
+            _specialization = string.Join(',', specializations.Select(s => s.Trim()));
             UpdatedAtUtc = DateTime.UtcNow;
         }
 

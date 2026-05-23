@@ -31,8 +31,9 @@ namespace Kliniq.Application.Features.Auth.Commands.SetPractitionerPassword
             SetPractitionerPasswordCommand request,
             CancellationToken cancellationToken)
         {
-            var accountRequest = await _accountRequestRepository
-                .GetByInvitationTokenAsync(request.InvitationToken, cancellationToken);
+            var accountRequest = await _accountRequestRepository.GetByInvitationTokenAsync(request.InvitationToken, cancellationToken);
+
+            var existingUser = await _authService.(accountRequest.Email, cancellationToken);
 
             if (accountRequest is null)
                 return Result.Failure<RegisterPractitionerResponseDto>
@@ -41,6 +42,10 @@ namespace Kliniq.Application.Features.Auth.Commands.SetPractitionerPassword
             if(accountRequest.IsInvitationUsed)
                 return Result.Failure<RegisterPractitionerResponseDto>
                     (Error.Conflict("Auth.TokenUsed", "This invitation token has already been used"));
+
+            if(accountRequest.InvitationExpiresAt < DateTime.UtcNow)
+                return Result.Failure<RegisterPractitionerResponseDto>
+                    (Error.Conflict("Auth.TokenExpired", "This invitation token has expired"));
 
             var authResult = await _authService.RegisterAsync(
                 accountRequest.Email,
@@ -55,11 +60,9 @@ namespace Kliniq.Application.Features.Auth.Commands.SetPractitionerPassword
 
             var practitioner = new Practitioner(
                 Guid.Parse(authResult.UserId),          
-                new FullName(
-                    accountRequest.Name.FirstName,
-                    accountRequest.Name.LastName),
-                accountRequest.LicenseNumber ?? string.Empty, 
-                accountRequest.Specialization ?? string.Empty);
+                new FullName(accountRequest.Name.FirstName, accountRequest.Name.LastName),
+                accountRequest.LicenseNumber, 
+                accountRequest.Specializations);
 
             await _practitionerRepository.AddAsync(practitioner, cancellationToken);
 
