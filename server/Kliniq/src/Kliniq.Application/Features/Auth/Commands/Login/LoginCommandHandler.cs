@@ -21,11 +21,17 @@ namespace Kliniq.Application.Features.Auth.Commands.Login
         {
             var authResult = await _authService.LoginAsync(request.Email, request.Password, cancellationToken);
 
-            var accessToken = _jwtTokenService.GenerateAccessToken(authResult.UserId, authResult.Email, authResult.Role);
+            if (!authResult.IsSuccess)
+                return Result.Failure<AuthTokensInternal>(authResult.Error!);
+
+            var accessToken = _jwtTokenService.GenerateAccessToken(authResult.Value!.UserId, authResult.Value.Email, authResult.Value.Role);
             var refreshToken = _jwtTokenService.GenerateRefreshToken();
             var refreshTokenHash = _jwtTokenService.HashRefreshToken(refreshToken);
 
-            await _authService.SaveRefreshTokenAsync(authResult.UserId, refreshTokenHash, cancellationToken);
+            var saveResult = await _authService.SaveRefreshTokenAsync(authResult.Value!.UserId, refreshTokenHash, cancellationToken);
+
+            if(!saveResult.IsSuccess)
+                return Result.Failure<AuthTokensInternal>(saveResult.Error!);
 
             return Result.Success(new AuthTokensInternal
             {
@@ -34,9 +40,9 @@ namespace Kliniq.Application.Features.Auth.Commands.Login
                 Response = new AuthResponseDto
                 {
                     AccessTokenExpiresAtUtc = _jwtTokenService.GetAccessTokenExpiry(),
-                    UserId = authResult.UserId,
-                    Email = authResult.Email,
-                    Role = authResult.Role
+                    UserId = authResult.Value.UserId,
+                    Email = authResult.Value.Email,
+                    Role = authResult.Value.Role
                 }
             });
         }
