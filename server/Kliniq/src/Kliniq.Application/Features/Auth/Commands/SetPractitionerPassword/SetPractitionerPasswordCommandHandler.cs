@@ -33,8 +33,6 @@ namespace Kliniq.Application.Features.Auth.Commands.SetPractitionerPassword
         {
             var accountRequest = await _accountRequestRepository.GetByInvitationTokenAsync(request.InvitationToken, cancellationToken);
 
-            var existingUser = await _authService.(accountRequest.Email, cancellationToken);
-
             if (accountRequest is null)
                 return Result.Failure<RegisterPractitionerResponseDto>
                     (Error.NotFound("Auth.InvalidToken", "Invalid or expired invitation token"));
@@ -53,13 +51,13 @@ namespace Kliniq.Application.Features.Auth.Commands.SetPractitionerPassword
                 "Practitioner",
                 cancellationToken);
 
-            if (!authResult.Succeeded)
+            if (!authResult.IsSuccess)
                 return Result.Failure<RegisterPractitionerResponseDto>
                     (Error.Conflict("Auth.EmailTaken", "An account with this email already exists"));
 
 
             var practitioner = new Practitioner(
-                Guid.Parse(authResult.UserId),          
+                Guid.Parse(authResult.Value!.UserId),          
                 new FullName(accountRequest.Name.FirstName, accountRequest.Name.LastName),
                 accountRequest.LicenseNumber, 
                 accountRequest.Specializations);
