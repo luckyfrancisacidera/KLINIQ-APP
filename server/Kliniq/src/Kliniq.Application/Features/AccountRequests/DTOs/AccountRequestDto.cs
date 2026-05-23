@@ -28,7 +28,7 @@
         public string? AdminNote { get; init; }
 
         public bool IsInvitationUsed { get; init; }
-        public DateTime? InvitatioNExpiresAt { get; init; }
+        public DateTime? InvitationExpiresAt { get; init; }
 
         public DateTime CreatedAtUtc { get; init; }
     }

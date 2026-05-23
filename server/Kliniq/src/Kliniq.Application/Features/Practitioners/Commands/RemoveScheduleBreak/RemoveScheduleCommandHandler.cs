@@ -7,12 +7,12 @@ using MediatR;
 
 namespace Kliniq.Application.Features.Practitioners.Commands.RemoveScheduleBreak
 {
-    public sealed class RemoveSchedulelCommandHandler : IRequestHandler<RemoveScheduleCommand, Result<ScheduleSummaryDto>>
+    public sealed class RemoveScheduleCommandHandler : IRequestHandler<RemoveScheduleCommand, Result<ScheduleSummaryDto>>
     {
         private readonly IScheduleRepository _repository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public RemoveSchedulelCommandHandler(IScheduleRepository repository, IUnitOfWork unitOfWork)
+        public RemoveScheduleCommandHandler(IScheduleRepository repository, IUnitOfWork unitOfWork)
         {
             _repository = repository;
             _unitOfWork = unitOfWork;

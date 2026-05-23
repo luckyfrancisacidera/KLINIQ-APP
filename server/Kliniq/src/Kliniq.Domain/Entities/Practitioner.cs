@@ -40,12 +40,9 @@ namespace Kliniq.Domain.Entities
             _specialization = string.Join(',', specializations.Select(s => s.Trim()));
         }
 
-        public void UpdateProfile(FullName name, string licenseNumber, IReadOnlyList<string> specializations)
+        public void UpdateProfile(FullName name, IReadOnlyList<string> specializations)
         {
             if (name is null) throw new ArgumentNullException(nameof(name));
-
-            if(string.IsNullOrWhiteSpace(licenseNumber))
-                throw new DomainException("License number cannot be empty.");
 
             if (specializations is null || specializations.Count == 0)
                 throw new DomainException("At least one specialization is required.");
@@ -54,7 +51,6 @@ namespace Kliniq.Domain.Entities
                 throw new DomainException("Specialization cannot contain empty values.");
 
             Name = name;
-            LicenseNumber = licenseNumber;
             _specialization = string.Join(',', specializations.Select(s => s.Trim()));
             UpdatedAtUtc = DateTime.UtcNow;
         }
