@@ -9,6 +9,6 @@ namespace Kliniq.Application.Features.Practitioners.Commands.UpdatePractitioner
         Guid PractitionerId,
         string FirstName,
         string LastName,
-        string Specialization
+        List<string> Specializations
     ) : IRequest<Result<PractitionerDto>>;
 }

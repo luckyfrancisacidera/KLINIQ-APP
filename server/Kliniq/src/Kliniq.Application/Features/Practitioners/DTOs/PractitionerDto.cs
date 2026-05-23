@@ -6,7 +6,7 @@
         string FirstName,
         string LastName,
         string LicenseNumber,
-        string Specialization,
+        IReadOnlyList<string> Specializations,
         Guid? ClinicId
     );
 
@@ -16,7 +16,7 @@
         string FirstName,
         string LastName,
         string LicenseNumber,
-        string Specialization,
+        IReadOnlyList<string> Specializations,
         Guid? ClinicId,
         IReadOnlyList<ScheduleSummaryDto> Schedules
     );

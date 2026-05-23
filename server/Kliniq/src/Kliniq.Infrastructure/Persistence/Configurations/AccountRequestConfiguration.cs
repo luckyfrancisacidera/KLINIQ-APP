@@ -49,9 +49,12 @@ namespace Kliniq.Infrastructure.Persistence.Configurations
             {
                 geo.Property(g => g.Latitude)
                     .HasColumnName("ClinicLatitude")
+                    .HasColumnType("decimal(9,6)")
                     .IsRequired();
+
                 geo.Property(g => g.Longitude)
                     .HasColumnName("ClinicLongitude")
+                    .HasColumnType("decimal(9,6)")
                     .IsRequired();
             });
 
@@ -63,10 +66,11 @@ namespace Kliniq.Infrastructure.Persistence.Configurations
                 .HasMaxLength(150)
                 .IsRequired();
 
-            builder.Property(a => a.SpecializationsRaw)
+            builder.Property<string>("_specializations")
                 .HasColumnName("Specializations")
                 .HasMaxLength(150)
-                .IsRequired();
+                .IsRequired()
+                .UsePropertyAccessMode(PropertyAccessMode.Field);
 
             builder.Property(a => a.PrcLicensePath)
                 .HasMaxLength(500)
@@ -96,8 +100,7 @@ namespace Kliniq.Infrastructure.Persistence.Configurations
                 .HasMaxLength(100);
 
             builder.Property(a => a.InvitationExpiresAt);
-
-            builder.Property(a => a.Status);
+            builder.Property(a => a.IsInvitationUsed);
 
             builder.HasIndex(a => a.InvitationToken).IsUnique();
             builder.HasIndex(a => a.Email);
@@ -110,6 +113,7 @@ namespace Kliniq.Infrastructure.Persistence.Configurations
 
             builder.Ignore(a => a.DomainEvents);
             builder.Ignore(a => a.Specializations);
+            builder.Ignore(a => a.SpecializationsRaw);
 
         }
     }

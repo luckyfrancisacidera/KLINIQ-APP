@@ -2,7 +2,7 @@
 
 namespace Kliniq.Application.Features.Practitioners.Commands.AddScheduleBreak
 {
-    public sealed class AddScheduleBreakCommandValidator : AbstractValidator<AddSchedulelBreakCommand>
+    public sealed class AddScheduleBreakCommandValidator : AbstractValidator<AddScheduleBreakCommand>
     {
         public AddScheduleBreakCommandValidator()
         {

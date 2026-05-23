@@ -32,12 +32,14 @@ namespace Kliniq.Infrastructure.Persistence.Configurations
                 .HasMaxLength(100)
                 .IsRequired();
 
-            builder.Property(p => p.Specialization)
-                .HasMaxLength(100)
-                .IsRequired();
+            builder.Property<string>("_specializations")
+                .HasColumnName("Specializations")
+                .HasMaxLength(500)
+                .IsRequired()
+                .UsePropertyAccessMode(PropertyAccessMode.Field);
 
             builder.Property(p => p.ClinicID)
-                .IsRequired(false);
+                .IsRequired(true);
 
             builder.HasOne(p => p.Clinic)
                 .WithMany(c => c.Practioners)
@@ -55,7 +57,8 @@ namespace Kliniq.Infrastructure.Persistence.Configurations
             builder.Ignore(p => p.Schedules);
             builder.Ignore(p => p.Appointments);
             builder.Ignore(p => p.DomainEvents);
-
+            builder.Ignore(p => p.SpecializationsRaw);
+            builder.Ignore(p => p.Specializations);
 
         }
     }

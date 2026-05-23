@@ -7,7 +7,7 @@ using MediatR;
 
 namespace Kliniq.Application.Features.Practitioners.Commands.AddScheduleBreak
 {
-    public sealed class AddScheduleBreakCommandHandler : IRequestHandler<AddSchedulelBreakCommand, Result<ScheduleSummaryDto>>
+    public sealed class AddScheduleBreakCommandHandler : IRequestHandler<AddScheduleBreakCommand, Result<ScheduleSummaryDto>>
     {
         private readonly IScheduleRepository _repository;
         private readonly IUnitOfWork _unitOfWork;
@@ -18,7 +18,7 @@ namespace Kliniq.Application.Features.Practitioners.Commands.AddScheduleBreak
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Result<ScheduleSummaryDto>> Handle(AddSchedulelBreakCommand request, CancellationToken cancellationToken)
+        public async Task<Result<ScheduleSummaryDto>> Handle(AddScheduleBreakCommand request, CancellationToken cancellationToken)
         {
             var schedule = await _repository.GetByIdWithBreaksAsync(request.ScheduleId, cancellationToken);
 

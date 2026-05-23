@@ -27,7 +27,7 @@ namespace Kliniq.Application.Features.Practitioners.Commands.UpdatePractitioner
 
             var newName = new FullName(request.FirstName, request.LastName);
 
-            practitioner.UpdateProfile(newName, request.Specialization);
+            practitioner.UpdateProfile(newName, request.Specializations.AsReadOnly());
 
             _repository.Update(practitioner);
             await _unitOfWork.SaveChangesAsync(cancellationToken);

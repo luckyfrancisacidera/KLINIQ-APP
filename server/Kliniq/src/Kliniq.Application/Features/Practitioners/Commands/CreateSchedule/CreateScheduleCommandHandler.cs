@@ -9,7 +9,7 @@ using MediatR;
 
 namespace Kliniq.Application.Features.Practitioners.Commands.CreateSchedule
 {
-    public class CreateScheduleCommandHandler : IRequestHandler<CreateScheduleCommand, Result<ScheduleSummaryDto>>
+    public sealed class CreateScheduleCommandHandler : IRequestHandler<CreateScheduleCommand, Result<ScheduleSummaryDto>>
     {
         private readonly IPractitionerRepository _practitionerRepository;
         private readonly IScheduleRepository _scheduleRepository;
@@ -24,19 +24,19 @@ namespace Kliniq.Application.Features.Practitioners.Commands.CreateSchedule
 
         public async Task<Result<ScheduleSummaryDto>> Handle(CreateScheduleCommand request, CancellationToken cancellationToken)
         {
-            var practitoner = await _practitionerRepository.GetByIdAsync(request.PractitionerId, cancellationToken);
+            var practitionerExists = await _practitionerRepository.ExistsAsync(request.PractitionerId, cancellationToken);
 
-            if (practitoner is null)
+            if (!practitionerExists)
                 return Result.Failure<ScheduleSummaryDto>(Error.NotFound("Practitioner.NotFound", $"Practitioner '{request.PractitionerId}' was not found"));
             
-            var day = Enum.Parse<ClinicDayOfWeek>(request.Day, true);
+            var day = Enum.Parse<ClinicDayOfWeek>(request.Day, ignoreCase: true);
             var startTime = TimeOnly.ParseExact(request.StartTime, "HH:mm");
             var endTime = TimeOnly.ParseExact(request.EndTime, "HH:mm");
 
-            bool hasOverlap = await _scheduleRepository.HasOverlappingScheduleAsync(request.PractitionerId, (int)day, null, cancellationToken);
+            bool hasOverlap = await _scheduleRepository.HasTimeOverlapAsync(request.PractitionerId, (int)day, startTime, endTime, excludeId: null, cancellationToken);
 
             if(hasOverlap)
-                return Result.Failure<ScheduleSummaryDto>(Error.Conflict("Schedule.Overlap", $"The practitioner already has a schedule for {request.Day}"));
+                return Result.Failure<ScheduleSummaryDto>(Error.Conflict("Schedule.Overlap", $"The time range {request.StartTime} - {request.EndTime} on {request.Day} overlaps with an existing schedule"));
 
             var schedule = new Schedule(
                 request.PractitionerId,

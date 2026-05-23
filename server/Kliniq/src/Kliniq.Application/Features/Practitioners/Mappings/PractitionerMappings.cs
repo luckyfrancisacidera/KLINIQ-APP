@@ -6,16 +6,22 @@ namespace Kliniq.Application.Features.Practitioners.Mappings
     public static class PractitionerMappings
     {
         public static PractitionerDto ToDto(this Practitioner p) => new(
-            p.Id, p.UserId,
-            p.Name.FirstName, p.Name.LastName,
-            p.LicenseNumber, p.Specialization,
+            p.Id,
+            p.UserId,
+            p.Name.FirstName,
+            p.Name.LastName,
+            p.LicenseNumber,
+            p.SpecializationsRaw.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList().AsReadOnly(),
             p.ClinicID
         );
 
         public static PractitionerDetailDto ToDetailDto(this Practitioner p) => new(
-            p.Id, p.UserId,
-            p.Name.FirstName, p.Name.LastName,
-            p.LicenseNumber, p.Specialization,
+            p.Id,
+            p.UserId,
+            p.Name.FirstName,
+            p.Name.LastName,
+            p.LicenseNumber,
+            p.SpecializationsRaw.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList().AsReadOnly(),
             p.ClinicID,
             p.Schedules.Select(s => s.ToSummaryDto()).ToList()
         );
