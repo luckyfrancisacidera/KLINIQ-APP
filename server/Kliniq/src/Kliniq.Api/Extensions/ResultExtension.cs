@@ -34,6 +34,7 @@ namespace Kliniq.Api.Extensions
             ErrorType.NotFound => new NotFoundObjectResult(ToProblem(error)),
             ErrorType.Validation => new BadRequestObjectResult(ToProblem(error)),
             ErrorType.Conflict => new ConflictObjectResult(ToProblem(error)),
+            ErrorType.Unauthorized => new UnauthorizedObjectResult(ToProblem(error)),
             _ => new ObjectResult(ToProblem(error)) { StatusCode = 500 }
         };
 

@@ -6,6 +6,7 @@
         public static Error Validation(string code, string messge) => new(code, messge, ErrorType.Validation);
         public static Error Conflict(string code, string messge) => new(code, messge, ErrorType.Conflict);
         public static Error Failure(string code, string messge) => new(code, messge, ErrorType.Failure);
+        public static Error Unauthorized(string code, string message) => new(code, message, ErrorType.Unauthorized);
     }
 
     public enum ErrorType
@@ -14,6 +15,7 @@
         Validation,
         NotFound,
         Conflict,
+        Unauthorized
     }
 }
 

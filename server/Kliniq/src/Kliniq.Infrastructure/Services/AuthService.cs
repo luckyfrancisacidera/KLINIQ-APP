@@ -1,7 +1,7 @@
 ﻿using Kliniq.Application.Common.Interfaces;
+using Kliniq.Domain.Common;
 using Kliniq.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
-using System.Runtime.InteropServices;
 
 namespace Kliniq.Infrastructure.Services
 {
@@ -18,7 +18,7 @@ namespace Kliniq.Infrastructure.Services
             _jwtTokenService = jwtTokenService;
         }
 
-        public async Task<AuthServiceResult> RegisterAsync(
+        public async Task<Result<AuthServiceResult>> RegisterAsync(
             string email,
             string password,
             string role,
@@ -26,7 +26,7 @@ namespace Kliniq.Infrastructure.Services
         {
             var existingUser = await _userManager.FindByEmailAsync(email);
             if (existingUser is not null)
-                throw new InvalidOperationException("Email is already registered");
+                return Result.Failure<AuthServiceResult>(Error.Conflict("Auth.EmailTaken", "An account with this email already exists"));
 
             var user = new AppUser
             {
@@ -36,83 +36,92 @@ namespace Kliniq.Infrastructure.Services
 
             var result = await _userManager.CreateAsync(user, password);
             if (!result.Succeeded)
-                throw new InvalidOperationException(
-                    string.Join(", ", result.Errors.Select(e => e.Description)));
+                return Result.Failure<AuthServiceResult>(Error.Failure("Auth.RegistrationFailed", string.Join(", ", result.Errors.Select(e => e.Description))));
 
             await _userManager.AddToRoleAsync(user, role);
 
-            return new AuthServiceResult
+            return Result.Success(new AuthServiceResult
             {
                 UserId = user.Id,  
                 Email = user.Email!,
                 Role = role
-            };
+            });
         }
 
-        public async Task<AuthServiceResult> LoginAsync(string email, string password, CancellationToken cancellationToken)
+        public async Task<Result<AuthServiceResult>> LoginAsync(string email, string password, CancellationToken cancellationToken)
         {
-            var user = await _userManager.FindByEmailAsync(email)
-                ?? throw new UnauthorizedAccessException("Invalid email or password");
+            var user = await _userManager.FindByEmailAsync(email);
 
-            var isPasswordValid = await _userManager.CheckPasswordAsync(user, password);
-            if (!isPasswordValid)
-                throw new UnauthorizedAccessException("Invalid email or password");
+            if (user is null || !await _userManager.CheckPasswordAsync(user, password))
+                return Result.Failure<AuthServiceResult>(Error.Unauthorized("Auth.InvalidCredentials", "Invalid email or password"));
 
             var roles = await _userManager.GetRolesAsync(user);
-            var role = roles.FirstOrDefault() ?? string.Empty;
 
-            return new AuthServiceResult
+            return Result.Success(new AuthServiceResult
             {
                 UserId = user.Id,       
                 Email = user.Email!,
-                Role = role
-            };
+                Role = roles.FirstOrDefault() ?? string.Empty    
+            });
         }
 
-        public async Task<AuthServiceResult> RefreshTokenAsync(string refreshToken, CancellationToken cancellationToken)
+        public async Task<Result<AuthServiceResult>> RefreshTokenAsync(string refreshToken, CancellationToken cancellationToken)
         {
             var tokenHash =  _jwtTokenService.HashRefreshToken(refreshToken);
 
             var user = _userManager.Users.FirstOrDefault(u => u.RefreshTokenHash == tokenHash);
 
             if (user is null)
-                throw new UnauthorizedAccessException("Invalid refresh token");
+                return Result.Failure<AuthServiceResult>(Error.Unauthorized("Auth.InvalidRefreshToken", "Invalid refresh token"));
 
-            if(user.RefreshTokenExpiresAtUtc is null || user.RefreshTokenExpiresAtUtc < DateTime.UtcNow)
-                throw new UnauthorizedAccessException("Refresh token has expired. Please log in again");
+            if (user.RefreshTokenExpiresAtUtc is null || user.RefreshTokenExpiresAtUtc < DateTime.UtcNow)
+                return Result.Failure<AuthServiceResult>(Error.Unauthorized("Auth.ExpiredRefreshToken", "Refresh token has expired"));
 
             var roles = await _userManager.GetRolesAsync(user);
-            var role = roles.FirstOrDefault() ?? string.Empty;
 
-            return new AuthServiceResult
+            return Result.Success(new AuthServiceResult
             {
                 UserId = user.Id,
                 Email = user.Email!,
-                Role = role
-            };
+                Role = roles.FirstOrDefault() ?? string.Empty
+            });
         }
 
-        public async Task RevokeTokenAsync(string userId, CancellationToken cancellationToken)
+        public async Task<Result> RevokeTokenAsync(string userId, CancellationToken cancellationToken)
         {
-            var user = await _userManager.FindByIdAsync(userId)
-                ?? throw new InvalidOperationException("User not found");
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user is null)
+                return Result.Failure(Error.NotFound("Auth.UserNotFound", "User not found"));
 
             user.RefreshTokenHash = null;
             user.RefreshTokenExpiresAtUtc = null;
 
             await _userManager.UpdateAsync(user);
+
+            return Result.Success();
         }
 
 
-        public async Task SaveRefreshTokenAsync(string userId, string refreshTokenHash, CancellationToken cancellationToken)
+        public async Task<Result> SaveRefreshTokenAsync(string userId, string refreshTokenHash, CancellationToken cancellationToken)
         {
-            var user = await _userManager.FindByIdAsync(userId)
-                ?? throw new InvalidOperationException("User not found");
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if(user is null)
+                return Result.Failure(Error.NotFound("Auth.UserNotFound", "User not found"));
 
             user.RefreshTokenHash = refreshTokenHash;
             user.RefreshTokenExpiresAtUtc = DateTime.UtcNow.Add(RefreshTokenLifetime);
 
             await _userManager.UpdateAsync(user);
+
+            return Result.Success();
+        }
+
+        public async Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            return user is not null;
         }
     }
 }

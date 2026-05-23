@@ -32,9 +32,13 @@ namespace Kliniq.Application.Features.AccountRequests.Commands.SubmitAccountRequ
                 .NotEmpty().WithMessage("License number is required.")
                 .MaximumLength(150).WithMessage("License number cannot exceed 150 characters.");
 
-            RuleFor(x => x.Specialization)
-                .NotEmpty().WithMessage("Specialization is required.")
-                .MaximumLength(150).WithMessage("Specialization cannot exceed 150 characters.");
+            RuleFor(x => x.Specializations)
+                .NotNull().WithMessage("At least one specialization is required.")
+                .Must(s => s != null && s.Count >= 1).WithMessage("At least one specialization mmust be required.");
+
+            RuleForEach(x => x.Specializations)
+                .NotEmpty().WithMessage("Specialization cannot be empty.")
+                .MaximumLength(100).WithMessage("Specialization cannot exceed 100 characters.");
 
             RuleFor(x => x.Street)
                 .NotEmpty().WithMessage("City is required.")
@@ -48,17 +52,25 @@ namespace Kliniq.Application.Features.AccountRequests.Commands.SubmitAccountRequ
                 .NotEmpty().WithMessage("Country is required.")
                 .MaximumLength(100).WithMessage("Country must not exceed 100 characters");
 
-            RuleFor(x => x.PrcId)
-                .ApplyFileUploadRules("PRC ID");
+            RuleFor(x => x.ClinicLatitude)
+                .NotNull().WithMessage("Clinic latitude is required.")
+                .InclusiveBetween(-90, 90).WithMessage("Clinic latitude must be between -90 and 90.");
 
-            RuleFor(x => x.BoardCertificate)
-                .ApplyFileUploadRules("Board Certificate");
+            RuleFor(x => x.ClinicLongitude)
+                .NotNull().WithMessage("Clinic longitude is required.")
+                .InclusiveBetween(-180, 180).WithMessage("Clinic longitude must be between -180 and 180.");
 
-            RuleFor(x => x.MedicalDiploma)
-                .ApplyFileUploadRules("Medical Diploma");
+            RuleFor(x => x.PrcLicense)
+                .ApplyFileUploadRules("PRC License / PRC ID");
 
-            RuleFor(x => x.CertificateOfGoodStanding)
-                .ApplyFileUploadRules("Certificate of Good Standing");
+            RuleFor(x => x.GovernmentId)
+                .ApplyFileUploadRules("Valid Government ID");
+
+            RuleFor(x => x.ProfessionalPhoto)
+                .ApplyFileUploadRules("Professional Photo / Profile Pic");
+
+            RuleFor(x => x.Cv)
+                .ApplyFileUploadRules("CV (Curriculum Vitae)");
         }
     }
 }

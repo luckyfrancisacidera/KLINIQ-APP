@@ -12,17 +12,20 @@ namespace Kliniq.Application.Features.AccountRequests.Commands.SubmitAccountRequ
         public string LastName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string LicenseNumber { get; set; } = string.Empty;
-        public string Specialization { get; set; } = string.Empty;
+        public List<string> Specializations { get; set; } = [];
 
         //address
         public string Street { get; set; } = string.Empty;
         public string City { get; set; } = string.Empty;
         public string Country { get; set; } = string.Empty;
 
+        public double ClinicLatitude { get; set; }
+        public double ClinicLongitude { get; set; }
+
         //document uploads
-        public FileUpload? PrcId { get; set; } = null!;
-        public FileUpload? BoardCertificate { get; set; } = null!;
-        public FileUpload? MedicalDiploma { get; set; } = null!;
-        public FileUpload? CertificateOfGoodStanding { get; set; } = null!;
+        public FileUpload? PrcLicense { get; set; } = null!;
+        public FileUpload? GovernmentId { get; set; } = null!;
+        public FileUpload? ProfessionalPhoto { get; set; } = null!;
+        public FileUpload? Cv { get; set; } = null!;
     }
 }

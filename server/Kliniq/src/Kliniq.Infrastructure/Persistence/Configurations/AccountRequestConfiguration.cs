@@ -45,6 +45,16 @@ namespace Kliniq.Infrastructure.Persistence.Configurations
                     .IsRequired();
             });
             
+            builder.OwnsOne(a => a.ClinicLocation, geo =>
+            {
+                geo.Property(g => g.Latitude)
+                    .HasColumnName("ClinicLatitude")
+                    .IsRequired();
+                geo.Property(g => g.Longitude)
+                    .HasColumnName("ClinicLongitude")
+                    .IsRequired();
+            });
+
             builder.Property(a => a.Email)
                 .HasMaxLength(150)
                 .IsRequired();
@@ -53,23 +63,24 @@ namespace Kliniq.Infrastructure.Persistence.Configurations
                 .HasMaxLength(150)
                 .IsRequired();
 
-            builder.Property(a => a.Specialization)
+            builder.Property(a => a.SpecializationsRaw)
+                .HasColumnName("Specializations")
                 .HasMaxLength(150)
                 .IsRequired();
 
-            builder.Property(a => a.PrcIdPath)
+            builder.Property(a => a.PrcLicensePath)
                 .HasMaxLength(500)
                 .IsRequired();
 
-            builder.Property(a => a.BoardCertificatePath)
+            builder.Property(a => a.GovernmentIdPath)
                 .HasMaxLength(500)
                 .IsRequired();
 
-            builder.Property(a => a.MedicalDiplomaPath)
+            builder.Property(a => a.ProfessionalPhotoPath)
                 .HasMaxLength(500)
                 .IsRequired();
 
-            builder.Property(a => a.CertificateOfGoodStandingPath)
+            builder.Property(a => a.CvPath)
                 .HasMaxLength(500)
                 .IsRequired();
 
@@ -98,6 +109,7 @@ namespace Kliniq.Infrastructure.Persistence.Configurations
             builder.Property(a => a.UpdatedBy).HasMaxLength(100);
 
             builder.Ignore(a => a.DomainEvents);
+            builder.Ignore(a => a.Specializations);
 
         }
     }
