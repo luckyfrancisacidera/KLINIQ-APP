@@ -18,7 +18,8 @@ namespace Kliniq.Application.Features.Practitioners.Commands.DeletePractitioner
 
         public async Task<Result> Handle(DeletePractitionerCommand request, CancellationToken cancellationToken)
         {
-            var practitioner = await _repository.GetByIdAsync(request.PractitionerId, cancellationToken);
+            var practitioner = await _repository.GetByIdTrackedAsync(request.PractitionerId, cancellationToken);
+
             if (practitioner is null)
                 return Result.Failure(Error.NotFound("Practitioner.NotFound", $"Practitioner '{request.PractitionerId}' was not found."));
 

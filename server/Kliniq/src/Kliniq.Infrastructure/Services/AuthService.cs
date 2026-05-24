@@ -25,6 +25,7 @@ namespace Kliniq.Infrastructure.Services
             CancellationToken cancellationToken)
         {
             var existingUser = await _userManager.FindByEmailAsync(email);
+
             if (existingUser is not null)
                 return Result.Failure<AuthServiceResult>(Error.Conflict("Auth.EmailTaken", "An account with this email already exists"));
 

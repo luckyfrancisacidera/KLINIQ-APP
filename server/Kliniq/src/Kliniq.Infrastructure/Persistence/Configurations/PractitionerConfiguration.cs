@@ -38,8 +38,7 @@ namespace Kliniq.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .UsePropertyAccessMode(PropertyAccessMode.Field);
 
-            builder.Property(p => p.ClinicID)
-                .IsRequired(true);
+            builder.Property(p => p.ClinicID).IsRequired(true);
 
             builder.HasOne(p => p.Clinic)
                 .WithMany(c => c.Practioners)
