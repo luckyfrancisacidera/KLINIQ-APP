@@ -21,15 +21,17 @@ namespace Kliniq.Application.Features.Auth.Commands.RefreshToken
         {
             var authResult = await _authService.RefreshTokenAsync(request.RefreshToken, cancellationToken);
 
-            if (!authResult.Succeeded)
+            var user = authResult.Value!;
+
+            if (!authResult.IsSuccess)
                 return Result.Failure<AuthTokensInternal>(Error.Validation("Auth.InvalidRefreshToken", "Invalid or expired refresh token"));
 
-            var accessToken = _jwtTokenService.GenerateAccessToken(authResult.UserId, authResult.Email, authResult.Role);
+            var accessToken = _jwtTokenService.GenerateAccessToken(user.UserId, user.Email, user.Role);
 
             var newRefreshToken = _jwtTokenService.GenerateRefreshToken();
             var newRefreshTokenHash = _jwtTokenService.HashRefreshToken(newRefreshToken);
 
-            await _authService.SaveRefreshTokenAsync(authResult.UserId, newRefreshTokenHash, cancellationToken);
+            await _authService.SaveRefreshTokenAsync(user.UserId, newRefreshTokenHash, cancellationToken);
 
             return Result.Success(new AuthTokensInternal
             {
@@ -38,9 +40,9 @@ namespace Kliniq.Application.Features.Auth.Commands.RefreshToken
                 Response = new AuthResponseDto
                 {
                     AccessTokenExpiresAtUtc = _jwtTokenService.GetAccessTokenExpiry(),
-                    UserId = authResult.UserId,
-                    Email = authResult.Email,
-                    Role = authResult.Role,
+                    UserId = user.UserId,
+                    Email = user.Email,
+                    Role = user.Role,
                 }
             });
         }

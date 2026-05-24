@@ -36,9 +36,11 @@ namespace Kliniq.Application.Features.Auth.Commands.Register
                 "Patient",
                 cancellationToken);
 
+            var user = authResult.Value!;
+
             var patient = new Patient
             (
-                Guid.Parse(authResult.UserId),
+                Guid.Parse(user.UserId),
                 new FullName(request.FirstName, request.LastName),
                 request.DateOfBirth,
                 request.Gender,
@@ -50,13 +52,13 @@ namespace Kliniq.Application.Features.Auth.Commands.Register
             await _patientRepository.AddAsync(patient, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            var accessToken = _jwtTokenService.GenerateAccessToken(authResult.UserId, authResult.Email, "Patient");
+            var accessToken = _jwtTokenService.GenerateAccessToken(user.UserId, user.Email, "Patient");
 
             var refreshToken = _jwtTokenService.GenerateRefreshToken();
 
             var refreshTokenHash = _jwtTokenService.HashRefreshToken(refreshToken);
 
-            await _authService.SaveRefreshTokenAsync(authResult.UserId, refreshTokenHash, cancellationToken);
+            await _authService.SaveRefreshTokenAsync(user.UserId, refreshTokenHash, cancellationToken);
 
             return Result.Success( new AuthTokensInternal
             {
@@ -65,8 +67,8 @@ namespace Kliniq.Application.Features.Auth.Commands.Register
                 Response = new AuthResponseDto
                 {
                     AccessTokenExpiresAtUtc = _jwtTokenService.GetAccessTokenExpiry(),
-                    UserId = authResult.UserId,
-                    Email = authResult.Email,
+                    UserId = user.UserId,
+                    Email = user.Email,
                     Role = "Patient"
                 }
             });

@@ -53,7 +53,7 @@ namespace Kliniq.Application.Features.AccountRequests.Commands.ApproveAccountReq
                 <p>Your registered details:</p>
                 <ul>
                     <li>Email: {accountRequest.Email} </li>
-                    <li>Specialization: {accountRequest.Specialization} </li>
+                    <li>Specialization: {accountRequest.Specializations} </li>
                 </ul>
                 """;
 

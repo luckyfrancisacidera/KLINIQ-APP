@@ -20,7 +20,7 @@ namespace Kliniq.Application.Features.Practitioners.Commands.DeleteSchedule
             var schedule = await _scheduleRepository.GetByIdTrackedAsync(request.ScheduleId, cancellationToken);
 
             if(schedule is null)
-                return Result.Failure(Error.NotFound("Schedule.NotFoundn", $"Schedule '{request.ScheduleId}' was not found"));
+                return Result.Failure(Error.NotFound("Schedule.NotFound", $"Schedule '{request.ScheduleId}' was not found"));
 
             _scheduleRepository.Delete(schedule);
             await _unitOfWork.SaveChangesAsync(cancellationToken);

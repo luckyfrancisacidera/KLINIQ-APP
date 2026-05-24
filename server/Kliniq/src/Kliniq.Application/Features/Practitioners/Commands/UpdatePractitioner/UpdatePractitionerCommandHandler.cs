@@ -20,7 +20,7 @@ namespace Kliniq.Application.Features.Practitioners.Commands.UpdatePractitioner
         }
         public async Task<Result<PractitionerDto>> Handle(UpdatePractitionerCommand request, CancellationToken cancellationToken)
         {
-            var practitioner = await _repository.GetByIdAsync(request.PractitionerId, cancellationToken);
+            var practitioner = await _repository.GetByIdTrackedAsync(request.PractitionerId, cancellationToken);
 
             if(practitioner is null)
                 return Result.Failure<PractitionerDto>(Error.NotFound("Practitioner.NotFound", $"Practitioner '{request.PractitionerId}' was not found."));

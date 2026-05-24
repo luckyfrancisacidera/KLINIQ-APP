@@ -28,8 +28,6 @@ namespace Kliniq.Infrastructure.Persistence.Repositories
             => await _context.Practitioners.AsNoTracking()
                 .Include(p => p.Schedules).ThenInclude(s => s.Breaks)
                 .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
-
-        //For Command Methods
         public async Task<PagedResult<Practitioner>> GetAllAsync(int page, int pageSize, CancellationToken cancellationToken)
         {
             var query = _context.Practitioners.AsNoTracking();
@@ -39,22 +37,23 @@ namespace Kliniq.Infrastructure.Persistence.Repositories
             return new PagedResult<Practitioner>(items, total, page, pageSize);
         }
 
+        //For Command Methods
+
         public async Task<Practitioner?> GetByIdTrackedAsync(Guid id, CancellationToken cancellationToken)
             => await _context.Practitioners.FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
 
+
+        // For checking if practitioner exists
         public async Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken)
             => await _context.Practitioners.AnyAsync(p => p.Id == id, cancellationToken);
 
         public async Task<bool> ExistsByUserIdAsync(Guid userId, CancellationToken cancellationToken)
             => await _context.Practitioners.AnyAsync(p => p.UserId == userId, cancellationToken);
 
+        //For Update and Delete
         public void Update(Practitioner practitioner)
-        {
-            throw new NotImplementedException();
-        }
+            => _context.Practitioners.Update(practitioner);
         public void Delete(Practitioner practitioner)
-        {
-            throw new NotImplementedException();
-        }
+            => _context.Practitioners.Remove(practitioner);
     }
 }
