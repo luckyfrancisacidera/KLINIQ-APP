@@ -11,6 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Features\Appointments\Mappings\" />
+    <Folder Include="Features\Appointments\Queries\" />
     <Folder Include="Features\Auth\Queries\" />
   </ItemGroup>
 
