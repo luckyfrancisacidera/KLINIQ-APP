@@ -5,11 +5,17 @@ namespace Kliniq.Application.Common.Interfaces.Repositories
 {
     public interface IAppointmentRepository
     {
-        Task AddAppointmentAsync(Appointment appointment, CancellationToken cancellationToken);
+        Task AddAsync(Appointment appointment, CancellationToken cancellationToken);
+
+        // For QUERIES
         Task<Appointment?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<PagedResult<Appointment>> GetByPatientIdAsync(Guid patientId, int page, int pageSize, CancellationToken cancellationToken);
         Task<PagedResult<Appointment>> GetByPractitionerIdAsync(Guid practitionerId, int page, int pageSize, CancellationToken cancellationToken);
         Task<bool> HasConflictAsync(Guid practitionerId, DateTime scheduledAt, int durationMinutes, Guid? excludeId, CancellationToken cancellationToken);
-        void Delete(Appointment appointment);
+
+        // For COMMANDS
+        Task<Appointment?> GetByIdTrackedAsync(Guid id, CancellationToken cancellationToken);
+
+        void Update(Appointment appointment);
     }
 }
