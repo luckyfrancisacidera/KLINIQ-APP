@@ -8,7 +8,7 @@ namespace Kliniq.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Schedule> builder)
         {
-            builder.ToTable("SChedules");
+            builder.ToTable("Schedules");
 
             builder.HasKey(s => s.Id);
 
@@ -29,6 +29,10 @@ namespace Kliniq.Infrastructure.Persistence.Configurations
                 .HasColumnType("time")
                 .IsRequired();
 
+            builder.Property(s => s.AppointmentLengthMinutes)
+                .IsRequired()
+                .HasDefaultValue(30);
+
             builder.Property(s => s.IsAvailable)
                 .IsRequired()
                 .HasDefaultValue(true);
@@ -38,8 +42,7 @@ namespace Kliniq.Infrastructure.Persistence.Configurations
                 .HasForeignKey(s => s.PractitionerId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasIndex(s => new {s.PractitionerId, s.StartTime })
-                .IsUnique();
+            builder.HasIndex(s => new {s.PractitionerId, s.StartTime });
 
             builder.Property(s => s.CreatedAtUtc).IsRequired();
             builder.Property(s => s.UpdatedAtUtc);

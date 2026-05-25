@@ -2,9 +2,9 @@
 
 namespace Kliniq.Application.Features.Practitioners.Commands.RemoveScheduleBreak
 {
-    public sealed class RemoveScheduleCommandValidator : AbstractValidator<RemoveScheduleCommand>
+    public sealed class RemoveScheduleBreakCommandValidator : AbstractValidator<RemoveScheduleBreakCommand>
     {
-        public RemoveScheduleCommandValidator()
+        public RemoveScheduleBreakCommandValidator()
         {
             RuleFor(x => x.ScheduleId)
                 .NotEmpty().WithMessage("Schedule ID is required.");

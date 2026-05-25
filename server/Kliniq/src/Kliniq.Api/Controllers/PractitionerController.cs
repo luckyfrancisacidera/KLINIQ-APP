@@ -1,7 +1,10 @@
 ﻿using Kliniq.Api.Extensions;
+using Kliniq.Application.Features.Practitioners.Commands.AddScheduleBreak;
 using Kliniq.Application.Features.Practitioners.Commands.CreateSchedule;
 using Kliniq.Application.Features.Practitioners.Commands.DeletePractitioner;
+using Kliniq.Application.Features.Practitioners.Commands.RemoveScheduleBreak;
 using Kliniq.Application.Features.Practitioners.Commands.UpdatePractitioner;
+using Kliniq.Application.Features.Practitioners.Commands.UpdateSchedule;
 using Kliniq.Application.Features.Practitioners.Queries.GetAvailableSlots;
 using Kliniq.Application.Features.Practitioners.Queries.GetPractitioner;
 using Kliniq.Application.Features.Practitioners.Queries.GetPractitioners;
@@ -99,18 +102,42 @@ namespace Kliniq.Api.Controllers
 
         }
 
-        //[HttpPut("{id:guid}/schedules/{scheduleId:guid}")]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
-        //[ProducesResponseType(StatusCodes.Status404NotFound)]
-        //[ProducesResponseType(StatusCodes.Status409Conflict)]
-        //[ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-        //public async Task<IActionResult> UpdateSchedule(Guid id, Guid scheduleId, [FromBody] CreateScheduleCommand command, CancellationToken cancellationToken)
-        //{
-        //    var result = await _mediator.Send(command with { ScheduleId = scheduleId }, cancellationToken);
-        //    return result.ToActionResult();
+        [HttpPut("{id:guid}/schedules/{scheduleId:guid}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        public async Task<IActionResult> UpdateSchedule(Guid id, Guid scheduleId, [FromBody] UpdateScheduleCommand command, CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(command with { ScheduleId = scheduleId }, cancellationToken);
+            return result.ToActionResult();
 
-        //}
+        }
+
+        //Break Management Endpoints
+        [HttpPost("{id:guid}/schedules/{scheduleId:guid}/breaks")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        public async Task<IActionResult> AddBreak(Guid id, Guid scheduleId, [FromBody] AddScheduleBreakCommand command, CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(command with { ScheduleId = scheduleId }, cancellationToken);
+            return result.ToActionResult();
+        }
+
+        [HttpDelete("{id:guid}/schedules/{scheduleId:guid}/breaks/{breakId:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteBreak(Guid id, Guid scheduleId, Guid breakId, CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(new RemoveScheduleBreakCommand(scheduleId, breakId), cancellationToken);
+           
+            if(result.IsFailure) return result.ToActionResult();
+            return NoContent();
+        }
+
     }
 
 }
