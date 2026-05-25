@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Kliniq.Application.Features.Practitioners.Commands.RemoveScheduleBreak
 {
-    public sealed record RemoveScheduleCommand(
+    public sealed record RemoveScheduleBreakCommand(
         Guid ScheduleId,
         Guid BreakId
     ) : IRequest<Result<ScheduleSummaryDto>>;
