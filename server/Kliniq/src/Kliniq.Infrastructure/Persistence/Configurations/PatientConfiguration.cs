@@ -60,7 +60,7 @@ namespace Kliniq.Infrastructure.Persistence.Configurations
                 .HasMaxLength(20);
             
             builder.Property(p => p.EmergencyContact)
-                .HasMaxLength(20);
+                .HasMaxLength(100);
 
             builder.HasIndex(p => p.UserId).IsUnique();
 
