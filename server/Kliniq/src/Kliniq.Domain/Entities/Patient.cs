@@ -12,12 +12,13 @@ namespace Kliniq.Domain.Entities
         public DateTime DateOfBirth { get; private set; }
         public Gender Gender { get; private set; }
         public Address Address { get; private set; } = null!;
-
         public string? PhoneNumber { get; private set; }
         public string? EmergencyContact { get; private set; }
 
         private readonly List<Appointment> _appointments = new();
         public IReadOnlyCollection<Appointment> Appointments => _appointments.AsReadOnly();
+
+        public int Age => CalculateAge();
 
         private Patient() { }
 
@@ -31,8 +32,8 @@ namespace Kliniq.Domain.Entities
             string? emergencyContact
             )            
         {
-            if (dateOfBirth > DateTime.UtcNow)
-                throw new ArgumentException("Date of birth cannot be in the future");
+            if (dateOfBirth >= DateTime.UtcNow.Date)
+                throw new ArgumentException("Date of birth cannot be today or in the future");
             
             Id = Guid.NewGuid();
             UserId = userId;
@@ -44,8 +45,20 @@ namespace Kliniq.Domain.Entities
             EmergencyContact = emergencyContact;
         }
 
+        public void UpdateProfile(FullName name, Address address, string? phoneNumber, string? emergencyContact)
+        {
+            Name = name ?? throw new ArgumentNullException(nameof(name));
+            Address = address ?? throw new ArgumentNullException(nameof(address));
+            PhoneNumber = phoneNumber;
+            EmergencyContact = emergencyContact;
+            UpdatedAtUtc = DateTime.UtcNow;
+        }
 
-        public int Age => DateTime.UtcNow.Year - DateOfBirth.Year;
+        public void UpdateName(FullName newName)
+        {
+            Name = newName ?? throw new ArgumentNullException(nameof(newName));
+            UpdatedAtUtc = DateTime.UtcNow;
+        }
 
         public void UpdateAddress(Address newAddress)
         {
@@ -57,16 +70,18 @@ namespace Kliniq.Domain.Entities
             PhoneNumber = newPhoneNumber;
             UpdatedAtUtc = DateTime.UtcNow;
         }
-        public void UpdateEmergencyContact(string newEmergencyContact)
+        public void UpdateEmergencyContact(string? newEmergencyContact)
             {
                 EmergencyContact = newEmergencyContact;
                 UpdatedAtUtc = DateTime.UtcNow;
         }
-        public void UpdateName(FullName newName)
-        {
-            Name = newName;
-            UpdatedAtUtc = DateTime.UtcNow;
-        }
 
+        private int CalculateAge()
+        {
+            var today = DateTime.UtcNow.Date;
+            var age = today.Year - DateOfBirth.Year;
+            if (DateOfBirth.Date > today.AddYears(-age)) age--;
+            return age;
+        }
     }
 }
