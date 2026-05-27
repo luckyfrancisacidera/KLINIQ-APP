@@ -1,5 +1,4 @@
-﻿using FluentValidation.Internal;
-using Kliniq.Application.Common.Interfaces.Repositories;
+﻿using Kliniq.Application.Common.Interfaces.Repositories;
 using Kliniq.Application.Features.Practitioners.DTOs;
 using Kliniq.Domain.Common;
 using Kliniq.Domain.Enums;
