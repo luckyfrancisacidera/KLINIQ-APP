@@ -14,11 +14,8 @@ namespace Kliniq.Api.Controllers
     public class AccountRequestController : ControllerBase
     {
         private readonly IMediator _mediator;
-        public AccountRequestController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
-
+        public AccountRequestController(IMediator mediator) => _mediator = mediator;
+     
         [HttpPost("submit")]
         [Consumes("multipart/form-data")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -35,23 +32,26 @@ namespace Kliniq.Api.Controllers
                 LastName = form.LastName,
                 Email = form.Email,
                 LicenseNumber = form.LicenseNumber,
-                Specialization = form.Specialization,
+                Specializations = form.Specializations,
+
                 Street = form.Street,
                 City = form.City,
                 Country = form.Country,
 
-                PrcId = ToFileUpload(form.PrcId!),
-                BoardCertificate = ToFileUpload(form.BoardCertificate!),
-                MedicalDiploma = ToFileUpload(form.MedicalDiploma!),
-                CertificateOfGoodStanding = ToFileUpload(form.CertificateOfGoodStanding!),
+                ClinicLatitude = form.ClinicLatitude,
+                ClinicLongitude = form.ClinicLongitude,
+
+                PrcLicense = ToFileUpload(form.PrcLicense!),
+                GovernmentId = ToFileUpload(form.GovernmentId!),
+                ProfessionalPhoto = ToFileUpload(form.ProfessionalPhoto!),
+                Cv = ToFileUpload(form.Cv!),
             };
 
             var result = await _mediator.Send(command, cancellationToken);
 
-            if(result.IsFailure)
-                return result.ToActionResult();
+            if(result.IsFailure) return result.ToActionResult();
 
-            return CreatedAtAction(null, result);   
+            return CreatedAtAction(null, result.Value);   
         }
 
         [HttpPost("{id}/approve")]

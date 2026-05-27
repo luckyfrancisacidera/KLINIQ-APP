@@ -6,11 +6,11 @@ using MediatR;
 
 namespace Kliniq.Application.Features.Practitioners.Queries.GetPractitioners
 {
-    public sealed class GetPractitionerQueryHandler : IRequestHandler<GetPractitionersQuery, Result<PagedResult<PractitionerDto>>>
+    public sealed class GetPractitionersQueryHandler : IRequestHandler<GetPractitionersQuery, Result<PagedResult<PractitionerDto>>>
     {
         private readonly IPractitionerRepository _repository;
 
-        public GetPractitionerQueryHandler(IPractitionerRepository repository) => _repository = repository;
+        public GetPractitionersQueryHandler(IPractitionerRepository repository) => _repository = repository;
 
         public async Task<Result<PagedResult<PractitionerDto>>> Handle(GetPractitionersQuery request, CancellationToken cancellationToken)
         {

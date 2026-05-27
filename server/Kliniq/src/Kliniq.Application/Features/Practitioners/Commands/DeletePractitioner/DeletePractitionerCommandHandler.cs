@@ -5,6 +5,8 @@ using MediatR;
 
 namespace Kliniq.Application.Features.Practitioners.Commands.DeletePractitioner
 {
+    public sealed record DeletePractitionerCommand(Guid PractitionerId) : IRequest<Result>;
+
     public sealed class DeletePractitionerCommandHandler : IRequestHandler<DeletePractitionerCommand, Result>
     {
         private readonly IPractitionerRepository _repository;

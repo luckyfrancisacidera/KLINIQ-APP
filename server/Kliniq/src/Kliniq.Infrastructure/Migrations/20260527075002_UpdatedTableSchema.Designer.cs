@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Kliniq.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260518163435_UpdatePractitionerDB")]
-    partial class UpdatePractitionerDB
+    [Migration("20260527075002_UpdatedTableSchema")]
+    partial class UpdatedTableSchema
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,16 +34,6 @@ namespace Kliniq.Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<string>("BoardCertificatePath")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("CertificateOfGoodStandingPath")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
                     b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("datetime2");
 
@@ -51,10 +41,20 @@ namespace Kliniq.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("CvPath")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("GovernmentIdPath")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<DateTime?>("InvitationExpiresAt")
                         .HasColumnType("datetime2");
@@ -71,20 +71,15 @@ namespace Kliniq.Infrastructure.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<string>("MedicalDiplomaPath")
+                    b.Property<string>("PrcLicensePath")
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<string>("PrcIdPath")
+                    b.Property<string>("ProfessionalPhotoPath")
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("Specialization")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -97,6 +92,12 @@ namespace Kliniq.Infrastructure.Migrations
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("_specializations")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
+                        .HasColumnName("Specializations");
 
                     b.HasKey("Id");
 
@@ -126,14 +127,18 @@ namespace Kliniq.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<Guid>("DoctorId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<long>("Duration")
                         .HasColumnType("bigint")
                         .HasColumnName("DurationMinutes");
 
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
                     b.Property<Guid>("PatientId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PractitionerId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Reason")
@@ -159,11 +164,11 @@ namespace Kliniq.Infrastructure.Migrations
 
                     b.HasIndex("ClinicId");
 
-                    b.HasIndex("DoctorId");
-
                     b.HasIndex("PatientId");
 
-                    b.HasIndex("ScheduledAt");
+                    b.HasIndex("PractitionerId");
+
+                    b.HasIndex("PractitionerId", "ScheduledAt");
 
                     b.ToTable("Appointments", (string)null);
                 });
@@ -259,8 +264,8 @@ namespace Kliniq.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("EmergencyContact")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Gender")
                         .IsRequired()
@@ -294,7 +299,7 @@ namespace Kliniq.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("ClinicID")
+                    b.Property<Guid>("ClinicID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAtUtc")
@@ -309,11 +314,6 @@ namespace Kliniq.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("Specialization")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.Property<DateTime?>("UpdatedAtUtc")
                         .HasColumnType("datetime2");
 
@@ -323,6 +323,12 @@ namespace Kliniq.Infrastructure.Migrations
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("_specializations")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)")
+                        .HasColumnName("Specializations");
 
                     b.HasKey("Id");
 
@@ -338,6 +344,11 @@ namespace Kliniq.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("AppointmentLengthMinutes")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(30);
 
                     b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("datetime2");
@@ -374,10 +385,31 @@ namespace Kliniq.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PractitionerId", "StartTime")
-                        .IsUnique();
+                    b.HasIndex("PractitionerId", "StartTime");
 
-                    b.ToTable("SChedules", (string)null);
+                    b.ToTable("Schedules", (string)null);
+                });
+
+            modelBuilder.Entity("Kliniq.Domain.Entities.ScheduleBreak", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<TimeOnly>("EndTime")
+                        .HasColumnType("time");
+
+                    b.Property<Guid>("ScheduleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<TimeOnly>("StartTime")
+                        .HasColumnType("time");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ScheduleId");
+
+                    b.ToTable("ScheduleBreak");
                 });
 
             modelBuilder.Entity("Kliniq.Infrastructure.Identity.AppUser", b =>
@@ -626,6 +658,27 @@ namespace Kliniq.Infrastructure.Migrations
                                 .HasForeignKey("AccountRequestId");
                         });
 
+                    b.OwnsOne("Kliniq.Domain.ValueObjects.GeoLocation", "ClinicLocation", b1 =>
+                        {
+                            b1.Property<Guid>("AccountRequestId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<decimal>("Latitude")
+                                .HasColumnType("decimal(9,6)")
+                                .HasColumnName("ClinicLatitude");
+
+                            b1.Property<decimal>("Longitude")
+                                .HasColumnType("decimal(9,6)")
+                                .HasColumnName("ClinicLongitude");
+
+                            b1.HasKey("AccountRequestId");
+
+                            b1.ToTable("AccountRequests");
+
+                            b1.WithOwner()
+                                .HasForeignKey("AccountRequestId");
+                        });
+
                     b.OwnsOne("Kliniq.Domain.ValueObjects.FullName", "Name", b1 =>
                         {
                             b1.Property<Guid>("AccountRequestId")
@@ -652,6 +705,9 @@ namespace Kliniq.Infrastructure.Migrations
                         });
 
                     b.Navigation("Address")
+                        .IsRequired();
+
+                    b.Navigation("ClinicLocation")
                         .IsRequired();
 
                     b.Navigation("Name")
@@ -766,7 +822,8 @@ namespace Kliniq.Infrastructure.Migrations
                     b.HasOne("Kliniq.Domain.Entities.Clinic", "Clinic")
                         .WithMany("Practioners")
                         .HasForeignKey("ClinicID")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.OwnsOne("Kliniq.Domain.ValueObjects.FullName", "Name", b1 =>
                         {
@@ -808,6 +865,15 @@ namespace Kliniq.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Practioner");
+                });
+
+            modelBuilder.Entity("Kliniq.Domain.Entities.ScheduleBreak", b =>
+                {
+                    b.HasOne("Kliniq.Domain.Entities.Schedule", null)
+                        .WithMany("Breaks")
+                        .HasForeignKey("ScheduleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -864,6 +930,11 @@ namespace Kliniq.Infrastructure.Migrations
             modelBuilder.Entity("Kliniq.Domain.Entities.Clinic", b =>
                 {
                     b.Navigation("Practioners");
+                });
+
+            modelBuilder.Entity("Kliniq.Domain.Entities.Schedule", b =>
+                {
+                    b.Navigation("Breaks");
                 });
 #pragma warning restore 612, 618
         }

@@ -8,6 +8,7 @@
         DateTime ScheduledAt,
         int DurationMinutes,
         string Status,
-        string? Reason
+        string? Reason,
+        string? Notes
     );
 }

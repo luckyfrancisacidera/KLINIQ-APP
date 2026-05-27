@@ -49,6 +49,8 @@ namespace Kliniq.Infrastructure
             services.AddScoped<IPractitionerRepository, PractitionerRepository>();
             services.AddScoped<IClinicRepository, ClinicRepository>();
             services.AddScoped<IAccountRequestRepository, AccountRequestRepository>();
+            services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+            services.AddScoped<IScheduleRepository, ScheduleRepository>();
 
             //services.AddScoped<IAppointmentRepository, AppointmentRepository>();
             services.AddScoped<IJwtTokenService, JwtTokenService>();

@@ -11,10 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Appointments\Mappings\" />
-    <Folder Include="Features\Appointments\Queries\" />
     <Folder Include="Features\Auth\Queries\" />
-    <Folder Include="Features\Patients\Commands\" />
   </ItemGroup>
 
   <ItemGroup>
