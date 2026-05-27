@@ -20,19 +20,14 @@ namespace Kliniq.Application.Common.Validation
                     .WithMessage($"{fieldLabel} is required.")
                 .Must(f => f!.Size > 0)
                     .WithMessage($"{fieldLabel} file is empty.")
-                    .When(f => f is not null)
                 .Must(f => f!.Size <= MaxFileSizeBytes)
                     .WithMessage($"{fieldLabel} must not exceed 5 MB.")
-                    .When(f => f is not null)
                 .Must(f => AllowedContentTypes.Contains(f!.NormalizedContentType))
                     .WithMessage($"{fieldLabel} must be pdf, jpg, jpeg, or png.")
-                    .When(f => f is not null)
                 .Must(f => AllowedExtensions.Contains(f!.Extension))
                     .WithMessage($"{fieldLabel} has an invalid file extension.")
-                    .When(f => f is not null)
                 .Must(f => FileSignatureValidator.IsValidSignature(f!.Content, f.Extension))
-                    .WithMessage($"{fieldLabel} file content does not match its declared type.")
-                    .When(f => f is not null);
+                    .WithMessage($"{fieldLabel} file content does not match its declared type.");
         }
     }
 }

@@ -6,19 +6,20 @@ namespace Kliniq.Domain.Entities
     public class Appointment : AuditableEntity
     {
         public Guid PatientId { get; private set; }
-        public Guid DoctorId { get; private set; }
+        public Guid PractitionerId { get; private set; }
         public Guid ClinicId { get; private set; }
 
         public  DateTime ScheduledAt { get; private set; }
         public TimeSpan Duration { get; private set; }
         public AppointmentStatus Status { get; private set; }
         public string? Reason { get; private set; }
+        public string? Notes { get; private set; }
 
         private Appointment() { }
 
         public Appointment(
             Guid patientId,
-            Guid doctorId,
+            Guid practitionerId,
             Guid clinicId,
             DateTime scheduledAt, 
             TimeSpan duration,
@@ -32,7 +33,7 @@ namespace Kliniq.Domain.Entities
 
             Id = Guid.NewGuid();
             PatientId = patientId;
-            DoctorId = doctorId;
+            PractitionerId = practitionerId;
             ClinicId = clinicId;
             ScheduledAt = scheduledAt;
             Duration = duration;
@@ -47,22 +48,29 @@ namespace Kliniq.Domain.Entities
                 throw new DomainException("Only pending appointments can be confirmed");
 
             Status = AppointmentStatus.Confirmed;
+            UpdatedAtUtc = DateTime.UtcNow;
         }
 
         public void Cancel()
         {
             if (Status == AppointmentStatus.Completed)
                 throw new DomainException("Cannot cancel completed appointment");
+
+            if (Status == AppointmentStatus.Cancelled)
+                throw new DomainException("Appointment is already cancelled");
+
             Status = AppointmentStatus.Cancelled;
+            UpdatedAtUtc = DateTime.UtcNow;
         }
 
-        public void Complete()
+        public void Complete(string? notes = null)
         {
-            if(Status != AppointmentStatus.Confirmed)
+            if (Status != AppointmentStatus.Confirmed)
                 throw new DomainException("Only confirmed appointments can be completed");
+
             Status = AppointmentStatus.Completed;
+            Notes = notes;
+            UpdatedAtUtc = DateTime.UtcNow;
         }
-
-
     }
 }

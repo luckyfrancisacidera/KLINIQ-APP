@@ -12,11 +12,10 @@ namespace Kliniq.Infrastructure.Persistence.Configurations
             builder.ToTable("Appointments");
 
             builder.HasKey(a => a.Id);
-
             builder.Property(a => a.Id).ValueGeneratedNever();
 
             builder.Property(a => a.PatientId).IsRequired();
-            builder.Property(a => a.DoctorId).IsRequired();
+            builder.Property(a => a.PractitionerId).IsRequired();
             builder.Property(a => a.ClinicId).IsRequired();
 
             builder.Property(a => a.ScheduledAt).IsRequired();
@@ -36,10 +35,14 @@ namespace Kliniq.Infrastructure.Persistence.Configurations
             builder.Property(a => a.Reason)
                 .HasMaxLength(500);
 
+            builder.Property(a => a.Notes)
+                .HasMaxLength(1000);
+
             builder.HasIndex(a => a.PatientId);
-            builder.HasIndex(a => a.DoctorId);
+            builder.HasIndex(a => new { a.PractitionerId, a.ScheduledAt });
+
+            builder.HasIndex(a => a.PractitionerId);
             builder.HasIndex(a => a.ClinicId);
-            builder.HasIndex(a => a.ScheduledAt);
 
             builder.Property(a => a.CreatedAtUtc).IsRequired();
             builder.Property(a => a.UpdatedAtUtc);

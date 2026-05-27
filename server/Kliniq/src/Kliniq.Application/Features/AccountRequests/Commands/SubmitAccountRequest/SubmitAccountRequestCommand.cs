@@ -23,9 +23,9 @@ namespace Kliniq.Application.Features.AccountRequests.Commands.SubmitAccountRequ
         public double ClinicLongitude { get; set; }
 
         //document uploads
-        public FileUpload? PrcLicense { get; set; } = null!;
-        public FileUpload? GovernmentId { get; set; } = null!;
-        public FileUpload? ProfessionalPhoto { get; set; } = null!;
-        public FileUpload? Cv { get; set; } = null!;
+        public FileUpload PrcLicense { get; set; } = default!;
+        public FileUpload GovernmentId { get; set; } = default!;
+        public FileUpload ProfessionalPhoto { get; set; } = default!;
+        public FileUpload Cv { get; set; } = default!;
     }
 }

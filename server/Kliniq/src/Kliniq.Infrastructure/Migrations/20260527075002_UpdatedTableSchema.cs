@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Kliniq.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class UpdatedTableSchema : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,13 +16,25 @@ namespace Kliniq.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    LicenseNumber = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Specialization = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    AdminNote = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    LicenseNumber = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Street = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Country = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ClinicLatitude = table.Column<decimal>(type: "decimal(9,6)", nullable: false),
+                    ClinicLongitude = table.Column<decimal>(type: "decimal(9,6)", nullable: false),
+                    PrcLicensePath = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    GovernmentIdPath = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    ProfessionalPhotoPath = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    CvPath = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    AdminNote = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    InvitationToken = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    InvitationExpiresAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsInvitationUsed = table.Column<bool>(type: "bit", nullable: false),
+                    Specializations = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     CreatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
@@ -39,12 +51,13 @@ namespace Kliniq.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PatientId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DoctorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PractitionerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ClinicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ScheduledAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DurationMinutes = table.Column<long>(type: "bigint", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Reason = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    Notes = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     CreatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
@@ -77,6 +90,8 @@ namespace Kliniq.Infrastructure.Migrations
                     Role = table.Column<int>(type: "int", nullable: false),
                     PatientId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     PractitionerId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    RefreshTokenHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RefreshTokenExpiresAtUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -129,7 +144,7 @@ namespace Kliniq.Infrastructure.Migrations
                     City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Country = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    EmergencyContact = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    EmergencyContact = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     CreatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
@@ -273,7 +288,7 @@ namespace Kliniq.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Practioners",
+                name: "Practitioners",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -281,8 +296,8 @@ namespace Kliniq.Infrastructure.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LicenseNumber = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Specialization = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     ClinicID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Specializations = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     CreatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
@@ -290,9 +305,9 @@ namespace Kliniq.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Practioners", x => x.Id);
+                    table.PrimaryKey("PK_Practitioners", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Practioners_Clinics_ClinicID",
+                        name: "FK_Practitioners_Clinics_ClinicID",
                         column: x => x.ClinicID,
                         principalTable: "Clinics",
                         principalColumn: "Id",
@@ -300,7 +315,7 @@ namespace Kliniq.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SChedules",
+                name: "Schedules",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -308,6 +323,7 @@ namespace Kliniq.Infrastructure.Migrations
                     Day = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     StartTime = table.Column<TimeOnly>(type: "time", nullable: false),
                     EndTime = table.Column<TimeOnly>(type: "time", nullable: false),
+                    AppointmentLengthMinutes = table.Column<int>(type: "int", nullable: false, defaultValue: 30),
                     IsAvailable = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
                     CreatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -316,11 +332,31 @@ namespace Kliniq.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SChedules", x => x.Id);
+                    table.PrimaryKey("PK_Schedules", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SChedules_Practioners_PractitionerId",
+                        name: "FK_Schedules_Practitioners_PractitionerId",
                         column: x => x.PractitionerId,
-                        principalTable: "Practioners",
+                        principalTable: "Practitioners",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ScheduleBreak",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ScheduleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StartTime = table.Column<TimeOnly>(type: "time", nullable: false),
+                    EndTime = table.Column<TimeOnly>(type: "time", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ScheduleBreak", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ScheduleBreak_Schedules_ScheduleId",
+                        column: x => x.ScheduleId,
+                        principalTable: "Schedules",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -329,6 +365,13 @@ namespace Kliniq.Infrastructure.Migrations
                 name: "IX_AccountRequests_Email",
                 table: "AccountRequests",
                 column: "Email");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AccountRequests_InvitationToken",
+                table: "AccountRequests",
+                column: "InvitationToken",
+                unique: true,
+                filter: "[InvitationToken] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AccountRequests_Status",
@@ -341,19 +384,19 @@ namespace Kliniq.Infrastructure.Migrations
                 column: "ClinicId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Appointments_DoctorId",
-                table: "Appointments",
-                column: "DoctorId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Appointments_PatientId",
                 table: "Appointments",
                 column: "PatientId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Appointments_ScheduledAt",
+                name: "IX_Appointments_PractitionerId",
                 table: "Appointments",
-                column: "ScheduledAt");
+                column: "PractitionerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Appointments_PractitionerId_ScheduledAt",
+                table: "Appointments",
+                columns: new[] { "PractitionerId", "ScheduledAt" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -407,21 +450,25 @@ namespace Kliniq.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Practioners_ClinicID",
-                table: "Practioners",
+                name: "IX_Practitioners_ClinicID",
+                table: "Practitioners",
                 column: "ClinicID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Practioners_UserId",
-                table: "Practioners",
+                name: "IX_Practitioners_UserId",
+                table: "Practitioners",
                 column: "UserId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_SChedules_PractitionerId_StartTime",
-                table: "SChedules",
-                columns: new[] { "PractitionerId", "StartTime" },
-                unique: true);
+                name: "IX_ScheduleBreak_ScheduleId",
+                table: "ScheduleBreak",
+                column: "ScheduleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Schedules_PractitionerId_StartTime",
+                table: "Schedules",
+                columns: new[] { "PractitionerId", "StartTime" });
         }
 
         /// <inheritdoc />
@@ -455,7 +502,7 @@ namespace Kliniq.Infrastructure.Migrations
                 name: "Patients");
 
             migrationBuilder.DropTable(
-                name: "SChedules");
+                name: "ScheduleBreak");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -464,7 +511,10 @@ namespace Kliniq.Infrastructure.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Practioners");
+                name: "Schedules");
+
+            migrationBuilder.DropTable(
+                name: "Practitioners");
 
             migrationBuilder.DropTable(
                 name: "Clinics");
