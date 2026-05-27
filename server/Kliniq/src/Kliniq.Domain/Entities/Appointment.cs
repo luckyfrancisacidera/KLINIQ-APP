@@ -12,6 +12,7 @@ namespace Kliniq.Domain.Entities
         public  DateTime ScheduledAt { get; private set; }
         public TimeSpan Duration { get; private set; }
         public AppointmentStatus Status { get; private set; }
+        public DateTime EndTime { get; private set; }
         public string? Reason { get; private set; }
         public string? Notes { get; private set; }
 
@@ -38,8 +39,8 @@ namespace Kliniq.Domain.Entities
             ScheduledAt = scheduledAt;
             Duration = duration;
             Status = AppointmentStatus.Pending;
+            EndTime = scheduledAt.Add(duration);
             Reason = reason;
-
         }
 
         public void Confirm()

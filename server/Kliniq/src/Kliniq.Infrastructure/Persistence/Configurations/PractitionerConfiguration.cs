@@ -32,18 +32,25 @@ namespace Kliniq.Infrastructure.Persistence.Configurations
                 .HasMaxLength(100)
                 .IsRequired();
 
-            builder.Property<string>("_specializations")
+            builder.Property<string>("_specialization")
                 .HasColumnName("Specializations")
                 .HasMaxLength(500)
                 .IsRequired()
                 .UsePropertyAccessMode(PropertyAccessMode.Field);
 
-            builder.Property(p => p.ClinicID).IsRequired(true);
+            builder.Property(p => p.ClinicID).IsRequired(false);
 
             builder.HasOne(p => p.Clinic)
-                .WithMany(c => c.Practioners)
+                .WithMany(c => c.Practitioners)
                 .HasForeignKey(p => p.ClinicID)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasMany(p => p.Schedules)
+                .WithOne(s => s.Practioner)
+                .HasForeignKey(s => s.PractitionerId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Navigation(p => p.Schedules).HasField("_schedules");
 
             builder.HasIndex(p => p.UserId).IsUnique();
             builder.HasIndex(p => p.ClinicID);
@@ -53,8 +60,6 @@ namespace Kliniq.Infrastructure.Persistence.Configurations
             builder.Property(p => p.CreatedBy).HasMaxLength(100);
             builder.Property(p => p.UpdatedBy).HasMaxLength(100);
 
-            builder.Ignore(p => p.Schedules);
-            builder.Ignore(p => p.Appointments);
             builder.Ignore(p => p.DomainEvents);
             builder.Ignore(p => p.SpecializationsRaw);
             builder.Ignore(p => p.Specializations);

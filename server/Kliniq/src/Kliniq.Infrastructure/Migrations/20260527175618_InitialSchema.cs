@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Kliniq.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdatedTableSchema : Migration
+    public partial class InitialSchema : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -23,6 +23,7 @@ namespace Kliniq.Infrastructure.Migrations
                     Street = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Country = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ClinicName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     ClinicLatitude = table.Column<decimal>(type: "decimal(9,6)", nullable: false),
                     ClinicLongitude = table.Column<decimal>(type: "decimal(9,6)", nullable: false),
                     PrcLicensePath = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
@@ -43,29 +44,6 @@ namespace Kliniq.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AccountRequests", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Appointments",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PatientId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PractitionerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ClinicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ScheduledAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DurationMinutes = table.Column<long>(type: "bigint", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    Reason = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    Notes = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    CreatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Appointments", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -296,7 +274,7 @@ namespace Kliniq.Infrastructure.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LicenseNumber = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ClinicID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ClinicID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Specializations = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     CreatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -312,6 +290,35 @@ namespace Kliniq.Infrastructure.Migrations
                         principalTable: "Clinics",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Appointments",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PatientId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PractitionerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ClinicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ScheduledAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DurationMinutes = table.Column<long>(type: "bigint", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    Reason = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    Notes = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    CreatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Appointments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Appointments_Practitioners_PractitionerId",
+                        column: x => x.PractitionerId,
+                        principalTable: "Practitioners",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

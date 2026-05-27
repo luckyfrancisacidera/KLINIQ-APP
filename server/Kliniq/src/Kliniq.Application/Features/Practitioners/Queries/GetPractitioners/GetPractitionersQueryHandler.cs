@@ -14,7 +14,9 @@ namespace Kliniq.Application.Features.Practitioners.Queries.GetPractitioners
 
         public async Task<Result<PagedResult<PractitionerDto>>> Handle(GetPractitionersQuery request, CancellationToken cancellationToken)
         {
-            var paged = await _repository.GetAllAsync(request.Page, request.PageSize, cancellationToken);
+            var paged = (request.Search is not null || request.Specialization is not null)
+                ? await _repository.SearchAsync(request.Search, request.Specialization, request.Page, request.PageSize, cancellationToken)
+                : await _repository.GetAllAsync(request.Page, request.PageSize, cancellationToken);
 
             var mapped = new PagedResult<PractitionerDto>(
                 paged.Items.Select(p => p.ToDto()).ToList(),
@@ -24,7 +26,6 @@ namespace Kliniq.Application.Features.Practitioners.Queries.GetPractitioners
             );
 
             return Result.Success(mapped);
-
         }
     }
 }

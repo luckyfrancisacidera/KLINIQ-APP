@@ -38,6 +38,7 @@ namespace Kliniq.Api.Controllers
                 City = form.City,
                 Country = form.Country,
 
+                ClinicName = form.ClinicName,
                 ClinicLatitude = form.ClinicLatitude,
                 ClinicLongitude = form.ClinicLongitude,
 

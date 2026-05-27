@@ -51,6 +51,14 @@ namespace Kliniq.Infrastructure.Persistence.Repositories
 
         }
 
+        public async Task<IReadOnlyList<Appointment>> GetByPractitionerInRangeAsync(Guid practitionerId, DateTime from, DateTime to, CancellationToken cancellationToken)
+            => await _context.Appointments
+                .AsNoTracking()
+                .Where(a => a.PractitionerId == practitionerId &&
+                            a.ScheduledAt >= from &&
+                            a.ScheduledAt <= to)
+                .ToListAsync(cancellationToken);
+
         //For Command Methods
         public async Task<Appointment?> GetByIdTrackedAsync(Guid id, CancellationToken cancellationToken)
             => await _context.Appointments.FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
@@ -61,14 +69,18 @@ namespace Kliniq.Infrastructure.Persistence.Repositories
         {
             var proposedEnd = scheduledAt.AddMinutes(durationMinutes);
 
-            return await _context.Appointments
-                .AnyAsync(a =>
-                    a.PractitionerId == practitionerId &&
-                    a.Status != AppointmentStatus.Cancelled &&
-                    (excludeId == null || a.Id != excludeId) &&
-                    a.ScheduledAt < proposedEnd &&
-                    a.ScheduledAt.AddMinutes((double)a.Duration.TotalMinutes) > scheduledAt,
-                    cancellationToken);
+            var candidates = await _context.Appointments
+             .Where(a =>
+                 a.PractitionerId == practitionerId &&
+                 a.Status != AppointmentStatus.Cancelled &&
+                 (excludeId == null || a.Id != excludeId) &&
+                 a.ScheduledAt < proposedEnd &&
+                 a.ScheduledAt >= scheduledAt.Date)   
+             .Select(a => new { a.ScheduledAt, DurationMinutes = (int)a.Duration.TotalMinutes })
+             .ToListAsync(cancellationToken);
+
+            return candidates.Any(a => a.ScheduledAt.AddMinutes(a.DurationMinutes) > scheduledAt);
+
         }
 
         public void Update(Appointment appointment)

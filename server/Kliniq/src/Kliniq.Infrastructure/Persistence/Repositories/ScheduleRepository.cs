@@ -1,7 +1,6 @@
 ﻿using Kliniq.Application.Common.Interfaces.Repositories;
 using Kliniq.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Bcpg.Sig;
 
 namespace Kliniq.Infrastructure.Persistence.Repositories
 {

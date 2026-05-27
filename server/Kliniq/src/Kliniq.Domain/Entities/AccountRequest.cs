@@ -21,7 +21,10 @@ namespace Kliniq.Domain.Entities
             _specializations.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList().AsReadOnly();
         
         public Address Address { get; private set; } = null!;
+
+        public string ClinicName { get; private set; } = string.Empty;
         public GeoLocation ClinicLocation { get; private set; } = null!;
+
         public string PrcLicensePath { get; private set; } = string.Empty;
         public string GovernmentIdPath { get; private set; } = string.Empty;
         public string ProfessionalPhotoPath { get; private set; } = string.Empty;
@@ -42,11 +45,12 @@ namespace Kliniq.Domain.Entities
             string licenseNumber,
             IReadOnlyList<string> specialization,
             Address address,
+            string clinicName,
+            GeoLocation clinicLocation,
             string prcLicensePath,
             string governmentIdPath,
             string professionalPhotoPath,
-            string cvPath,
-            GeoLocation clinicLocation
+            string cvPath
             )
         {
             if (string.IsNullOrWhiteSpace(email))
@@ -64,6 +68,7 @@ namespace Kliniq.Domain.Entities
             LicenseNumber = licenseNumber;
             _specializations = string.Join(",", specialization.Select(s => s.Trim()));
             Address = address ?? throw new ArgumentNullException(nameof(address));
+            ClinicName = clinicName;
             ClinicLocation = clinicLocation ?? throw new ArgumentNullException(nameof(clinicLocation));
             PrcLicensePath = prcLicensePath;
             GovernmentIdPath = governmentIdPath;

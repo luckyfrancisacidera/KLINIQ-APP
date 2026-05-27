@@ -7,7 +7,10 @@ using Kliniq.Application.Features.Appointments.Queries.GetAppointment;
 using Kliniq.Application.Features.Appointments.Queries.GetPatientAppointments;
 using Kliniq.Application.Features.Appointments.Queries.GetPractitionerAppointments;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.JsonWebTokens;
+using System.Security.Claims;
 
 namespace Kliniq.Api.Controllers
 {
@@ -51,6 +54,7 @@ namespace Kliniq.Api.Controllers
 
         // APPOINTMENT COMMANDS ENDPOINTS
         [HttpPost]
+        [Authorize(Roles = "Patient")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -58,10 +62,18 @@ namespace Kliniq.Api.Controllers
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Book([FromBody] BookAppointmentCommand command, CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(command, cancellationToken);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId is null) return Unauthorized();
+
+            var result = await _mediator.Send(command with { UserId = Guid.Parse(userId) }, cancellationToken);
+
             if (result.IsFailure) return result.ToActionResult();
+
             return CreatedAtAction(nameof(GetAppointment), new { id = result.Value!.Id }, result.Value);
         }
+
+
         [HttpPost("{id:guid}/confirm")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

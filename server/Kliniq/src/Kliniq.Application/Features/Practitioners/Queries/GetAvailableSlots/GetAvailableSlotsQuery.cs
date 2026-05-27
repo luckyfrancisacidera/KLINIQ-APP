@@ -6,6 +6,7 @@ namespace Kliniq.Application.Features.Practitioners.Queries.GetAvailableSlots
 {
     public sealed record GetAvailableSlotsQuery(
         Guid PractitionerId,
-        string? Day = null
+        DateOnly From,
+        DateOnly To
     ) : IRequest<Result<IReadOnlyList<AvailableSlotDto>>>;
 }

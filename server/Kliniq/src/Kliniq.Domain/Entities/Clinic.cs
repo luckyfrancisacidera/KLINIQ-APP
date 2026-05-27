@@ -6,11 +6,11 @@ namespace Kliniq.Domain.Entities
     public class Clinic : AuditableEntity
     {
         public string Name { get; private set; } = string.Empty;
-        public GeoLocation Location { get; set; } = null!;
+        public GeoLocation Location { get; private set; } = default!;
 
-        private readonly List<Practitioner> _practioners = new();
+        private readonly List<Practitioner> _practitioners = new();
 
-        public IReadOnlyCollection<Practitioner> Practioners => _practioners.AsReadOnly();
+        public IReadOnlyCollection<Practitioner> Practitioners => _practitioners.AsReadOnly();
 
         private Clinic() { }
 
@@ -21,7 +21,7 @@ namespace Kliniq.Domain.Entities
 
             Id = Guid.NewGuid();
             Name = name;
-            Location = location;
+            Location = location ?? throw new ArgumentNullException(nameof(location));
         }
     }
 }

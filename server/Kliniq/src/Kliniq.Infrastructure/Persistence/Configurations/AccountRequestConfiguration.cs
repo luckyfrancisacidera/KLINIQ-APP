@@ -45,6 +45,11 @@ namespace Kliniq.Infrastructure.Persistence.Configurations
                     .IsRequired();
             });
             
+            builder.Property(a => a.ClinicName)
+                .HasColumnName("ClinicName")
+                .HasMaxLength(200)
+                .IsRequired();
+
             builder.OwnsOne(a => a.ClinicLocation, geo =>
             {
                 geo.Property(g => g.Latitude)

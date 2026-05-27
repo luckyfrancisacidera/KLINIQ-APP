@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Kliniq.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260527075002_UpdatedTableSchema")]
-    partial class UpdatedTableSchema
+    [Migration("20260527175618_InitialSchema")]
+    partial class InitialSchema
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,6 +33,12 @@ namespace Kliniq.Infrastructure.Migrations
                     b.Property<string>("AdminNote")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("ClinicName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
+                        .HasColumnName("ClinicName");
 
                     b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("datetime2");
@@ -299,7 +305,7 @@ namespace Kliniq.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ClinicID")
+                    b.Property<Guid?>("ClinicID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAtUtc")
@@ -324,7 +330,7 @@ namespace Kliniq.Infrastructure.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("_specializations")
+                    b.Property<string>("_specialization")
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)")
@@ -346,7 +352,6 @@ namespace Kliniq.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("AppointmentLengthMinutes")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValue(30);
 
@@ -366,7 +371,6 @@ namespace Kliniq.Infrastructure.Migrations
                         .HasColumnType("time");
 
                     b.Property<bool>("IsAvailable")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
 
@@ -714,6 +718,15 @@ namespace Kliniq.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Kliniq.Domain.Entities.Appointment", b =>
+                {
+                    b.HasOne("Kliniq.Domain.Entities.Practitioner", null)
+                        .WithMany("Appointments")
+                        .HasForeignKey("PractitionerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Kliniq.Domain.Entities.Clinic", b =>
                 {
                     b.OwnsOne("Kliniq.Domain.ValueObjects.GeoLocation", "Location", b1 =>
@@ -820,10 +833,9 @@ namespace Kliniq.Infrastructure.Migrations
             modelBuilder.Entity("Kliniq.Domain.Entities.Practitioner", b =>
                 {
                     b.HasOne("Kliniq.Domain.Entities.Clinic", "Clinic")
-                        .WithMany("Practioners")
+                        .WithMany("Practitioners")
                         .HasForeignKey("ClinicID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.OwnsOne("Kliniq.Domain.ValueObjects.FullName", "Name", b1 =>
                         {
@@ -859,7 +871,7 @@ namespace Kliniq.Infrastructure.Migrations
             modelBuilder.Entity("Kliniq.Domain.Entities.Schedule", b =>
                 {
                     b.HasOne("Kliniq.Domain.Entities.Practitioner", "Practioner")
-                        .WithMany()
+                        .WithMany("Schedules")
                         .HasForeignKey("PractitionerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -929,7 +941,14 @@ namespace Kliniq.Infrastructure.Migrations
 
             modelBuilder.Entity("Kliniq.Domain.Entities.Clinic", b =>
                 {
-                    b.Navigation("Practioners");
+                    b.Navigation("Practitioners");
+                });
+
+            modelBuilder.Entity("Kliniq.Domain.Entities.Practitioner", b =>
+                {
+                    b.Navigation("Appointments");
+
+                    b.Navigation("Schedules");
                 });
 
             modelBuilder.Entity("Kliniq.Domain.Entities.Schedule", b =>

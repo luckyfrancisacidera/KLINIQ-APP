@@ -20,7 +20,7 @@ namespace Kliniq.Application.Features.Practitioners.Commands.AddScheduleBreak
 
         public async Task<Result<ScheduleSummaryDto>> Handle(AddScheduleBreakCommand request, CancellationToken cancellationToken)
         {
-            var schedule = await _repository.GetByIdWithBreaksAsync(request.ScheduleId, cancellationToken);
+            var schedule = await _repository.GetByIdWithBreaksTrackedAsync(request.ScheduleId, cancellationToken);
 
             if (schedule is null)
                 return Result.Failure<ScheduleSummaryDto>(Error.NotFound("Schedule.NotFound", $"Schedule '{request.ScheduleId}' was not found"));
@@ -30,7 +30,6 @@ namespace Kliniq.Application.Features.Practitioners.Commands.AddScheduleBreak
 
             schedule.AddBreak(breakStart, breakEnd);
 
-            _repository.Update(schedule);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success(schedule.ToSummaryDto());

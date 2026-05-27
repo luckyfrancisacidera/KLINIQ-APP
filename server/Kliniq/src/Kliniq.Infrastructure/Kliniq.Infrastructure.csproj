@@ -29,8 +29,4 @@
     <ProjectReference Include="..\Kliniq.Domain\Kliniq.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Migrations\" />
-  </ItemGroup>
-
 </Project>

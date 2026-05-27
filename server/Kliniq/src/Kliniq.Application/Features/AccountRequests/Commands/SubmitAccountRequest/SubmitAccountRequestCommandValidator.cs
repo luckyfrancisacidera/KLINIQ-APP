@@ -6,14 +6,6 @@ namespace Kliniq.Application.Features.AccountRequests.Commands.SubmitAccountRequ
 {
     public class SubmitAccountRequestCommandValidator : AbstractValidator<SubmitAccountRequestCommand>
     {
-        private readonly string[] _allowedContentTypes =
-        {
-            "application/pdf",
-            "image/jpeg",
-            "image/png"
-        };
-
-        private const long MaxFileSizedBytes = 5 * 1024 * 1024; // 5 MB
         public SubmitAccountRequestCommandValidator()
         {
             RuleFor(x => x.FirstName)
@@ -51,6 +43,10 @@ namespace Kliniq.Application.Features.AccountRequests.Commands.SubmitAccountRequ
             RuleFor(x => x.Country)
                 .NotEmpty().WithMessage("Country is required.")
                 .MaximumLength(100).WithMessage("Country must not exceed 100 characters");
+
+            RuleFor(x => x.ClinicName)
+                .NotEmpty().WithMessage("Clinic name is required.")
+                .MaximumLength(200).WithMessage("Clinic name must not exceed 200 characters.");
 
             RuleFor(x => x.ClinicLatitude)
                 .NotNull().WithMessage("Clinic latitude is required.")

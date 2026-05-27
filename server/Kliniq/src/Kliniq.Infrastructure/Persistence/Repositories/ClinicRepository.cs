@@ -13,9 +13,12 @@ namespace Kliniq.Infrastructure.Persistence.Repositories
             _context = context;
         }
 
+        public async Task AddAsync(Clinic clinic, CancellationToken cancellationToken)
+            => await _context.Clinics.AddAsync(clinic, cancellationToken);
+
         public async Task<Clinic?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
             => await _context.Clinics
-                .Include(c => c.Practioners)
+                .Include(c => c.Practitioners)
                 .FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
     }
 }
