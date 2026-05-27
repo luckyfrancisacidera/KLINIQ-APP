@@ -87,9 +87,9 @@ namespace Kliniq.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-        public async Task<IActionResult> GetAvailableSlots(Guid id, [FromQuery] string? day, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAvailableSlots( Guid id, [FromQuery] DateOnly from, [FromQuery] DateOnly to, CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(new GetAvailableSlotsQuery(id, day), cancellationToken);
+            var result = await _mediator.Send(new GetAvailableSlotsQuery(id, from, to), cancellationToken);
             return result.ToActionResult();
         }
 
