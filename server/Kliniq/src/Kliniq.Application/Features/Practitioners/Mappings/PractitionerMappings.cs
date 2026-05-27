@@ -5,14 +5,30 @@ namespace Kliniq.Application.Features.Practitioners.Mappings
 {
     public static class PractitionerMappings
     {
+        private static IReadOnlyList<string> ParseSpecializations(string raw) =>
+            raw.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+               .Select(s => s.Trim('[', ']', '"', '\'', ' '))
+               .Where(s => !string.IsNullOrWhiteSpace(s))
+               .ToList()
+               .AsReadOnly();
+
+        private static ClinicSummaryDto? MapClinic(Clinic? clinic) =>
+            clinic is null ? null : new ClinicSummaryDto(
+                clinic.Id,
+                clinic.Name,
+                clinic.Location.Latitude,
+                clinic.Location.Longitude
+            );
+
         public static PractitionerDto ToDto(this Practitioner p) => new(
             p.Id,
             p.UserId,
             p.Name.FirstName,
             p.Name.LastName,
             p.LicenseNumber,
-            p.SpecializationsRaw.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList().AsReadOnly(),
-            p.ClinicID
+            ParseSpecializations(p.SpecializationsRaw),
+            p.ClinicID,
+            MapClinic(p.Clinic)
         );
 
         public static PractitionerDetailDto ToDetailDto(this Practitioner p) => new(
@@ -21,8 +37,9 @@ namespace Kliniq.Application.Features.Practitioners.Mappings
             p.Name.FirstName,
             p.Name.LastName,
             p.LicenseNumber,
-            p.SpecializationsRaw.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList().AsReadOnly(),
+            ParseSpecializations(p.SpecializationsRaw),
             p.ClinicID,
+            MapClinic(p.Clinic),
             p.Schedules.Select(s => s.ToSummaryDto()).ToList()
         );
 

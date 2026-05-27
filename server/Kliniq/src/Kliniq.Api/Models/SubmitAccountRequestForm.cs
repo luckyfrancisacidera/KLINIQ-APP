@@ -13,6 +13,7 @@
         public string City { get; set; } = string.Empty;
         public string Country { get; set; } = string.Empty;
 
+        public string ClinicName { get; set; } = string.Empty;
         public double ClinicLatitude { get; set; }
         public double ClinicLongitude { get; set; }
 

@@ -17,6 +17,7 @@ namespace Kliniq.Infrastructure.Persistence
         public DbSet<AccountRequest> AccountRequests => Set<AccountRequest>();
         public DbSet<ClinicOperatingHours> ClinicOperatingHours => Set<ClinicOperatingHours>();
         public DbSet<Schedule> Schedules => Set<Schedule>();
+        public DbSet<ScheduleBreak> ScheduleBreaks => Set<ScheduleBreak>();
   
         protected override void OnModelCreating(ModelBuilder builder)
         {

@@ -6,19 +6,22 @@ namespace Kliniq.Application.Features.Appointments.Commands.BookAppointment
     {
         public BookAppointmentCommandValidator()
         {
-            RuleFor(x => x.PatientId)
-                .NotEmpty().WithMessage("PatientId is required.");
+            RuleFor(x => x.ScheduleId)
+                .NotEmpty().WithMessage("ScheduleId is required.");
 
-            RuleFor(x => x.PractitionerId)
-                .NotEmpty().WithMessage("PractitionerId is required.");
+            RuleFor(x => x.AppointmentDate)
+                .NotEmpty().WithMessage("AppointmentDate is required.")
+                .Must(d => d >= DateOnly.FromDateTime(DateTime.UtcNow.Date))
+                .WithMessage("AppointmentDate cannot be in the past.");
 
-            RuleFor(x => x.ClinicId)
-                .NotEmpty().WithMessage("ClinicId is required.");
+            RuleFor(x => x.SlotTime)
+                .NotEmpty().WithMessage("SlotTime is required.");
 
-            RuleFor(x => x.ScheduledAt)
-                .GreaterThan(DateTime.UtcNow).WithMessage("ScheduledAt must be in the future.");
+            RuleFor(x => x.Reason)
+                .MaximumLength(500).WithMessage("Reason cannot exceed 500 characters.");
 
-            RuleFor(x => x.Reason).MaximumLength(500).WithMessage("Reason cannot exceed 500 characters.");
+            RuleFor(x => x.UserId)
+                .NotEmpty().WithMessage("Authenticated user could not be resolved.");
         }
     }
 }

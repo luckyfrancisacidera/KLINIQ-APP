@@ -33,38 +33,51 @@ namespace Kliniq.Application.Features.Appointments.Commands.BookAppointment
 
         public async Task<Result<AppointmentDto>> Handle(BookAppointmentCommand request, CancellationToken cancellationToken)
         {
-            var patientExists = await _patientRepository.ExistByIdAsync(request.PatientId, cancellationToken);
+            var schedule = await _scheduleRepository.GetByIdWithBreaksAsync(request.ScheduleId, cancellationToken);
 
-            if(!patientExists)
-                return Result.Failure<AppointmentDto>(Error.NotFound("Patient.NotFound", $"Patient '{request.PatientId}' not found."));
-            
-            var practitionerExists = await _practitionerRepository.ExistsAsync(request.PractitionerId, cancellationToken);
+            if (schedule is null)
+                return Result.Failure<AppointmentDto>(Error.NotFound("Schedule.NotFound", $"Schedule '{request.ScheduleId}' not found."));
 
-            if(!practitionerExists)
-                return Result.Failure<AppointmentDto>(Error.NotFound("Practitioner.NotFound", $"Practitioner '{request.PractitionerId}' not found."));
+            if (!schedule.IsAvailable)
+                return Result.Failure<AppointmentDto>(Error.Validation("Schedule.Unavailable", "This schedule is not available."));
 
-            var dayOfWeek = request.ScheduledAt.DayOfWeek;
-            var clinicDay = dayOfWeek == DayOfWeek.Sunday ? ClinicDayOfWeek.Sunday : (ClinicDayOfWeek)(int)dayOfWeek;
+            var slotEnd = request.SlotTime.AddMinutes(schedule.AppointmentLengthMinutes);
+            if (!schedule.CoversTimeSlot(request.SlotTime, slotEnd))
+                return Result.Failure<AppointmentDto>(Error.Validation("Schedule.SlotInvalid", $"The slot '{request.SlotTime:HH:mm}' is not valid for this schedule."));
 
-            var schedules = await _scheduleRepository.GetByPractitionerIdAsync(request.PractitionerId, cancellationToken);
+            var practitioner = await _practitionerRepository.GetByIdAsync(schedule.PractitionerId, cancellationToken);
+            if (practitioner is null)
+                return Result.Failure<AppointmentDto>(Error.NotFound("Practitioner.NotFound", "Practitioner not found."));
 
-            var requestedTime = TimeOnly.FromDateTime(request.ScheduledAt);
+            if (practitioner.ClinicID is null)
+                return Result.Failure<AppointmentDto>(Error.Validation("Practitioner.NoClinic", "Practitioner is not assigned to a clinic."));
 
-            var schedule = schedules.FirstOrDefault(s => s.Day == clinicDay && s.IsAvailable && s.CoversTimeSlot(requestedTime, requestedTime.AddMinutes(s.AppointmentLengthMinutes)));
+            var patient = await _patientRepository.GetByUserIdAsync(request.UserId, cancellationToken);
+            if (patient is null)
+                return Result.Failure<AppointmentDto>(Error.NotFound("Patient.NotFound", "Patient profile not found."));
 
-            if (schedule == null)
-                return Result.Failure<AppointmentDto>(Error.Validation("Schedule.Unavailable", $"No available schedule for the requested time '{request.ScheduledAt}' with practitioner '{request.PractitionerId}'."));
-            
-            bool hasConflict = await _appointmentRepository.HasConflictAsync(request.PractitionerId, request.ScheduledAt,schedule.AppointmentLengthMinutes, excludeId: null, cancellationToken);
+            var expectedDotNetDay = schedule.Day == ClinicDayOfWeek.Sunday
+                ? DayOfWeek.Sunday
+                : (DayOfWeek)(int)schedule.Day;
 
-            if(hasConflict)
-                return Result.Failure<AppointmentDto>(Error.Conflict("Appointment.SlotTaken", $"The slot at {requestedTime:HH:mm} is already booked."));
+            if (request.AppointmentDate.DayOfWeek != expectedDotNetDay)
+                return Result.Failure<AppointmentDto>(Error.Validation(
+                    "Schedule.DayMismatch",
+                    $"The date '{request.AppointmentDate}' is a {request.AppointmentDate.DayOfWeek}, but this schedule runs on {schedule.Day}."));
+
+            var scheduledAt = request.AppointmentDate.ToDateTime(request.SlotTime, DateTimeKind.Utc);
+
+            bool hasConflict = await _appointmentRepository.HasConflictAsync(
+                schedule.PractitionerId, scheduledAt, schedule.AppointmentLengthMinutes, excludeId: null, cancellationToken);
+
+            if (hasConflict)
+                return Result.Failure<AppointmentDto>(Error.Conflict("Appointment.SlotTaken", $"The slot at {request.SlotTime:HH:mm} is already booked."));
 
             var appointment = new Appointment(
-                request.PatientId,
-                request.PractitionerId,
-                request.ClinicId,
-                request.ScheduledAt,
+                patient.Id,
+                schedule.PractitionerId,
+                practitioner.ClinicID.Value,
+                scheduledAt,
                 TimeSpan.FromMinutes(schedule.AppointmentLengthMinutes),
                 request.Reason);
 

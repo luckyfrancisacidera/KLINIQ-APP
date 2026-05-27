@@ -21,12 +21,12 @@ namespace Kliniq.Domain.Entities
         public IReadOnlyList<string> Specializations => _specialization.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList().AsReadOnly();
 
         public Guid? ClinicID { get; private set; }
-        public Clinic? Clinic { get; set; }
+        public Clinic? Clinic { get; private set; }
 
-        private readonly List<Schedule> _schedules = new();
+        private List<Schedule> _schedules = new();
         public IReadOnlyCollection<Schedule> Schedules => _schedules.AsReadOnly();
 
-        private readonly List<Appointment> _appointments = new();
+        private List<Appointment> _appointments = new();
         public IReadOnlyCollection<Appointment> Appointments => _appointments.AsReadOnly();
 
         private Practitioner() { }

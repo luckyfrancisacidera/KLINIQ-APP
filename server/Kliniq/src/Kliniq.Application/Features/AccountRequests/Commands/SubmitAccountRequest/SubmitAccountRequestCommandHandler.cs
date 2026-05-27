@@ -68,11 +68,13 @@ namespace Kliniq.Application.Features.AccountRequests.Commands.SubmitAccountRequ
                 request.LicenseNumber,
                 request.Specializations.AsReadOnly(),
                 address,
+                request.ClinicName,
+                clinicLocation,
                 prcLicensePath,
                 governmentIdPath,
                 professionalPhotoPath,
-                cvPath,
-                clinicLocation);
+                cvPath
+           );
             
             await _repository.AddAsync(accountRequest, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);

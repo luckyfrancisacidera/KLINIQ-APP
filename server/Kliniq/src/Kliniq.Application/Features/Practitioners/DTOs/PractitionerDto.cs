@@ -1,5 +1,12 @@
 ﻿namespace Kliniq.Application.Features.Practitioners.DTOs
 {
+    public sealed record ClinicSummaryDto(
+        Guid Id,
+        string Name,
+        double Latitude,
+        double Longitude
+    );
+
     public sealed record PractitionerDto(
         Guid Id,
         Guid UserId,
@@ -7,7 +14,8 @@
         string LastName,
         string LicenseNumber,
         IReadOnlyList<string> Specializations,
-        Guid? ClinicId
+        Guid? ClinicId,
+        ClinicSummaryDto? Clinic
     );
 
     public sealed record PractitionerDetailDto(
@@ -18,6 +26,7 @@
         string LicenseNumber,
         IReadOnlyList<string> Specializations,
         Guid? ClinicId,
+        ClinicSummaryDto? Clinic,
         IReadOnlyList<ScheduleSummaryDto> Schedules
     );
 
@@ -38,7 +47,9 @@
     );
 
     public sealed record AvailableSlotDto(
-        string Day,
-        IReadOnlyList<string> Slots
+        Guid ScheduleId,       
+        DateOnly Date,        
+        string DayOfWeek,      
+        IReadOnlyList<string> Slots 
     );
 }

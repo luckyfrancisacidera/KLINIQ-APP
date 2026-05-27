@@ -31,16 +31,20 @@ namespace Kliniq.Infrastructure.Persistence.Configurations
 
             builder.Property(s => s.AppointmentLengthMinutes)
                 .IsRequired()
-                .HasDefaultValue(30);
+                .HasDefaultValue(30)
+                .ValueGeneratedNever();
 
             builder.Property(s => s.IsAvailable)
                 .IsRequired()
-                .HasDefaultValue(true);
+                .HasDefaultValue(true)
+                .ValueGeneratedNever();
 
-            builder.HasOne(s => s.Practioner)
-                .WithMany()
-                .HasForeignKey(s => s.PractitionerId)
+            builder.HasMany(s => s.Breaks)
+                .WithOne()
+                .HasForeignKey(b => b.ScheduleId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Navigation(s => s.Breaks).HasField("_breaks");
 
             builder.HasIndex(s => new {s.PractitionerId, s.StartTime });
 

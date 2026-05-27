@@ -108,7 +108,7 @@ namespace Kliniq.Domain.Entities
                 if (!inBreak)
                     slots.Add(cursor);
 
-                cursor = slotEnd.AddMinutes(AppointmentLengthMinutes);
+                cursor = slotEnd;
             }
 
             return slots.AsReadOnly();

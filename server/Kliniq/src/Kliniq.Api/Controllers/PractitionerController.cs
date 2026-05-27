@@ -25,9 +25,14 @@ namespace Kliniq.Api.Controllers
         // Practitioner CRUD endpoints
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> GetAll(
+            [FromQuery] string? search,
+            [FromQuery] string? specialization,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 20,
+            CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(new GetPractitionersQuery(page, pageSize), cancellationToken);
+            var result = await _mediator.Send( new GetPractitionersQuery(search, specialization, page, pageSize), cancellationToken);
             return result.ToActionResult();
         }
 
