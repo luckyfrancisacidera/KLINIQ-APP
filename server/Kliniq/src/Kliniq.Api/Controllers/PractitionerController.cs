@@ -46,6 +46,7 @@ namespace Kliniq.Api.Controllers
         }
 
         [HttpPut("{id:guid}")]
+        [Authorize(Roles = "Practitioner")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -72,7 +73,6 @@ namespace Kliniq.Api.Controllers
 
         //Schedule Management Endpoints
         [HttpGet("{id:guid}/schedules")]
-        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetSchedules(Guid id, CancellationToken cancellationToken)
@@ -82,18 +82,18 @@ namespace Kliniq.Api.Controllers
         }
 
         [HttpGet("{id:guid}/available-slots")]
-        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-        public async Task<IActionResult> GetAvailableSlots( Guid id, [FromQuery] DateOnly from, [FromQuery] DateOnly to, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAvailableSlots( Guid id, [FromQuery] DateOnly? from, [FromQuery] DateOnly? to, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(new GetAvailableSlotsQuery(id, from, to), cancellationToken);
             return result.ToActionResult();
         }
 
         [HttpPost("{id:guid}/schedules")]
+        [Authorize(Roles = "Practitioner")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -108,6 +108,7 @@ namespace Kliniq.Api.Controllers
         }
 
         [HttpPut("{id:guid}/schedules/{scheduleId:guid}")]
+        [Authorize(Roles = "Practitioner")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -122,6 +123,7 @@ namespace Kliniq.Api.Controllers
 
         //Break Management Endpoints
         [HttpPost("{id:guid}/schedules/{scheduleId:guid}/breaks")]
+        [Authorize(Roles = "Practitioner")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -133,6 +135,7 @@ namespace Kliniq.Api.Controllers
         }
 
         [HttpDelete("{id:guid}/schedules/{scheduleId:guid}/breaks/{breakId:guid}")]
+        [Authorize(Roles = "Practitioner")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteBreak(Guid id, Guid scheduleId, Guid breakId, CancellationToken cancellationToken)
