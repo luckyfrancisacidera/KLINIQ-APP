@@ -4,13 +4,13 @@ using Kliniq.Application.Features.Patients.Commands.UpdatePatient;
 using Kliniq.Application.Features.Patients.Queries.GetPatient;
 using Kliniq.Application.Features.Patients.Queries.GetPatients;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kliniq.Api.Controllers
 {
     [Route("api/patient")]
     [ApiController]
-    //[Authorize]
     [Produces("application/json")]
     public class PatientController : ControllerBase
     {
@@ -24,7 +24,7 @@ namespace Kliniq.Api.Controllers
         // PATIENT QUERIES ENDPOINTS
 
         [HttpGet]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
         {
@@ -34,6 +34,7 @@ namespace Kliniq.Api.Controllers
         }
 
         [HttpGet("{id:guid}", Name = nameof(GetPatient))]
+        [Authorize(Roles = "Admin, Patient")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetPatient(Guid id, CancellationToken cancellationToken)
@@ -43,6 +44,7 @@ namespace Kliniq.Api.Controllers
         }
 
         [HttpPut("{id:guid}")]
+        [Authorize(Roles = "Patient")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -55,7 +57,7 @@ namespace Kliniq.Api.Controllers
         }
 
         [HttpDelete("{id:guid}")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delte(Guid id, CancellationToken cancellationToken)

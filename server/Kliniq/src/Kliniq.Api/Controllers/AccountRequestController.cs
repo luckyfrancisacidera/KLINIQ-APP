@@ -5,11 +5,13 @@ using Kliniq.Application.Features.AccountRequests.Commands.ApproveAccountRequest
 using Kliniq.Application.Features.AccountRequests.Commands.RejectAccountRequest;
 using Kliniq.Application.Features.AccountRequests.Commands.SubmitAccountRequest;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kliniq.Api.Controllers
 {
     [Route("api/account-requests")]
+    [Authorize]
     [ApiController]
     public class AccountRequestController : ControllerBase
     {
@@ -17,6 +19,7 @@ namespace Kliniq.Api.Controllers
         public AccountRequestController(IMediator mediator) => _mediator = mediator;
      
         [HttpPost("submit")]
+        [AllowAnonymous]
         [Consumes("multipart/form-data")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -56,7 +59,7 @@ namespace Kliniq.Api.Controllers
         }
 
         [HttpPost("{id}/approve")]
-        //[Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK)] 
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -69,7 +72,7 @@ namespace Kliniq.Api.Controllers
         }
 
         [HttpPost("{id}/reject")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

@@ -9,14 +9,13 @@ using Kliniq.Application.Features.Appointments.Queries.GetPractitionerAppointmen
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.JsonWebTokens;
 using System.Security.Claims;
 
 namespace Kliniq.Api.Controllers
 {
     [Route("api/appointments")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     [Produces("application/json")]
     public class AppointmentController : ControllerBase
     {
@@ -26,6 +25,7 @@ namespace Kliniq.Api.Controllers
         // APPOINTMENT QUERIES ENDPOINTS
 
         [HttpGet("{id:guid}", Name = nameof(GetAppointment))]
+        [Authorize(Roles = "Patient, Practitioner")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetAppointment(Guid id, CancellationToken cancellationToken)
@@ -35,6 +35,7 @@ namespace Kliniq.Api.Controllers
         }
 
         [HttpGet("patient/{patientId:guid}")]
+        [Authorize(Roles = "Patient")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetByPatient(Guid patientId, int page = 1, int pageSize = 20, CancellationToken cancellationToken = default)
@@ -44,6 +45,7 @@ namespace Kliniq.Api.Controllers
         }
 
         [HttpGet("practitioner/{practitionerId:guid}")]
+        [Authorize(Roles = "Practitioner")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetByPractitioner(Guid practitionerId, int page = 1, int pageSize = 20, CancellationToken cancellationToken = default)
@@ -75,6 +77,7 @@ namespace Kliniq.Api.Controllers
 
 
         [HttpPost("{id:guid}/confirm")]
+        [Authorize(Roles = "Practitioner")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -85,6 +88,7 @@ namespace Kliniq.Api.Controllers
         }
 
         [HttpPost("{id:guid}/cancel")]
+        [Authorize(Roles = "Practitioner")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -95,6 +99,7 @@ namespace Kliniq.Api.Controllers
         }
 
         [HttpPost("{id:guid}/complete")]
+        [Authorize(Roles = "Practitioner")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
