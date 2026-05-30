@@ -22,7 +22,7 @@ namespace Kliniq.Api.Controllers
         private readonly IMediator _mediator;
         public PractitionerController(IMediator mediator) => _mediator = mediator;
 
-        // Practitioner CRUD endpoints
+        // PRACTITIONER CRUD endpoints
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(
