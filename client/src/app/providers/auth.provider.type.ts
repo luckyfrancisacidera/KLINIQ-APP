@@ -1,14 +1,21 @@
 export const ROLES = {
-    PATIENT : "patient",
-    PRACTITIONER : "practitioner",
-    ADMIN : "admin"
+    PATIENT : "Patient",
+    PRACTITIONER : "Practitioner",
+    ADMIN : "Admin  "
 } as const;
 
-export type UserRole = typeof ROLES[keyof typeof ROLES];
+export type UserRole = (typeof ROLES)[keyof typeof ROLES];
+
+export interface AuthUser {
+    userId : string;
+    email : string;
+    role : UserRole;
+}
 
 export type AuthContextValue = {
-    isAuthenticated: boolean;
-    role: UserRole | null;
-    login: (role: UserRole) => void;
+    user : AuthUser | null;
+    isAuthenticated : boolean;
+    isLoading : boolean;
+    setUser : (user : AuthUser | null) => void;
     logout: () => void;
 }

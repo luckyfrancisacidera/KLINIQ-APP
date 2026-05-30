@@ -1,22 +1,22 @@
-import type { UserRole } from "../providers/auth.provider.type";
+import { ROLES, type UserRole } from "../providers/auth.provider.type";
 import type { AppRouteKey } from "./route.config";
 
 // Defines which user roles have access to each route in the application
 export const routeAccess: Record<AppRouteKey, UserRole[]> = {
-    home: ["patient", "practitioner"],
-    findPractitioner: ["patient"],
-    patientDashboard: ["patient"],
-    searchResults: ["patient"],
+    home: [ROLES.PATIENT, ROLES.PRACTITIONER],
+    findPractitioner: [ROLES.PATIENT],
+    patientDashboard: [ROLES.PATIENT],
+    searchResults: [ROLES.PATIENT],
 
-    practitionerDashboard: ["practitioner"],
-    appointmentBooking: ["patient"],
-    appointmentManagement: ["practitioner"],
+    practitionerDashboard: [ROLES.PRACTITIONER],
+    appointmentBooking: [ROLES.PATIENT],
+    appointmentManagement: [ROLES.PRACTITIONER],
 
-    profileManagement: ["patient", "practitioner"],
-    notifications: ["patient", "practitioner"],
-    settings: ["patient", "practitioner"],
-    helpSupport: ["patient", "practitioner"],
+    profileManagement: [ROLES.PATIENT, ROLES.PRACTITIONER],
+    notifications: [ROLES.PATIENT, ROLES.PRACTITIONER],
+    settings: [ROLES.PATIENT, ROLES.PRACTITIONER],
+    helpSupport: [ROLES.PATIENT, ROLES.PRACTITIONER],
 
-    adminDashboard: ["admin"],
-    userManagement: ["admin"],
+    adminDashboard: [ROLES.ADMIN],
+    userManagement: [ROLES.ADMIN],
 }
