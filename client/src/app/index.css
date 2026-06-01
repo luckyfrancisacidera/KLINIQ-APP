@@ -2,22 +2,22 @@
 
 @font-face {
     font-family: "Geist-Regular";
-    src: "/fonts/Geist-Regular.woff2" format("woff2");
+    src: url("/fonts/Geist-Regular.woff2") format("woff2");
 }
 
 @font-face {
     font-family: "Geist-Semibold";
-    src: "/fonts/Geist-Semibold.woff2" format("woff2");
+    src: url("/fonts/Geist-Semibold.woff2") format("woff2");
 }
 
 @font-face {
     font-family: "Geist-Bold";
-    src: "/fonts/Geist-Bold.woff2" format("woff2");
+    src: url("/fonts/Geist-Bold.woff2") format("woff2");
 }
 
 @font-face {
     font-family: "Geist-ExtraBold";
-    src: "/fonts/Geist-ExtraBold.woff2" format("woff2");
+    src: url("/fonts/Geist-ExtraBold.woff2") format("woff2");
 }
 
 @theme {
@@ -25,6 +25,42 @@
     --font-Geist-Semibold: Geist-Semibold, sans-serif;
     --font-Geist-Bold: Geist-Bold, sans-serif;
     --font-Geist-ExtraBold: Geist-ExtraBold, sans-serif;
+
+    /* ── Kliniq green palette ── */
+    --color-brand-50:  #f0faf4;
+    --color-brand-100: #d4f0e0;
+    --color-brand-200: #a8e0c2;
+    --color-brand-300: #6cc99d;
+    --color-brand-400: #3aad7a;
+    --color-brand-500: #1f9160;   /* primary action */
+    --color-brand-600: #177349;   /* hover */
+    --color-brand-700: #115537;   /* pressed / dark panel */
+    --color-brand-800: #0c3d28;
+    --color-brand-900: #072518;
+
+    /* ── Semantic ── */
+    --color-surface: #f7f9f8;     /* page background */
+    --color-muted:   #6b7280;     /* secondary text */
+
+    --color-background:        #ffffff;
+    --color-foreground:        #0a0a0f;
+    --color-popover:           #ffffff;
+    --color-popover-foreground: #0a0a0f;
+    --color-card:              #ffffff;
+    --color-card-foreground:   #0a0a0f;
+    --color-border:            #e4e4e7;
+    --color-input:             #e4e4e7;
+    --color-ring:              #18181b;
+    --color-primary:           #18181b;
+    --color-primary-foreground: #fafafa;
+    --color-secondary:         #f4f4f5;
+    --color-secondary-foreground: #18181b;
+    --color-accent:            #f4f4f5;
+    --color-accent-foreground: #18181b;
+    --color-destructive:       #ef4444;
+    --color-destructive-foreground: #fafafa;
+    --color-muted:             #6b7280;
+    --color-muted-foreground:  #71717a;
 }
 
-@custom-variant dark (&:is(.dark * ));
+@custom-variant dark (&:is(.dark *));

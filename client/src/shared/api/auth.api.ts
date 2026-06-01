@@ -2,6 +2,7 @@ import type { AuthResponse, LoginPayload, MeResponse, RegisterPayload, SetPasswo
 import axios from "./axios";
 
 export const authApi = {
+    //AUTH API
     login: (payload: LoginPayload) => axios.post<AuthResponse>("/auth/login", payload),
 
     register: (payload: RegisterPayload) => axios.post<AuthResponse>("/auth/register", payload),
