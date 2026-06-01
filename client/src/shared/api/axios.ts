@@ -29,7 +29,7 @@ axios.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    if (originalRequest.url?.includes("/auth/refresh")) {
+    if (originalRequest.url?.includes("/auth")) {
       return Promise.reject(error);
     }
 
