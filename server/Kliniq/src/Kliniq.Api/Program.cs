@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using Serilog;
-using System.Buffers.Text;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
@@ -84,6 +83,20 @@ try
             }
         };
     });
+
+    // CORS
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowFrontend", policy =>
+        {
+            policy
+                .WithOrigins(builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()!)
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
+        });
+    });
+
 
     builder.Services.AddAuthorization();
     builder.Services.AddEndpointsApiExplorer();
@@ -162,6 +175,7 @@ try
     });
 
     app.UseExceptionHandler();
+    app.UseCors("AllowFrontend");
     app.UseAuthentication();
     app.UseAuthorization();
     app.MapControllers();
