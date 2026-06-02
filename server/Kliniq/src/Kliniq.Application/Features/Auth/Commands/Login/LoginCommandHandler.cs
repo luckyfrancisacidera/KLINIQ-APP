@@ -22,7 +22,7 @@ namespace Kliniq.Application.Features.Auth.Commands.Login
             var authResult = await _authService.LoginAsync(request.Email, request.Password, cancellationToken);
 
             if (!authResult.IsSuccess)
-                return Result.Failure<AuthTokensInternal>(authResult.Error!);
+                return Result.Failure<AuthTokensInternal>(Error.Unauthorized("Auth.InvalidCredentials", "Invalid email or password."));
 
             var accessToken = _jwtTokenService.GenerateAccessToken(authResult.Value!.UserId, authResult.Value.Email, authResult.Value.Role);
             var refreshToken = _jwtTokenService.GenerateRefreshToken();
@@ -31,7 +31,7 @@ namespace Kliniq.Application.Features.Auth.Commands.Login
             var saveResult = await _authService.SaveRefreshTokenAsync(authResult.Value!.UserId, refreshTokenHash, cancellationToken);
 
             if(!saveResult.IsSuccess)
-                return Result.Failure<AuthTokensInternal>(saveResult.Error!);
+                return Result.Failure<AuthTokensInternal>(Error.Unauthorized("Auth.RefreshTokenSaveFailed", "Failed to save refresh token."));
 
             return Result.Success(new AuthTokensInternal
             {

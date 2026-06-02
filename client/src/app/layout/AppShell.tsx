@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom'
 
 const AppShell = () => {
   return (
-    <div className='max-w-4xl mx-auto test'>
+    <div className='max-w-4xl mx-auto'>
         <Topbar/>
         <main>
             <Outlet/> 

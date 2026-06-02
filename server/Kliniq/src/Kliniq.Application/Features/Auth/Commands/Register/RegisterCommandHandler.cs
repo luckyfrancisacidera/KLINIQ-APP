@@ -36,6 +36,9 @@ namespace Kliniq.Application.Features.Auth.Commands.Register
                 "Patient",
                 cancellationToken);
 
+            if (authResult.IsFailure)
+                return Result.Failure<AuthTokensInternal>(Error.Conflict("Email.AlreadyExists", "Email address is already in use."));
+
             var user = authResult.Value!;
 
             var patient = new Patient
