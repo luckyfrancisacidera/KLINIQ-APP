@@ -1,4 +1,5 @@
-﻿using Kliniq.Application.Common.Interfaces.Repositories;
+using Kliniq.Application.Common.Interfaces.Repositories;
+using Kliniq.Application.Common.Models;
 using Kliniq.Domain.Common;
 using Kliniq.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -24,9 +25,21 @@ namespace Kliniq.Infrastructure.Persistence.Repositories
         public async Task<Patient?> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken)
            => await _context.Patients.AsNoTracking().FirstOrDefaultAsync(p => p.UserId == userId, cancellationToken);
 
-        public async Task<PagedResult<Patient>> GetAllAsync(int page, int pageSize, CancellationToken cancellationToken)
+        public async Task<PagedResult<Patient>> GetAllAsync(string? search, int page, int pageSize, CancellationToken cancellationToken)
         {
-            var query = _context.Patients.AsNoTracking();
+            (page, pageSize) = Pagination.Normalize(page, pageSize);
+            var query = _context.Patients.AsNoTracking().AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var term = search.Trim().ToLower();
+                query = query.Where(patient =>
+                    patient.Name.FirstName.ToLower().Contains(term) ||
+                    patient.Name.LastName.ToLower().Contains(term) ||
+                    patient.Address.City.ToLower().Contains(term) ||
+                    patient.Address.Country.ToLower().Contains(term) ||
+                    (patient.PhoneNumber != null && patient.PhoneNumber.Contains(term)));
+            }
 
             var total = await query.CountAsync(cancellationToken);
 

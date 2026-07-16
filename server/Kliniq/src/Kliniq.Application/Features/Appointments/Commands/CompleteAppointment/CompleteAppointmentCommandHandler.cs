@@ -30,7 +30,7 @@ namespace Kliniq.Application.Features.Appointments.Commands.CompleteAppointment
             if (appointment is null)
                 return Result.Failure<AppointmentDto>(Error.NotFound("Appointment.NotFound", $"Appointment '{request.AppointmentId}' was not found."));
 
-            appointment.Complete(request.Notes);
+            appointment.Complete(request.Notes, DateTime.UtcNow);
 
             _repository.Update(appointment);
             await _unitOfWork.SaveChangesAsync(cancellationToken);

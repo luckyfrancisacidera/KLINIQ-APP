@@ -1,47 +1,40 @@
-import type { ReactNode } from "react";
-import { Navigate } from "react-router-dom";
-import { useAuth } from "../providers/AuthProviders";
-import { ROLES } from "../providers/auth.provider.type";
-import type { AppRouteKey } from "./route.config";
-import { routeAccess } from "./route.access";
+import type { ReactNode } from "react"
+import { Navigate, useLocation } from "react-router-dom"
+import { useAuth } from "../providers/AuthProviders"
+import { ROLES } from "../providers/auth.provider.type"
+import type { AppRouteKey } from "./route.config"
+import { routeAccess } from "./route.access"
+import { FullPageLoader } from "@shared/components/feedback/FullPageLoader"
 
-// REQUIRE AUTH
 export const RequireAuth = ({ children }: { children: ReactNode }) => {
-  const { isAuthenticated, isLoading } = useAuth();
- 
-  if (isLoading) return null;
- 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
- 
-  return <>{children}</>;
-};
+  const { isAuthenticated, isLoading } = useAuth()
+  const location = useLocation()
 
-// REQUIRE ROLE
-export const RequireRouteAccess = ({routeKey, children} : {routeKey: AppRouteKey, children: ReactNode}) => {
-  const { user } = useAuth();
+  if (isLoading) return <FullPageLoader label="Restoring your secure session…" />
+  if (!isAuthenticated) return <Navigate to="/login" replace state={{ from: location.pathname + location.search }} />
+  return <>{children}</>
+}
 
-  const allowedRoles = routeAccess[routeKey];
+export const RequireRouteAccess = ({ routeKey, children }: { routeKey: AppRouteKey; children: ReactNode }) => {
+  const { user, isLoading } = useAuth()
+  if (isLoading) return <FullPageLoader />
+  if (!user || !routeAccess[routeKey].includes(user.role)) return <Navigate to="/unauthorized" replace />
+  return <>{children}</>
+}
 
-  if (!user || !allowedRoles.includes(user.role)) {
-    return <Navigate to="/unauthorized" replace />;
-  }
-
-  return <>{children}</>;
-};
-
-// PUBLIC ROUTE
 export const PublicRoute = ({ children }: { children: ReactNode }) => {
-  const { isAuthenticated, isLoading, user } = useAuth();
- 
-  if (isLoading) return null;
- 
+  const { isAuthenticated, isLoading, user } = useAuth()
+  const location = useLocation()
+
+  if (isLoading) return <FullPageLoader />
+
   if (isAuthenticated) {
-    if (user?.role === ROLES.ADMIN) return <Navigate to="/admin/dashboard" replace />;
-    if (user?.role === ROLES.PRACTITIONER) return <Navigate to="/practitioner/dashboard" replace />;
-    return <Navigate to="/patient/dashboard" replace />;
+    const requested = (location.state as { from?: string } | null)?.from
+    if (requested?.startsWith("/")) return <Navigate to={requested} replace />
+    if (user?.role === ROLES.ADMIN) return <Navigate to="/admin/dashboard" replace />
+    if (user?.role === ROLES.PRACTITIONER) return <Navigate to="/practitioner/dashboard" replace />
+    return <Navigate to="/patient/dashboard" replace />
   }
- 
-  return <>{children}</>;
-};
+
+  return <>{children}</>
+}

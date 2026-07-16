@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, type ChangeEvent } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { useMutation } from "@tanstack/react-query"
 import { Eye, EyeOff, Loader2, Check, CalendarIcon } from "lucide-react"
@@ -73,7 +73,7 @@ const RegisterPage = () => {
   const [fieldError, setFieldError] = useState<string | null>(null)
   const [dobOpen, setDobOpen] = useState(false)
 
-  const set = (field: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement>) =>
+  const set = (field: keyof FormData) => (e: ChangeEvent<HTMLInputElement>) =>
     setForm(f => ({ ...f, [field]: e.target.value }))
 
   const { mutate: register, isPending, error: apiError } = useMutation({

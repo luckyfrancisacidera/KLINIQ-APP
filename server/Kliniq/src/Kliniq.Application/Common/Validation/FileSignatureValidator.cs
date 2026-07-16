@@ -1,4 +1,4 @@
-﻿namespace Kliniq.Application.Common.Validation
+namespace Kliniq.Application.Common.Validation
 {
     public static class FileSignatureValidator
     {
@@ -16,7 +16,7 @@
 
         public static bool IsValidSignature(Stream stream, string extension)
         {
-            if (!Signatures.TryGetValue(extension, out var signatures))
+            if (!Signatures.TryGetValue(extension, out var signatures) || !stream.CanRead || !stream.CanSeek)
                 return false;
 
             var maxLen = signatures.Max(s => s.Length);

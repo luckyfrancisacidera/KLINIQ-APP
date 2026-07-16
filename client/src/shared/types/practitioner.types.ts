@@ -53,7 +53,7 @@ export interface CreateSchedulePayload {
     day: string;
     startTime: string;
     endTime: string;
-    appointmentDurationMinutes: number;
+    appointmentLengthMinutes: number;
 }
 
 export type UpdateSchedulePayload = CreateSchedulePayload;

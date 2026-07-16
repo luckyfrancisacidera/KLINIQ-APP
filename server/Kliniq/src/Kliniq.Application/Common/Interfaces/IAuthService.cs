@@ -1,4 +1,4 @@
-﻿using Kliniq.Domain.Common;
+using Kliniq.Domain.Common;
 
 namespace Kliniq.Application.Common.Interfaces
 {
@@ -29,6 +29,12 @@ namespace Kliniq.Application.Common.Interfaces
             CancellationToken cancellationToken);
 
         Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken);
+
+        Task<string?> GeneratePasswordResetTokenAsync(string email, CancellationToken cancellationToken);
+
+        Task<Result> ResetPasswordAsync(string email, string token, string newPassword, CancellationToken cancellationToken);
+
+        Task<Result> ChangePasswordAsync(string userId, string currentPassword, string newPassword, CancellationToken cancellationToken);
     }
 
     public class AuthServiceResult

@@ -10,7 +10,7 @@ namespace Kliniq.Application.Common.Interfaces.Repositories
         //For QUERIES
         Task<Patient?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<Patient?> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken);
-        Task<PagedResult<Patient>> GetAllAsync(int page, int pageSize, CancellationToken cancellationToken);
+        Task<PagedResult<Patient>> GetAllAsync(string? search, int page, int pageSize, CancellationToken cancellationToken);
 
         //For COMMANDS
         Task<Patient?> GetByIdTrackedAsync(Guid id, CancellationToken cancellationToken);

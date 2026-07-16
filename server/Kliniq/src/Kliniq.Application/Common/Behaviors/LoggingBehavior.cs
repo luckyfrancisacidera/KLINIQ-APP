@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Kliniq.Application.Common.Security;
 
 namespace Kliniq.Application.Common.Behaviors
 {
@@ -21,7 +22,13 @@ namespace Kliniq.Application.Common.Behaviors
 
             _logger.LogInformation("Handling {RequestName}", requestName);
 
-            _logger.LogDebug("Request payload for {RequestName}: {@Request}", requestName, request);
+            // Do not serialize request objects into logs. Commands can contain passwords,
+            // tokens, symptom descriptions, appointment reasons, or other private data.
+            _logger.LogDebug(
+                request is ISensitiveRequest
+                    ? "Handling sensitive request {RequestName}; payload omitted."
+                    : "Handling request {RequestName}; payload logging is disabled.",
+                requestName);
 
             try
             {

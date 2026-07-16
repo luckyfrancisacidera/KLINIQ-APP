@@ -1,4 +1,4 @@
-﻿namespace Kliniq.Domain.Common
+namespace Kliniq.Domain.Common
 {
     public class Result
     {
@@ -8,7 +8,7 @@
                 throw new InvalidOperationException("A successful result cannot have an error.");
 
             if (!isSuccess && error is null)
-                throw new InvalidOperationException("A failed reuslt must have an error ");
+                throw new InvalidOperationException("A failed result must have an error.");
 
             IsSuccess = isSuccess;
             Error = error;

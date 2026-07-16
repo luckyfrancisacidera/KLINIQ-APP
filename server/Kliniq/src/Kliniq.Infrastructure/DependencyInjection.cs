@@ -1,4 +1,4 @@
-﻿using Kliniq.Application.Common.Interfaces;
+using Kliniq.Application.Common.Interfaces;
 using Kliniq.Application.Common.Interfaces.Repositories;
 using Kliniq.Infrastructure.Identity;
 using Kliniq.Infrastructure.Persistence;
@@ -28,7 +28,7 @@ namespace Kliniq.Infrastructure
                 options.Password.RequireDigit = true;
                 options.Password.RequireUppercase = true;
                 options.Password.RequireLowercase = true;
-                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireNonAlphanumeric = true;
 
                 options.User.RequireUniqueEmail = true;
 
@@ -43,6 +43,7 @@ namespace Kliniq.Infrastructure
             services.AddScoped<IAuthService, AuthService>();    
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IFileStorageService, FileStorageService>();
+            services.AddSingleton<IAppTimeZone, AppTimeZone>();
 
             //Repository Services
             services.AddScoped<IPatientRepository, PatientRepository>();
@@ -52,7 +53,6 @@ namespace Kliniq.Infrastructure
             services.AddScoped<IAppointmentRepository, AppointmentRepository>();
             services.AddScoped<IScheduleRepository, ScheduleRepository>();
 
-            //services.AddScoped<IAppointmentRepository, AppointmentRepository>();
             services.AddScoped<IJwtTokenService, JwtTokenService>();
 
             //Seeder

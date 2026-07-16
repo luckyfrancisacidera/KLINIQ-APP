@@ -1,3 +1,16 @@
+export interface AccountRequestSummaryDto {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    specializations: string[];
+    street: string;
+    city: string;
+    country: string;
+    status: "Pending" | "Approved" | "Rejected";
+    createdAtUtc: string;
+}
+
 export interface AccountRequestDto {
     id: string;
     firstName: string;

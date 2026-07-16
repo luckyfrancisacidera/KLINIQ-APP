@@ -1,4 +1,4 @@
-﻿using Kliniq.Domain.Common;
+using Kliniq.Domain.Common;
 using Kliniq.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -38,8 +38,14 @@ namespace Kliniq.Infrastructure.Persistence.Configurations
             builder.Property(a => a.Notes)
                 .HasMaxLength(1000);
 
+            builder.Property(a => a.QueuedAtUtc);
+            builder.Property(a => a.ConsultationStartedAtUtc);
+            builder.Property(a => a.CompletedAtUtc);
+
             builder.HasIndex(a => a.PatientId);
-            builder.HasIndex(a => new { a.PractitionerId, a.ScheduledAt });
+            builder.HasIndex(a => new { a.PractitionerId, a.ScheduledAt })
+                .IsUnique()
+                .HasFilter("[Status] <> 'Cancelled'");
 
             builder.HasIndex(a => a.PractitionerId);
             builder.HasIndex(a => a.ClinicId);

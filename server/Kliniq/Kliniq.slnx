@@ -5,6 +5,9 @@
     <Project Path="src/Kliniq.Domain/Kliniq.Domain.csproj" />
     <Project Path="src/Kliniq.Infrastructure/Kliniq.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/tools/">
+    <Project Path="../../tools/Kliniq.SymptomCatalogBuilder/Kliniq.SymptomCatalogBuilder.csproj" />
+  </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Kliniq.Application.Tests/Kliniq.Application.Tests.csproj" />
     <Project Path="tests/Kliniq.Domain.Tests/Kliniq.Domain.Tests.csproj" />

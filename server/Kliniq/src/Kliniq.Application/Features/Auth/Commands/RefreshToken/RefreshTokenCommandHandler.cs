@@ -1,4 +1,4 @@
-﻿using Kliniq.Application.Common.Interfaces;
+using Kliniq.Application.Common.Interfaces;
 using Kliniq.Application.Features.Auth.Dto;
 using Kliniq.Application.Features.Auth.DTOs;
 using Kliniq.Domain.Common;
@@ -21,11 +21,10 @@ namespace Kliniq.Application.Features.Auth.Commands.RefreshToken
         {
             var authResult = await _authService.RefreshTokenAsync(request.RefreshToken, cancellationToken);
 
-            var user = authResult.Value!;
-
             if (!authResult.IsSuccess)
-                return Result.Failure<AuthTokensInternal>(Error.Validation("Auth.InvalidRefreshToken", "Invalid or expired refresh token"));
+                return Result.Failure<AuthTokensInternal>(Error.Unauthorized("Auth.InvalidRefreshToken", "Invalid or expired refresh token."));
 
+            var user = authResult.Value!;
             var accessToken = _jwtTokenService.GenerateAccessToken(user.UserId, user.Email, user.Role);
 
             var newRefreshToken = _jwtTokenService.GenerateRefreshToken();

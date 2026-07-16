@@ -1,11 +1,10 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using FluentValidation;
 using FluentValidation.Results;
 using Kliniq.Api.Extensions;
 using Kliniq.Domain.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using System.Text.Json;
@@ -15,15 +14,11 @@ namespace Kliniq.Tests.Middleware
     public class GlobalExceptionHandlerTests
     {
         private readonly IProblemDetailsService _problemDetailsService;
-        private readonly IHostEnvironment _env;
         private readonly GlobalExceptionHandler _sut;
 
         public GlobalExceptionHandlerTests()
         {
             _problemDetailsService = Substitute.For<IProblemDetailsService>();
-            _env = Substitute.For<IHostEnvironment>();
-            _env.EnvironmentName.Returns("Production"); 
-
             _problemDetailsService
                 .TryWriteAsync(Arg.Any<ProblemDetailsContext>())
                 .Returns(callInfo =>
@@ -34,8 +29,7 @@ namespace Kliniq.Tests.Middleware
 
             _sut = new GlobalExceptionHandler(
                 NullLogger<GlobalExceptionHandler>.Instance,
-                _problemDetailsService,
-                _env);
+                _problemDetailsService);
         }
 
         private static async ValueTask<bool> WriteJsonAsync(HttpContext ctx, ProblemDetails pd)

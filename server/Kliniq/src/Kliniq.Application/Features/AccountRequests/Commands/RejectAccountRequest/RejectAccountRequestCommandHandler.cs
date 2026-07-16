@@ -1,7 +1,8 @@
-﻿using Kliniq.Application.Common.Interfaces;
+using Kliniq.Application.Common.Interfaces;
 using Kliniq.Application.Common.Interfaces.Repositories;
 using Kliniq.Domain.Common;
 using MediatR;
+using System.Net;
 
 namespace Kliniq.Application.Features.AccountRequests.Commands.RejectAccountRequest
 {
@@ -27,15 +28,19 @@ namespace Kliniq.Application.Features.AccountRequests.Commands.RejectAccountRequ
 
             accountRequest.Reject(request.AdminNote);
 
-            var subject = "Update on your Kliniq Practitioner Account Request";
+            var subject = "Update on your KLINIQ practitioner application";
+            var firstName = WebUtility.HtmlEncode(accountRequest.Name.FirstName);
+            var lastName = WebUtility.HtmlEncode(accountRequest.Name.LastName);
+            var reason = WebUtility.HtmlEncode(request.AdminNote);
             var body = $"""
-                <h2>Hello Dr. {accountRequest.Name.FirstName} {accountRequest.Name.LastName}</h2>
+                <h2>Hello Dr. {firstName} {lastName}</h2>
                 <p>Unfortunately your practitioner account request has not been approved.</p>
-                <p><strong>Reason:</strong> {request.AdminNote}</p>
+                <p><strong>Reason:</strong> {reason}</p>
                 <p>If you believe this is a mistake or would like to reapply, please contact support.</p>
                 """;
 
             await _emailService.SendEmailAsync(accountRequest.Email, subject, body, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();
         }

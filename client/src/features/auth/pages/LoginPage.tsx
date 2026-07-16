@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { useState, type FormEvent } from "react"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useMutation } from "@tanstack/react-query"
 import { Eye, EyeOff, Loader2, Calendar, Lock, Stethoscope } from "lucide-react"
 import { Button } from "@shared/components/ui/button"
@@ -18,6 +18,7 @@ const getHomeRoute = (role: UserRole): string => {
 
 const LoginPage = () => {
   const navigate = useNavigate()
+  const location = useLocation()
   const { setUser } = useAuth()
 
   const [email, setEmail] = useState("")
@@ -28,11 +29,15 @@ const LoginPage = () => {
     mutationFn: authApi.login,
     onSuccess: ({ data }) => {
       setUser({ userId: data.userId, email: data.email, role: data.role as UserRole })
-      navigate(getHomeRoute(data.role as UserRole), { replace: true })
+      const requestedRoute = (location.state as { from?: string } | null)?.from
+      const destination = requestedRoute?.startsWith("/")
+        ? requestedRoute
+        : getHomeRoute(data.role as UserRole)
+      navigate(destination, { replace: true })
     },
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     login({ email, password })
   }
@@ -118,10 +123,10 @@ const LoginPage = () => {
                   <Label htmlFor="password" className="text-sm font-Geist-Semibold text-gray-700">
                     Password
                   </Label>
-                  <button type="button"
-                    className="text-xs text-brand-600 hover:text-brand-700 font-Geist-Semibold">
+                  <Link to="/forgot-password"
+                    className="inline-flex min-h-8 items-center text-xs text-brand-600 hover:text-brand-700 font-Geist-Semibold">
                     Forgot password?
-                  </button>
+                  </Link>
                 </div>
                 <div className="relative">
                   <Input id="password" type={showPassword ? "text" : "password"}

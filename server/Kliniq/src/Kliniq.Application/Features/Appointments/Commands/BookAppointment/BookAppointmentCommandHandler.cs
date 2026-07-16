@@ -1,4 +1,4 @@
-﻿using Kliniq.Application.Common.Interfaces;
+using Kliniq.Application.Common.Interfaces;
 using Kliniq.Application.Common.Interfaces.Repositories;
 using Kliniq.Application.Features.Appointments.DTOs;
 using Kliniq.Application.Features.Appointments.Mappings;
@@ -16,19 +16,22 @@ namespace Kliniq.Application.Features.Appointments.Commands.BookAppointment
         private readonly IPractitionerRepository _practitionerRepository;
         private readonly IScheduleRepository _scheduleRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IAppTimeZone _appTimeZone;
 
         public BookAppointmentCommandHandler(
             IAppointmentRepository appointmentRepository, 
             IPatientRepository patientRepository,
             IPractitionerRepository practitionerRepository,
             IScheduleRepository scheduleRepository,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            IAppTimeZone appTimeZone)
         {
             _appointmentRepository = appointmentRepository;
             _patientRepository = patientRepository;
             _practitionerRepository = practitionerRepository;
             _scheduleRepository = scheduleRepository;
             _unitOfWork = unitOfWork;
+            _appTimeZone = appTimeZone;
         }
 
         public async Task<Result<AppointmentDto>> Handle(BookAppointmentCommand request, CancellationToken cancellationToken)
@@ -65,7 +68,7 @@ namespace Kliniq.Application.Features.Appointments.Commands.BookAppointment
                     "Schedule.DayMismatch",
                     $"The date '{request.AppointmentDate}' is a {request.AppointmentDate.DayOfWeek}, but this schedule runs on {schedule.Day}."));
 
-            var scheduledAt = request.AppointmentDate.ToDateTime(request.SlotTime, DateTimeKind.Utc);
+            var scheduledAt = _appTimeZone.ToUtc(request.AppointmentDate, request.SlotTime);
 
             bool hasConflict = await _appointmentRepository.HasConflictAsync(
                 schedule.PractitionerId, scheduledAt, schedule.AppointmentLengthMinutes, excludeId: null, cancellationToken);

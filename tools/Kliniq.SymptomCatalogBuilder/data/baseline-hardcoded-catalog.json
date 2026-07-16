@@ -1,0 +1,124 @@
+{
+  "Cardiology": [
+    "chest discomfort",
+    "chest pressure",
+    "heart pain",
+    "high blood pressure",
+    "palpitations",
+    "racing heart"
+  ],
+  "Pulmonology": [
+    "asthma",
+    "breathing difficulty",
+    "cough",
+    "persistent cough",
+    "shortness of breath",
+    "wheezing"
+  ],
+  "Dermatology": [
+    "acne",
+    "eczema",
+    "hives",
+    "itchy skin",
+    "mole",
+    "rash",
+    "skin lesion"
+  ],
+  "Neurology": [
+    "dizziness",
+    "headache",
+    "migraine",
+    "numbness",
+    "seizure",
+    "severe headache",
+    "tingling",
+    "tremor"
+  ],
+  "Gastroenterology": [
+    "abdominal pain",
+    "acid reflux",
+    "bloated",
+    "constipation",
+    "diarrhea",
+    "heartburn",
+    "stomach pain",
+    "vomiting"
+  ],
+  "Pediatrics": [
+    "baby",
+    "child",
+    "infant",
+    "newborn",
+    "pediatric",
+    "toddler"
+  ],
+  "Obstetrics and Gynecology": [
+    "menstrual",
+    "pelvic pain",
+    "period pain",
+    "pregnancy",
+    "pregnant",
+    "prenatal",
+    "vaginal"
+  ],
+  "Orthopedics": [
+    "back pain",
+    "bone pain",
+    "fracture",
+    "joint pain",
+    "knee pain",
+    "shoulder pain",
+    "sports injury",
+    "sprain"
+  ],
+  "Otolaryngology (ENT)": [
+    "ear pain",
+    "hearing loss",
+    "hoarse voice",
+    "nasal congestion",
+    "sinus",
+    "sore throat",
+    "tonsil"
+  ],
+  "Ophthalmology": [
+    "blurred vision",
+    "eye infection",
+    "eye pain",
+    "flashes in vision",
+    "red eye",
+    "vision loss"
+  ],
+  "Psychiatry or Psychology": [
+    "anxiety",
+    "depression",
+    "insomnia",
+    "mental health",
+    "panic attack",
+    "stress",
+    "unable to sleep"
+  ],
+  "Endocrinology": [
+    "diabetes",
+    "high blood sugar",
+    "hormone",
+    "thyroid",
+    "unexplained weight change"
+  ],
+  "Urology": [
+    "blood in urine",
+    "frequent urination",
+    "kidney pain",
+    "painful urination",
+    "prostate",
+    "urinary"
+  ],
+  "General Practice": [
+    "body pain",
+    "fatigue",
+    "fever",
+    "flu",
+    "general checkup",
+    "not feeling well",
+    "weakness"
+  ]
+}
