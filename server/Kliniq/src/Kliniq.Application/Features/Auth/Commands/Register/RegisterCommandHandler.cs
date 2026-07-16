@@ -1,4 +1,4 @@
-﻿using Kliniq.Application.Common.Interfaces;
+using Kliniq.Application.Common.Interfaces;
 using Kliniq.Application.Common.Interfaces.Repositories;
 using Kliniq.Application.Features.Auth.Dto;
 using Kliniq.Application.Features.Auth.DTOs;
@@ -37,7 +37,7 @@ namespace Kliniq.Application.Features.Auth.Commands.Register
                 cancellationToken);
 
             if (authResult.IsFailure)
-                return Result.Failure<AuthTokensInternal>(Error.Conflict("Email.AlreadyExists", "Email address is already in use."));
+                return Result.Failure<AuthTokensInternal>(authResult.Error!);
 
             var user = authResult.Value!;
 

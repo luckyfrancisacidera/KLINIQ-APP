@@ -1,93 +1,74 @@
-﻿using Kliniq.Domain.Enums;
+using Kliniq.Domain.Enums;
 using Kliniq.Infrastructure.Identity;
-using Kliniq.Infrastructure.Persistence.Seeders;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Kliniq.Infrastructure.Persistence.Seeder
+namespace Kliniq.Infrastructure.Persistence.Seeders
 {
-
-}
-public class IdentitySeeder
-{
-    private readonly UserManager<AppUser> _userManager;
-    private readonly RoleManager<IdentityRole> _roleManager;
-    private readonly ILogger<IdentitySeeder> _logger;
-    private readonly SeedSettings _settings;
-
-    public IdentitySeeder(
-        UserManager<AppUser> userManager,
-        RoleManager<IdentityRole> roleManager,
-        ILogger<IdentitySeeder> logger,
-        IOptions<SeedSettings> settings)
+    public sealed class IdentitySeeder
     {
-        _userManager = userManager;
-        _roleManager = roleManager;
-        _logger = logger;
-        _settings = settings.Value;
-    }
+        private readonly UserManager<AppUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ILogger<IdentitySeeder> _logger;
+        private readonly SeedSettings _settings;
 
-    public async Task SeedAsync()
-    {
-        await SeedRolesAsync();
-        await SeedAdminAsync();
-    }
-
-    private async Task SeedRolesAsync()
-    {
-        var roles = Enum.GetNames<UserRole>();
-
-        foreach (var role in roles)
+        public IdentitySeeder(
+            UserManager<AppUser> userManager,
+            RoleManager<IdentityRole> roleManager,
+            ILogger<IdentitySeeder> logger,
+            IOptions<SeedSettings> settings)
         {
-            if (await _roleManager.RoleExistsAsync(role))
-                continue;
-
-            var result = await _roleManager.CreateAsync(new IdentityRole(role));
-
-            if (result.Succeeded)
-                _logger.LogInformation("Role '{Role}' created", role);
-            else
-                _logger.LogError("Failed to create role '{Role}': {Errors}",
-                    role, string.Join(", ", result.Errors.Select(e => e.Description)));
-        }
-    }
-
-    private async Task SeedAdminAsync()
-    {
-        if (string.IsNullOrWhiteSpace(_settings.AdminEmail) ||
-            string.IsNullOrWhiteSpace(_settings.AdminPassword))
-        {
-            _logger.LogWarning(
-                "Admin seed skipped — SeedSettings:AdminEmail or SeedSettings:AdminPassword not set.");
-            return;
+            _userManager = userManager;
+            _roleManager = roleManager;
+            _logger = logger;
+            _settings = settings.Value;
         }
 
-        var existing = await _userManager.FindByEmailAsync(_settings.AdminEmail);
-        if (existing is not null)
+        public async Task SeedAsync()
         {
-            _logger.LogInformation("Admin user already exists, skipping seed");
-            return;
+            await SeedRolesAsync();
+            await SeedAdminAsync();
         }
 
-        var admin = new AppUser
+        private async Task SeedRolesAsync()
         {
-            UserName = _settings.AdminEmail,
-            Email = _settings.AdminEmail,
-            EmailConfirmed = true,
-            Role = UserRole.Admin
-        };
-
-        var result = await _userManager.CreateAsync(admin, _settings.AdminPassword);
-
-        if (!result.Succeeded)
-        {
-            _logger.LogError("Failed to create admin user: {Errors}",
-                string.Join(", ", result.Errors.Select(e => e.Description)));
-            return;
+            foreach (var role in Enum.GetNames<UserRole>())
+            {
+                if (await _roleManager.RoleExistsAsync(role)) continue;
+                var result = await _roleManager.CreateAsync(new IdentityRole(role));
+                if (!result.Succeeded)
+                    _logger.LogError("Failed to create role {Role}: {Errors}", role, string.Join(", ", result.Errors.Select(error => error.Description)));
+            }
         }
 
-        await _userManager.AddToRoleAsync(admin, nameof(UserRole.Admin));
-        _logger.LogInformation("Admin user seeded successfully");
+        private async Task SeedAdminAsync()
+        {
+            if (string.IsNullOrWhiteSpace(_settings.AdminEmail) || string.IsNullOrWhiteSpace(_settings.AdminPassword))
+            {
+                _logger.LogInformation("Admin seed skipped because seed credentials are not configured.");
+                return;
+            }
+
+            if (await _userManager.FindByEmailAsync(_settings.AdminEmail.Trim()) is not null) return;
+
+            var admin = new AppUser
+            {
+                UserName = _settings.AdminEmail.Trim(),
+                Email = _settings.AdminEmail.Trim(),
+                EmailConfirmed = true,
+                Role = UserRole.Admin
+            };
+
+            var result = await _userManager.CreateAsync(admin, _settings.AdminPassword);
+            if (!result.Succeeded)
+            {
+                _logger.LogError("Failed to create admin user: {Errors}", string.Join(", ", result.Errors.Select(error => error.Description)));
+                return;
+            }
+
+            await _userManager.AddToRoleAsync(admin, nameof(UserRole.Admin));
+            _logger.LogInformation("Configured administrator account created.");
+        }
     }
 }

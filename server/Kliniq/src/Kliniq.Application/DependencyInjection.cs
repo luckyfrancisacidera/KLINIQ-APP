@@ -1,6 +1,8 @@
-﻿using FluentValidation;
+using FluentValidation;
 using Kliniq.Application.Common.Behaviors;
 using MediatR;
+using Kliniq.Application.Common.Interfaces;
+using Kliniq.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Kliniq.Application
@@ -19,6 +21,8 @@ namespace Kliniq.Application
             });
 
             services.AddValidatorsFromAssembly(assembly);
+            services.AddSingleton<NegationDetector>();
+            services.AddSingleton<ISymptomAnalysisService, ExplainableSymptomAnalysisService>();
             return services;
         }
     }

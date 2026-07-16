@@ -1,4 +1,5 @@
-﻿using Kliniq.Application.Common.Interfaces.Repositories;
+using Kliniq.Application.Common.Interfaces;
+using Kliniq.Application.Common.Interfaces.Repositories;
 using Kliniq.Application.Features.Practitioners.DTOs;
 using Kliniq.Domain.Common;
 using Kliniq.Domain.Enums;
@@ -12,21 +13,24 @@ namespace Kliniq.Application.Features.Practitioners.Queries.GetAvailableSlots
         private readonly IPractitionerRepository _practitionerRepository;
         private readonly IScheduleRepository _scheduleRepository;
         private readonly IAppointmentRepository _appointmentRepository;
+        private readonly IAppTimeZone _appTimeZone;
 
         public GetAvailableSlotsQueryHandler(
             IPractitionerRepository practitionerRepository,
             IScheduleRepository scheduleRepository,
-            IAppointmentRepository appointmentRepository)
+            IAppointmentRepository appointmentRepository,
+            IAppTimeZone appTimeZone)
         {
             _practitionerRepository = practitionerRepository;
             _scheduleRepository = scheduleRepository;
             _appointmentRepository = appointmentRepository;
+            _appTimeZone = appTimeZone;
         }
 
         public async Task<Result<IReadOnlyList<AvailableSlotDto>>> Handle(
             GetAvailableSlotsQuery request, CancellationToken cancellationToken)
         {
-            var today = DateOnly.FromDateTime(DateTime.UtcNow.Date);
+            var today = _appTimeZone.Today;
             var resolvedFrom = request.From ?? today;
             var resolvedTo = request.To ?? resolvedFrom.AddDays(7);
 
@@ -57,18 +61,18 @@ namespace Kliniq.Application.Features.Practitioners.Queries.GetAvailableSlots
                 .Where(s => s.IsAvailable)
                 .ToList();
 
-            var fromUtc = resolvedFrom.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc);
-            var toUtc = resolvedTo.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc);
+            var fromUtc = _appTimeZone.ToUtc(resolvedFrom, TimeOnly.MinValue);
+            var toUtc = _appTimeZone.ToUtc(resolvedTo, TimeOnly.MaxValue);
 
             var existingAppointments = await _appointmentRepository
                 .GetByPractitionerInRangeAsync(request.PractitionerId, fromUtc, toUtc, cancellationToken);
 
             var bookedByDate = existingAppointments
                 .Where(a => a.Status != AppointmentStatus.Cancelled)
-                .GroupBy(a => DateOnly.FromDateTime(a.ScheduledAt))
+                .GroupBy(a => _appTimeZone.ToLocalDate(a.ScheduledAt))
                 .ToDictionary(
-                    g => g.Key,
-                    g => g.Select(a => TimeOnly.FromDateTime(a.ScheduledAt)).ToHashSet());
+                    group => group.Key,
+                    group => group.Select(appointment => _appTimeZone.ToLocalTime(appointment.ScheduledAt)).ToHashSet());
 
             var result = new List<AvailableSlotDto>();
 
@@ -81,8 +85,10 @@ namespace Kliniq.Application.Features.Practitioners.Queries.GetAvailableSlots
 
                 var bookedSlots = bookedByDate.GetValueOrDefault(date) ?? [];
 
+                var currentLocalTime = TimeOnly.FromDateTime(_appTimeZone.LocalNow);
                 var freeSlots = schedule
                     .GetAvailableSlots()
+                    .Where(slot => date > today || slot > currentLocalTime)
                     .Where(slot => !bookedSlots.Contains(slot))
                     .Select(slot => slot.ToString("HH:mm"))
                     .ToList();

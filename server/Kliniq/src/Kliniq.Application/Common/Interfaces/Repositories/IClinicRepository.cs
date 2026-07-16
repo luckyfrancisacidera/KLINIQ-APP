@@ -1,4 +1,5 @@
-﻿using Kliniq.Domain.Entities;
+using Kliniq.Domain.Common;
+using Kliniq.Domain.Entities;
 
 namespace Kliniq.Application.Common.Interfaces.Repositories
 {
@@ -6,5 +7,15 @@ namespace Kliniq.Application.Common.Interfaces.Repositories
     {
         Task AddAsync(Clinic clinic, CancellationToken cancellationToken);
         Task<Clinic?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+        Task<PagedResult<Clinic>> SearchAsync(
+            string? search,
+            string? specialization,
+            double? latitude,
+            double? longitude,
+            double? radiusKm,
+            string? sortBy,
+            int page,
+            int pageSize,
+            CancellationToken cancellationToken);
     }
 }

@@ -27,7 +27,7 @@ export interface RegisterPayload {
 }
 
 export interface SetPasswordPayload {
-    initialPassword: string;
+    invitationToken: string;
     password: string;
     confirmPassword: string;
 }
@@ -45,4 +45,21 @@ export type MeResponse = AuthResponse;
 export interface SetPasswordResponse {
     email: string;
     message: string;
+}
+
+export interface ForgotPasswordPayload {
+    email: string;
+}
+
+export interface ResetPasswordPayload {
+    email: string;
+    token: string;
+    password: string;
+    confirmPassword: string;
+}
+
+export interface ChangePasswordPayload {
+    currentPassword: string;
+    newPassword: string;
+    confirmPassword: string;
 }

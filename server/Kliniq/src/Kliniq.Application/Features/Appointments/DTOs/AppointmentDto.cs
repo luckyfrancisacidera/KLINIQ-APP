@@ -1,4 +1,4 @@
-﻿namespace Kliniq.Application.Features.Appointments.DTOs
+namespace Kliniq.Application.Features.Appointments.DTOs
 {
     public sealed record AppointmentDto(
         Guid Id,
@@ -9,6 +9,9 @@
         int DurationMinutes,
         string Status,
         string? Reason,
-        string? Notes
+        string? Notes,
+        DateTime? QueuedAtUtc,
+        DateTime? ConsultationStartedAtUtc,
+        DateTime? CompletedAtUtc
     );
 }

@@ -1,4 +1,5 @@
-﻿using Kliniq.Application.Common.Interfaces.Repositories;
+using Kliniq.Application.Common.Interfaces.Repositories;
+using Kliniq.Application.Common.Models;
 using Kliniq.Domain.Common;
 using Kliniq.Domain.Entities;
 using Kliniq.Domain.Enums;
@@ -20,10 +21,10 @@ namespace Kliniq.Infrastructure.Persistence.Repositories
         public async Task<Appointment?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
             => await _context.Appointments.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
 
-        public async Task<PagedResult<Appointment>> GetByPatientIdAsync(Guid patientId, int page, int pageSize, CancellationToken cancellationToken)
+        public async Task<PagedResult<Appointment>> GetByPatientIdAsync(Guid patientId, string? status, DateTime? dateFrom, DateTime? dateTo, int page, int pageSize, CancellationToken cancellationToken)
         {
-            var query = _context.Appointments.AsNoTracking()
-                .Where(a => a.PatientId == patientId);
+            (page, pageSize) = Pagination.Normalize(page, pageSize);
+            var query = ApplyFilters(_context.Appointments.AsNoTracking().Where(a => a.PatientId == patientId), status, dateFrom, dateTo);
 
             var total = await query.CountAsync(cancellationToken);
             var items = await query
@@ -35,15 +36,18 @@ namespace Kliniq.Infrastructure.Persistence.Repositories
             return new PagedResult<Appointment>(items, total, page, pageSize);
         }
 
-        public async Task<PagedResult<Appointment>> GetByPractitionerIdAsync(Guid practitionerId, int page, int pageSize, CancellationToken cancellationToken)
+        public async Task<PagedResult<Appointment>> GetByPractitionerIdAsync(Guid practitionerId, string? status, DateTime? dateFrom, DateTime? dateTo, int page, int pageSize, CancellationToken cancellationToken)
         {
-            var query = _context.Appointments.AsNoTracking()
-                .Where(a => a.PractitionerId == practitionerId);
+            (page, pageSize) = Pagination.Normalize(page, pageSize);
+            var query = ApplyFilters(_context.Appointments.AsNoTracking().Where(a => a.PractitionerId == practitionerId), status, dateFrom, dateTo);
 
             var total = await query.CountAsync(cancellationToken);
-            var items = await query
-                .OrderByDescending(a => a.ScheduledAt)
-                .Skip((page -1 ) * pageSize)
+            var ordered = string.Equals(status, AppointmentStatus.InQueue.ToString(), StringComparison.OrdinalIgnoreCase)
+                ? query.OrderBy(a => a.QueuedAtUtc).ThenBy(a => a.ScheduledAt)
+                : query.OrderByDescending(a => a.ScheduledAt);
+
+            var items = await ordered
+                .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync(cancellationToken);
 
@@ -69,18 +73,33 @@ namespace Kliniq.Infrastructure.Persistence.Repositories
         {
             var proposedEnd = scheduledAt.AddMinutes(durationMinutes);
 
-            var candidates = await _context.Appointments
-             .Where(a =>
-                 a.PractitionerId == practitionerId &&
-                 a.Status != AppointmentStatus.Cancelled &&
-                 (excludeId == null || a.Id != excludeId) &&
-                 a.ScheduledAt < proposedEnd &&
-                 a.ScheduledAt >= scheduledAt.Date)   
-             .Select(a => new { a.ScheduledAt, DurationMinutes = (int)a.Duration.TotalMinutes })
-             .ToListAsync(cancellationToken);
+            return await _context.Appointments
+                .AsNoTracking()
+                .AnyAsync(a =>
+                    a.PractitionerId == practitionerId &&
+                    a.Status != AppointmentStatus.Cancelled &&
+                    (!excludeId.HasValue || a.Id != excludeId.Value) &&
+                    a.ScheduledAt < proposedEnd &&
+                    a.EndTime > scheduledAt,
+                    cancellationToken);
+        }
 
-            return candidates.Any(a => a.ScheduledAt.AddMinutes(a.DurationMinutes) > scheduledAt);
+        private static IQueryable<Appointment> ApplyFilters(
+            IQueryable<Appointment> query,
+            string? status,
+            DateTime? dateFrom,
+            DateTime? dateTo)
+        {
+            if (!string.IsNullOrWhiteSpace(status) && Enum.TryParse<AppointmentStatus>(status, true, out var parsedStatus))
+                query = query.Where(appointment => appointment.Status == parsedStatus);
 
+            if (dateFrom.HasValue)
+                query = query.Where(appointment => appointment.ScheduledAt >= dateFrom.Value);
+
+            if (dateTo.HasValue)
+                query = query.Where(appointment => appointment.ScheduledAt < dateTo.Value.AddDays(1));
+
+            return query;
         }
 
         public void Update(Appointment appointment)

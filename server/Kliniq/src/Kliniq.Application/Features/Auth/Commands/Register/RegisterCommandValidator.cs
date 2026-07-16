@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 
 namespace Kliniq.Application.Features.Auth.Commands.Register
 {
@@ -13,7 +13,6 @@ namespace Kliniq.Application.Features.Auth.Commands.Register
             RuleFor(x => x.Password)
                 .NotEmpty().WithMessage("Password is required.")
                 .MinimumLength(8).WithMessage("Password must be at least 8 characters long.")
-                .Matches(@"\d").WithMessage("Password must contain at least one digit.")
                 .Matches("[A-Z]").WithMessage("Password must contain at least one uppercase letter.")
                 .Matches("[a-z]").WithMessage("Password must contain at least one lowercase letter.")
                 .Matches("[0-9]").WithMessage("Password must contain at least one digit.")
@@ -33,7 +32,7 @@ namespace Kliniq.Application.Features.Auth.Commands.Register
 
             RuleFor(x => x.DateOfBirth)
                 .NotEmpty().WithMessage("Date of birth is required.")
-                .LessThan(DateTime.Now).WithMessage("Date of birth must be in the past.");
+                .LessThan(DateTime.UtcNow).WithMessage("Date of birth must be in the past.");
 
             RuleFor(x => x.Gender)
                 .IsInEnum().WithMessage("Invalid gender value");

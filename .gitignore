@@ -43,9 +43,23 @@ secrets.json
 *.pfx
 *.key
 
-# EF Core migrations backup 
-src/Kliniq.Infrastructure/Migrations/
 
 #logs
 logs/
 *.log
+# Local KLINIQ configuration and generated data
+server/Kliniq/src/Kliniq.Api/appsettings.Development.json
+server/Kliniq/src/Kliniq.Api/logs/
+server/Kliniq/src/Kliniq.Api/storage/
+client/.env
+
+# Offline symptom-catalog source exports (download locally; do not redistribute)
+tools/Kliniq.SymptomCatalogBuilder/data/symptom2disease.csv
+tools/Kliniq.SymptomCatalogBuilder/data/gretel-symptom-to-diagnosis.*
+tools/Kliniq.SymptomCatalogBuilder/data/disease-symptom-description.csv
+tools/Kliniq.SymptomCatalogBuilder/data/diseases-and-symptoms.csv
+tools/Kliniq.SymptomCatalogBuilder/data/quyenanh-diseases-symptoms.*
+tools/Kliniq.SymptomCatalogBuilder/data/hp.json
+
+storage/
+data-protection-keys/

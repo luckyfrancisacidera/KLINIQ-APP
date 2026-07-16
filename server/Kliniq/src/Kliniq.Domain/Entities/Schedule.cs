@@ -64,7 +64,7 @@ namespace Kliniq.Domain.Entities
             UpdatedAtUtc = DateTime.UtcNow;
         }
 
-        public void UpdateTimeSlot(TimeOnly newStart, TimeOnly newEnd, int newLengthMinutes)
+        public void UpdateTimeSlot(ClinicDayOfWeek newDay, TimeOnly newStart, TimeOnly newEnd, int newLengthMinutes)
         {
             if(newEnd <= newStart)
                 throw new DomainException("End time must be after start time");
@@ -72,8 +72,9 @@ namespace Kliniq.Domain.Entities
             if ((newEnd - newStart).TotalMinutes < newLengthMinutes)
                 throw new DomainException("Schedule must be at least one appointment length long");
 
+            Day = newDay;
             StartTime = newStart;
-            EndTime= newEnd;
+            EndTime = newEnd;
             AppointmentLengthMinutes = newLengthMinutes;
             _breaks.Clear();
             UpdatedAtUtc = DateTime.UtcNow;

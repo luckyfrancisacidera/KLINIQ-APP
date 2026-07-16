@@ -6,6 +6,9 @@ namespace Kliniq.Application.Features.Appointments.Queries.GetPractitionerAppoin
 {
     public sealed record GetPractitionerAppointmentsQuery(
         Guid PractitionerId,
+        string? Status = null,
+        DateTime? DateFrom = null,
+        DateTime? DateTo = null,
         int Page = 1,
         int PageSize = 20
     ) : IRequest<Result<PagedResult<AppointmentDto>>>;

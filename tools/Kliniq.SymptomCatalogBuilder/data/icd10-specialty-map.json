@@ -1,0 +1,326 @@
+{
+  "chapterSpecialties": {
+    "I": "General Practice",
+    "V": "Psychiatry or Psychology",
+    "X": "Pulmonology",
+    "II": "General Practice",
+    "IV": "Endocrinology",
+    "IX": "Cardiology",
+    "VI": "Neurology",
+    "XI": "Gastroenterology",
+    "XV": "Obstetrics and Gynecology",
+    "III": "General Practice",
+    "VII": "Ophthalmology",
+    "XII": "Dermatology",
+    "XIV": "Urology",
+    "XIX": "General Practice",
+    "XVI": "Pediatrics",
+    "XXI": "General Practice",
+    "VIII": "Otolaryngology (ENT)",
+    "XIII": "Orthopedics",
+    "XVII": "Pediatrics",
+    "XVIII": "General Practice"
+  },
+  "diseases": {
+    "acne": {
+      "chapter": "XII",
+      "specialty": "Dermatology"
+    },
+    "acute pancreatitis": {
+      "chapter": "XI",
+      "specialty": "Gastroenterology"
+    },
+    "allergy": {
+      "chapter": "XVIII",
+      "specialty": "General Practice"
+    },
+    "angle closure glaucoma": {
+      "chapter": "VII",
+      "specialty": "Ophthalmology"
+    },
+    "anorexia nervosa": {
+      "chapter": "V",
+      "specialty": "Psychiatry or Psychology"
+    },
+    "arthritis": {
+      "chapter": "XIII",
+      "specialty": "Orthopedics"
+    },
+    "asthma": {
+      "chapter": "X",
+      "specialty": "Pulmonology"
+    },
+    "atelectasis": {
+      "chapter": "X",
+      "specialty": "Pulmonology"
+    },
+    "atrophic vaginitis": {
+      "chapter": "XIV",
+      "specialty": "Obstetrics and Gynecology"
+    },
+    "binge eating disorder": {
+      "chapter": "V",
+      "specialty": "Psychiatry or Psychology"
+    },
+    "bronchial asthma": {
+      "chapter": "X",
+      "specialty": "Pulmonology"
+    },
+    "bulimia nervosa": {
+      "chapter": "V",
+      "specialty": "Psychiatry or Psychology"
+    },
+    "carpal tunnel syndrome": {
+      "chapter": "XIII",
+      "specialty": "Orthopedics"
+    },
+    "cellulitis": {
+      "chapter": "XII",
+      "specialty": "Dermatology"
+    },
+    "cervical spondylosis": {
+      "chapter": "XIII",
+      "specialty": "Orthopedics"
+    },
+    "chicken pox": {
+      "chapter": "I",
+      "specialty": "General Practice"
+    },
+    "choledocholithiasis": {
+      "chapter": "XI",
+      "specialty": "Gastroenterology"
+    },
+    "chronic migraine": {
+      "chapter": "VI",
+      "specialty": "Neurology"
+    },
+    "cirrhosis": {
+      "chapter": "XI",
+      "specialty": "Gastroenterology"
+    },
+    "common cold": {
+      "chapter": "X",
+      "specialty": "General Practice"
+    },
+    "congenital glaucoma": {
+      "chapter": "VII",
+      "specialty": "Ophthalmology"
+    },
+    "cryptorchidism": {
+      "chapter": "XVII",
+      "specialty": "Urology"
+    },
+    "dengue": {
+      "chapter": "I",
+      "specialty": "General Practice"
+    },
+    "diabetes": {
+      "chapter": "IV",
+      "specialty": "Endocrinology"
+    },
+    "diabetic retinopathy": {
+      "chapter": "VII",
+      "specialty": "Ophthalmology"
+    },
+    "dimorphic hemorrhoids piles": {
+      "chapter": "XI",
+      "specialty": "Gastroenterology"
+    },
+    "drug reaction": {
+      "chapter": "XIX",
+      "specialty": "General Practice"
+    },
+    "ectopic pregnancy": {
+      "chapter": "XV",
+      "specialty": "Obstetrics and Gynecology"
+    },
+    "exfoliation glaucoma": {
+      "chapter": "VII",
+      "specialty": "Ophthalmology"
+    },
+    "eye alignment disorder": {
+      "chapter": "VII",
+      "specialty": "Ophthalmology"
+    },
+    "fracture": {
+      "chapter": "XIX",
+      "specialty": "Orthopedics"
+    },
+    "fungal infection": {
+      "chapter": "XII",
+      "specialty": "Dermatology"
+    },
+    "gastroesophageal reflux disease": {
+      "chapter": "XI",
+      "specialty": "Gastroenterology"
+    },
+    "gestational diabetes": {
+      "chapter": "XV",
+      "specialty": "Obstetrics and Gynecology"
+    },
+    "gestational hypertension": {
+      "chapter": "XV",
+      "specialty": "Obstetrics and Gynecology"
+    },
+    "hyperemesis gravidarum": {
+      "chapter": "XV",
+      "specialty": "Obstetrics and Gynecology"
+    },
+    "hypertension": {
+      "chapter": "IX",
+      "specialty": "Cardiology"
+    },
+    "impetigo": {
+      "chapter": "XII",
+      "specialty": "Dermatology"
+    },
+    "ischemia of the bowel": {
+      "chapter": "XI",
+      "specialty": "Gastroenterology"
+    },
+    "jaundice": {
+      "chapter": "XVIII",
+      "specialty": "Gastroenterology"
+    },
+    "low tension glaucoma": {
+      "chapter": "VII",
+      "specialty": "Ophthalmology"
+    },
+    "ludwigs angina": {
+      "chapter": "XI",
+      "specialty": "Otolaryngology (ENT)"
+    },
+    "malaria": {
+      "chapter": "I",
+      "specialty": "General Practice"
+    },
+    "migraine": {
+      "chapter": "VI",
+      "specialty": "Neurology"
+    },
+    "mumps": {
+      "chapter": "I",
+      "specialty": "Otolaryngology (ENT)"
+    },
+    "normal tension glaucoma": {
+      "chapter": "VII",
+      "specialty": "Ophthalmology"
+    },
+    "ocular hypertension": {
+      "chapter": "VII",
+      "specialty": "Ophthalmology"
+    },
+    "open angle glaucoma": {
+      "chapter": "VII",
+      "specialty": "Ophthalmology"
+    },
+    "osteochondrosis": {
+      "chapter": "XIII",
+      "specialty": "Orthopedics"
+    },
+    "panic disorder": {
+      "chapter": "V",
+      "specialty": "Psychiatry or Psychology"
+    },
+    "parotid stones": {
+      "chapter": "XI",
+      "specialty": "Otolaryngology (ENT)"
+    },
+    "peptic ulcer disease": {
+      "chapter": "XI",
+      "specialty": "Gastroenterology"
+    },
+    "peritonitis": {
+      "chapter": "XI",
+      "specialty": "Gastroenterology"
+    },
+    "pigmentary glaucoma": {
+      "chapter": "VII",
+      "specialty": "Ophthalmology"
+    },
+    "placenta previa": {
+      "chapter": "XV",
+      "specialty": "Obstetrics and Gynecology"
+    },
+    "pneumonia": {
+      "chapter": "X",
+      "specialty": "Pulmonology"
+    },
+    "preeclampsia": {
+      "chapter": "XV",
+      "specialty": "Obstetrics and Gynecology"
+    },
+    "pregnancy induced hypertension": {
+      "chapter": "XV",
+      "specialty": "Obstetrics and Gynecology"
+    },
+    "psoriasis": {
+      "chapter": "XII",
+      "specialty": "Dermatology"
+    },
+    "pyelonephritis": {
+      "chapter": "XIV",
+      "specialty": "Urology"
+    },
+    "recurrent salivary stones": {
+      "chapter": "XI",
+      "specialty": "Otolaryngology (ENT)"
+    },
+    "rotator cuff injury": {
+      "chapter": "XIX",
+      "specialty": "Orthopedics"
+    },
+    "sciatica": {
+      "chapter": "XIII",
+      "specialty": "Orthopedics"
+    },
+    "secondary glaucoma": {
+      "chapter": "VII",
+      "specialty": "Ophthalmology"
+    },
+    "sialolithiasis": {
+      "chapter": "XI",
+      "specialty": "Otolaryngology (ENT)"
+    },
+    "subdural hemorrhage": {
+      "chapter": "IX",
+      "specialty": "Neurology"
+    },
+    "submandibular stones": {
+      "chapter": "XI",
+      "specialty": "Otolaryngology (ENT)"
+    },
+    "thoracic aortic aneurysm": {
+      "chapter": "IX",
+      "specialty": "Cardiology"
+    },
+    "thrombophlebitis": {
+      "chapter": "IX",
+      "specialty": "Cardiology"
+    },
+    "transient ischemic attack": {
+      "chapter": "IX",
+      "specialty": "Neurology"
+    },
+    "typhoid": {
+      "chapter": "I",
+      "specialty": "General Practice"
+    },
+    "urinary tract infection": {
+      "chapter": "XIV",
+      "specialty": "Urology"
+    },
+    "varicose veins": {
+      "chapter": "IX",
+      "specialty": "Cardiology"
+    },
+    "vocal cord polyp": {
+      "chapter": "VIII",
+      "specialty": "Otolaryngology (ENT)"
+    },
+    "whartons duct stones": {
+      "chapter": "XI",
+      "specialty": "Otolaryngology (ENT)"
+    }
+  }
+}

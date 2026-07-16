@@ -25,7 +25,7 @@ namespace Kliniq.Application.Features.Appointments.Queries.GetPatientAppointment
             if(!exists)
                 return Result.Failure<PagedResult<AppointmentDto>>(Error.NotFound("Patient.NotFound",$"Patient '{request.PatientId}' not found"));
 
-            var paged = await _appointmentRepository.GetByPatientIdAsync(request.PatientId, request.Page, request.PageSize, cancellationToken);
+            var paged = await _appointmentRepository.GetByPatientIdAsync(request.PatientId, request.Status, request.DateFrom, request.DateTo, request.Page, request.PageSize, cancellationToken);
 
             var mapped = new PagedResult<AppointmentDto>(
                 paged.Items.Select(a => a.ToDto()).ToList(),

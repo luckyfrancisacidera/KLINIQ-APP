@@ -1,14 +1,14 @@
-﻿using FluentValidation;
+using FluentValidation;
 using Kliniq.Domain.Common;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kliniq.Api.Extensions
 {
     public sealed class GlobalExceptionHandler(
         ILogger<GlobalExceptionHandler> logger,
-        IProblemDetailsService problemDetailsService,
-        IHostEnvironment env) : IExceptionHandler
+        IProblemDetailsService problemDetailsService) : IExceptionHandler
     {
         public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
         {
@@ -52,6 +52,8 @@ namespace Kliniq.Api.Extensions
 
             DomainException => (StatusCodes.Status422UnprocessableEntity, "Business Rule Violation"),
 
+            DbUpdateException => (StatusCodes.Status409Conflict, "Data Conflict"),
+
             InvalidOperationException => (StatusCodes.Status409Conflict, "Operation Not Allowed"),
 
             UnauthorizedAccessException => (StatusCodes.Status401Unauthorized, "Unauthorized"),
@@ -75,13 +77,9 @@ namespace Kliniq.Api.Extensions
             _ => "https://tools.ietf.org/html/rfc9110#section-15.6.1"
         };
         
-        private string GetSafeDetail(Exception exception)
-        {
-            if(env.IsDevelopment())
-                return exception.ToString();
-
-            return exception is DomainException or InvalidOperationException or ValidationException ? exception.Message
-                : "An unexpected error occurred. Use the traceId to investigate";  
-        }
+        private static string GetSafeDetail(Exception exception)
+            => exception is DomainException or ValidationException
+                ? exception.Message
+                : "The request could not be completed. Use the traceId to investigate.";
     }
 }

@@ -15,7 +15,7 @@ namespace Kliniq.Application.Features.Patients.Queries.GetPatients
         }
         public async Task<Result<PagedResult<PatientDto>>> Handle(GetPatientsQuery request, CancellationToken cancellationToken)
         {
-            var paged = await _patientRepository.GetAllAsync(request.Page, request.PageSize, cancellationToken);
+            var paged = await _patientRepository.GetAllAsync(request.Search, request.Page, request.PageSize, cancellationToken);
 
             var result = new PagedResult<PatientDto>(
                 paged.Items.Select(p => p.ToDto()).ToList(),

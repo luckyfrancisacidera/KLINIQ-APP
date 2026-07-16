@@ -1,4 +1,5 @@
-﻿using Kliniq.Domain.Entities;
+using Kliniq.Domain.Common;
+using Kliniq.Domain.Entities;
 
 namespace Kliniq.Application.Common.Interfaces.Repositories
 {
@@ -9,5 +10,6 @@ namespace Kliniq.Application.Common.Interfaces.Repositories
         Task<bool> ExistsPendingEmailAsync(string email, CancellationToken cancellationToken);
         Task<AccountRequest?> GetApprovedByEmailAsync(string email, CancellationToken cancellationToken);
         Task<AccountRequest?> GetByInvitationTokenAsync(string invitationToken, CancellationToken cancellationToken);
+        Task<PagedResult<AccountRequest>> GetPagedAsync(int page, int pageSize, string? search, string? status, CancellationToken cancellationToken);
     }
 }

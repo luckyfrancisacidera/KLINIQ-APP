@@ -1,0 +1,23 @@
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=(localdb)\\MSSQLLocalDB;Database=Kliniq;Trusted_Connection=True;TrustServerCertificate=True"
+  },
+  "App": {
+    "BaseUrl": "http://localhost:5173",
+    "TimeZoneId": "Asia/Manila"
+  },
+  "Cors": {
+    "AllowedOrigins": [
+      "http://localhost:5173"
+    ]
+  },
+  "FileStorage": {
+    "BasePath": "./storage"
+  },
+  "DataProtection": {
+    "KeysPath": "./data-protection-keys"
+  },
+  "SymptomMatching": {
+    "FuzzyThreshold": 85
+  }
+}

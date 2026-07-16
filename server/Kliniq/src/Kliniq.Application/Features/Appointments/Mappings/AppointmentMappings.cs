@@ -1,4 +1,4 @@
-﻿using Kliniq.Application.Features.Appointments.DTOs;
+using Kliniq.Application.Features.Appointments.DTOs;
 using Kliniq.Domain.Entities;
 
 namespace Kliniq.Application.Features.Appointments.Mappings
@@ -14,7 +14,10 @@ namespace Kliniq.Application.Features.Appointments.Mappings
             (int)a.Duration.TotalMinutes,
             a.Status.ToString(),
             a.Reason,
-            a.Notes
+            a.Notes,
+            a.QueuedAtUtc,
+            a.ConsultationStartedAtUtc,
+            a.CompletedAtUtc
         );
     }
 }

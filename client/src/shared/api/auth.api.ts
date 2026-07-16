@@ -1,15 +1,23 @@
-import type { AuthResponse, LoginPayload, MeResponse, RegisterPayload, SetPasswordPayload, SetPasswordResponse } from "../types/auth.types";
-import axios from "./axios";
+import type {
+  AuthResponse,
+  ChangePasswordPayload,
+  ForgotPasswordPayload,
+  LoginPayload,
+  MeResponse,
+  RegisterPayload,
+  ResetPasswordPayload,
+  SetPasswordPayload,
+  SetPasswordResponse,
+} from "../types/auth.types"
+import apiClient from "./axios"
 
 export const authApi = {
-    //AUTH API
-    login: (payload: LoginPayload) => axios.post<AuthResponse>("/auth/login", payload),
-
-    register: (payload: RegisterPayload) => axios.post<AuthResponse>("/auth/register", payload),
-
-    logout: () => axios.post("/auth/logout"),
-
-    me: () => axios.get<MeResponse>("/auth/me"),
-    
-    setPassword: (payload: SetPasswordPayload) => axios.post<SetPasswordResponse>("/auth/set-password", payload),
-};
+  login: (payload: LoginPayload) => apiClient.post<AuthResponse>("/auth/login", payload),
+  register: (payload: RegisterPayload) => apiClient.post<AuthResponse>("/auth/register", payload),
+  logout: () => apiClient.post("/auth/logout"),
+  me: () => apiClient.get<MeResponse>("/auth/me"),
+  setPassword: (payload: SetPasswordPayload) => apiClient.post<SetPasswordResponse>("/auth/set-password", payload),
+  forgotPassword: (payload: ForgotPasswordPayload) => apiClient.post<{ message: string }>("/auth/forgot-password", payload),
+  resetPassword: (payload: ResetPasswordPayload) => apiClient.post("/auth/reset-password", payload),
+  changePassword: (payload: ChangePasswordPayload) => apiClient.post("/auth/change-password", payload),
+}
